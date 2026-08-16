@@ -1,0 +1,9 @@
+---
+title: "Visual Data Sketches"
+page-layout: full
+---
+
+A small collection of visual experiments made with data.
+
+- [Full viewport card](sketches/full-card.qmd)
+- [Story + visualization card](sketches/story-card.qmd)
