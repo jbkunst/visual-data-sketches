@@ -1,0 +1,21 @@
+---
+title: "Story card"
+page-layout: custom
+body-classes: sketch-page
+---
+
+:::{.sketch-viewport}
+:::{.sketch-card .sketch-card--story}
+:::{.sketch-header}
+# Ferrari bloodlines
+
+*A visual genealogy of Ferrari road cars.*
+:::
+
+:::{.sketch-canvas}
+:::{.placeholder-viz}
+timeline / map / chart
+:::
+:::
+:::
+:::
