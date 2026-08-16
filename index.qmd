@@ -5,7 +5,19 @@ page-layout: full
 body-classes: catalog-page
 title-block-banner: true
 css: assets/catalog.css
+listing:
+  - id: sketches-list
+    contents: sketches.yml
+    type: grid
+    grid-columns: 3
+    sort-ui: false
+    filter-ui: true
+    categories: true
+    image-lazy-loading: true
+    field-required:
+      - title
+      - description
 ---
 
-- [Full viewport card](full-card/)
-- [Story + visualization card](story-card/)
+:::{#sketches-list}
+:::
