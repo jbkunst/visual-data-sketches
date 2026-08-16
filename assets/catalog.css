@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;1,300&family=IBM+Plex+Serif:ital,wght@0,200;0,300;0,400;1,200;1,300&display=swap");
+
+body.catalog-page {
+  color: #1f252b;
+  font-family: "IBM Plex Serif", serif;
+}
+
+body.catalog-page .quarto-title-banner {
+  padding-top: 7rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid #dedbd3;
+  background: #fff;
+  color: #1f252b;
+}
+
+body.catalog-page #title-block-header .title {
+  font-family: "IBM Plex Serif", serif;
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 200;
+  line-height: .95;
+}
+
+body.catalog-page main.content {
+  max-width: 1100px;
+  padding-top: 2.5rem;
+}
+
+body.catalog-page p,
+body.catalog-page li {
+  font-weight: 300;
+}
+
+body.catalog-page em {
+  font-weight: 200;
+}
+
+body.catalog-page a {
+  color: inherit;
+}
