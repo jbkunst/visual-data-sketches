@@ -21,3 +21,12 @@ listing:
 
 :::{#sketches-list}
 :::
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("#sketches-list a.quarto-grid-link").forEach((link) => {
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+  });
+});
+</script>
