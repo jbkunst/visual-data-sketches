@@ -2,6 +2,9 @@
 title: "Story card"
 page-layout: custom
 body-classes: sketch-page
+format:
+  html:
+    css: styles.css
 ---
 
 :::{.sketch-viewport}

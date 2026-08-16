@@ -17,7 +17,6 @@ website:
 format:
   html:
     theme: cosmo
-    css: styles.css
     toc: false
     anchor-sections: false
     smooth-scroll: true
