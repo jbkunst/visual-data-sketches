@@ -1,3 +1,4 @@
 Title: Full viewport card
 Description: A minimal sketch where the visualization fills the available viewport.
 Categories: layout, quarto
+Runtime: html
