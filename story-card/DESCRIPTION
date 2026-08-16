@@ -1,3 +1,4 @@
 Title: Story card
 Description: A compact editorial header with the remaining viewport reserved for the visualization.
 Categories: storytelling, layout, quarto
+Runtime: html
