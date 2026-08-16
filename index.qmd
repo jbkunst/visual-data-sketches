@@ -1,9 +1,11 @@
 ---
 title: "Visual Data Sketches"
+description: "A small collection of visual experiments made with data."
 page-layout: full
+body-classes: catalog-page
+title-block-banner: true
+css: assets/catalog.css
 ---
 
-A small collection of visual experiments made with data.
-
-- [Full viewport card](sketches/full-card.qmd)
-- [Story + visualization card](sketches/story-card.qmd)
+- [Full viewport card](full-card/)
+- [Story + visualization card](story-card/)
