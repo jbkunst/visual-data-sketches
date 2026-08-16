@@ -1,0 +1,27 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Visual Data Sketches"
+  description: "Visual sketches, stories, maps, and experiments made with data."
+  search: false
+  navbar:
+    title: "jk"
+    pinned: true
+    tools:
+      - icon: github
+        href: "https://github.com/jbkunst/visual-data-sketches"
+        aria-label: GitHub
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: false
+    anchor-sections: false
+    smooth-scroll: true
+    link-external-newwindow: true
+
+execute:
+  freeze: auto
