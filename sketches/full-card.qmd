@@ -1,0 +1,13 @@
+---
+title: "Full card"
+page-layout: custom
+body-classes: sketch-page
+---
+
+:::{.sketch-viewport}
+:::{.sketch-card .sketch-card--center}
+:::{.placeholder-viz}
+visualization
+:::
+:::
+:::
