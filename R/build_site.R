@@ -1,4 +1,5 @@
 # packages ---------------------------------------------------------------
+library(dplyr)
 library(purrr)
 library(stringr)
 library(tibble)
@@ -50,17 +51,21 @@ sketches <- map_dfr(sketch_dirs, function(sketch) {
   )
 })
 
-sketches <- sketches |>
-  keep(~ TRUE)
-
 if (nrow(sketches) == 0) {
   stop("No sketch DESCRIPTION files found.", call. = FALSE)
 }
 
-draft_sketches <- sketches$sketch[sketches$status == "draft"]
-if (length(draft_sketches) > 0) {
-  cli::cli_alert_info("Draft sketches skipped: {paste(draft_sketches, collapse = ', ')}")
-  sketches <- sketches[sketches$status != "draft", , drop = FALSE]
+draft_sketches <- sketches |>
+  filter(.data$status == "draft")
+
+if (nrow(draft_sketches) > 0) {
+  cli::cli_alert_info("Draft sketches skipped: {paste(draft_sketches$sketch, collapse = ', ')}")
+  sketches <- sketches |>
+    filter(.data$status != "draft")
+}
+
+if (nrow(sketches) == 0) {
+  stop("No published sketches found.", call. = FALSE)
 }
 
 missing_metadata <- sketches |>
@@ -86,7 +91,10 @@ cli::cli_h1("Gallery cards")
 cards <- sketches$sketch |>
   set_names() |>
   map(function(sketch) {
-    meta <- sketches[sketches$sketch == sketch, , drop = FALSE][1, ]
+    meta <- sketches |>
+      filter(.data$sketch == .env$sketch) |>
+      slice(1)
+
     screenshot <- path(sketch, "screenshot.png")
 
     card <- list(
