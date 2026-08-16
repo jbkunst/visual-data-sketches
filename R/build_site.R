@@ -123,9 +123,11 @@ cli::cli_h1("Done")
 cli::cli_alert_success("Built {nrow(sketches)} sketches.")
 
 if (interactive()) {
-  index_url <- paste0(
-    "file:///",
-    normalizePath("docs/index.html", winslash = "/", mustWork = TRUE)
-  )
-  utils::browseURL(index_url)
+  index_file <- normalizePath("docs/index.html", mustWork = TRUE)
+
+  if (.Platform$OS.type == "windows") {
+    shell.exec(index_file)
+  } else {
+    utils::browseURL(paste0("file://", index_file))
+  }
 }
