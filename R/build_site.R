@@ -121,3 +121,11 @@ quarto::quarto_render(".")
 # done -------------------------------------------------------------------
 cli::cli_h1("Done")
 cli::cli_alert_success("Built {nrow(sketches)} sketches.")
+
+if (interactive()) {
+  index_url <- paste0(
+    "file:///",
+    normalizePath("docs/index.html", winslash = "/", mustWork = TRUE)
+  )
+  utils::browseURL(index_url)
+}
