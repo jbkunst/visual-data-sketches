@@ -57,15 +57,13 @@ initial_model <- "959 Komfort"
 
 [Model iterations / 1939—2026]{.model-timeline-eyebrow}
 
-# PORSCHE {.model-timeline-title}
+# [PORSCHE]{.porsche-title-brand} [evolution]{.porsche-title-theme} {.model-timeline-title}
 
 :::
 
 ::: {.model-timeline-intro}
 
-Seven decades. Hundreds of answers to the same question: what can a sports car become?
-
-Built from [the model research collection assembled by Stuttcars](https://www.stuttcars.com/porsche-model-research/).
+Seven decades of Porsche models, drawn from [the model research collection assembled by Stuttcars](https://www.stuttcars.com/porsche-model-research/).
 
 [Hover to compare specifications. Click to inspect a model.]{.model-timeline-instructions}
 

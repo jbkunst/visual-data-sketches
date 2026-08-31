@@ -7,7 +7,12 @@ model_timeline_fields <- c(
   "official_url"
 )
 
-model_timeline_adapt <- function(data, mapping, details = NULL) {
+model_timeline_adapt <- function(
+  data,
+  mapping,
+  details = NULL,
+  description_fallback = "Details for this model are not available yet."
+) {
   missing_mapping <- setdiff(model_timeline_fields, names(mapping))
 
   if (length(missing_mapping) > 0) {
@@ -44,6 +49,21 @@ model_timeline_adapt <- function(data, mapping, details = NULL) {
     }
   }
 
+  point_ids <- if ("id" %in% names(mapping)) {
+    source_ids <- as.character(data[[mapping$id]])
+    missing_ids <- is.na(source_ids) | !nzchar(source_ids)
+    source_ids[missing_ids] <- seq_len(nrow(data))[missing_ids]
+    make.unique(make.names(paste0("model_", source_ids)))
+  } else {
+    make.unique(make.names(as.character(data[[mapping$model]])))
+  }
+
+  tooltip_image_urls <- if ("tooltip_image_url" %in% names(mapping)) {
+    as.character(data[[mapping$tooltip_image_url]])
+  } else {
+    as.character(data[[mapping$image_url]])
+  }
+
   adapted <- tibble::tibble(
     source_row = seq_len(nrow(data)),
     model = as.character(data[[mapping$model]]),
@@ -51,17 +71,19 @@ model_timeline_adapt <- function(data, mapping, details = NULL) {
     category = as.character(data[[mapping$category]]),
     description = as.character(data[[mapping$description]]),
     image_url = as.character(data[[mapping$image_url]]),
-    official_url = as.character(data[[mapping$official_url]])
+    tooltip_image_url = tooltip_image_urls,
+    official_url = as.character(data[[mapping$official_url]]),
+    point_id = point_ids
   ) |>
     dplyr::mutate(
       description = dplyr::if_else(
         is.na(.data$description) | !nzchar(.data$description),
-        "Details for this model are not available yet.",
+        description_fallback,
         .data$description
       ),
       image_url = dplyr::coalesce(.data$image_url, ""),
-      official_url = dplyr::coalesce(.data$official_url, ""),
-      point_id = make.unique(make.names(.data$model))
+      tooltip_image_url = dplyr::coalesce(.data$tooltip_image_url, .data$image_url),
+      official_url = dplyr::coalesce(.data$official_url, "")
     ) |>
     dplyr::arrange(.data$year, .data$model)
 
@@ -74,7 +96,7 @@ model_timeline_adapt <- function(data, mapping, details = NULL) {
     })
   }
 
-  adapted <- dplyr::select(adapted, -.data$source_row)
+  adapted <- dplyr::select(adapted, -dplyr::all_of("source_row"))
 
   if (nrow(adapted) == 0) {
     stop("The adapted model timeline data has no usable rows.", call. = FALSE)
@@ -83,11 +105,16 @@ model_timeline_adapt <- function(data, mapping, details = NULL) {
   adapted
 }
 
-model_timeline_initial <- function(data, initial_model) {
-  index <- match(tolower(initial_model), tolower(data$model))
+model_timeline_initial <- function(data, initial_model, initial_point_id = NULL) {
+  index <- if (!is.null(initial_point_id)) {
+    match(initial_point_id, data$point_id)
+  } else {
+    match(tolower(initial_model), tolower(data$model))
+  }
 
   if (is.na(index)) {
-    stop("Initial model not found: ", initial_model, call. = FALSE)
+    initial_reference <- if (is.null(initial_point_id)) initial_model else initial_point_id
+    stop("Initial model not found: ", initial_reference, call. = FALSE)
   }
 
   data[index, , drop = FALSE]
@@ -97,9 +124,10 @@ model_timeline_hero <- function(
   data,
   initial_model,
   brand,
-  link_label = "Official model page"
+  link_label = "Official model page",
+  initial_point_id = NULL
 ) {
-  featured <- model_timeline_initial(data, initial_model)
+  featured <- model_timeline_initial(data, initial_model, initial_point_id)
   escape <- function(x, attribute = FALSE) {
     htmltools::htmlEscape(as.character(x), attribute = attribute)
   }
@@ -202,14 +230,56 @@ model_timeline_chart <- function(
   font_family = "IBM Plex Sans",
   source_url = "",
   category_labels = NULL,
+  category_order = NULL,
   tooltip_image_transform = identity,
   point_spacing = 0.09,
-  stack_span = 0.86
+  stack_span = 0.86,
+  initial_point_id = NULL,
+  theme = list()
 ) {
-  category_levels <- data |>
-    dplyr::count(.data$category, sort = TRUE) |>
-    dplyr::pull(.data$category) |>
-    rev()
+  chart_theme <- utils::modifyList(
+    list(
+      axis_label_color = "#b6b3ae",
+      category_label_color = "#f3f1ed",
+      grid_line_color = "rgba(255,255,255,0.10)",
+      axis_line_color = "rgba(255,255,255,0.28)",
+      x_axis_opposite = FALSE,
+      x_axis_line_width = 1,
+      x_axis_tick_length = 10,
+      marker_fill_color = "rgba(220,218,213,0.48)",
+      marker_line_color = "rgba(255,255,255,0.42)",
+      marker_active_line_color = "#ffffff",
+      inactive_opacity = 1,
+      tooltip_background_color = "#f4f1ea",
+      tooltip_border_radius = 8,
+      credits_color = "#77736d"
+    ),
+    theme
+  )
+
+  category_levels <- if (is.null(category_order)) {
+    data |>
+      dplyr::count(.data$category, sort = TRUE) |>
+      dplyr::pull(.data$category) |>
+      rev()
+  } else {
+    data_categories <- unique(data$category)
+    missing_categories <- setdiff(data_categories, category_order)
+    unused_categories <- setdiff(category_order, data_categories)
+
+    if (
+      anyDuplicated(category_order) ||
+      length(missing_categories) > 0 ||
+      length(unused_categories) > 0
+    ) {
+      stop(
+        "category_order must contain every category exactly once.",
+        call. = FALSE
+      )
+    }
+
+    rev(category_order)
+  }
 
   category_axis_labels <- stats::setNames(category_levels, category_levels)
 
@@ -222,13 +292,8 @@ model_timeline_chart <- function(
     category_axis_labels[matched_labels] <- category_labels[matched_labels]
   }
 
-  initial_index <- match(tolower(initial_model), tolower(data$model))
-
-  if (is.na(initial_index)) {
-    stop("Initial model not found: ", initial_model, call. = FALSE)
-  }
-
-  initial_point_id <- data$point_id[[initial_index]]
+  initial <- model_timeline_initial(data, initial_model, initial_point_id)
+  selected_point_id <- initial$point_id[[1]]
 
   plot_data <- model_timeline_stack_offsets(
     data,
@@ -244,14 +309,14 @@ model_timeline_chart <- function(
       x = row$year,
       y = match(row$category, category_levels) - 1L + row$y_offset,
       name = row$model,
-      selected = identical(row$point_id[[1]], initial_point_id),
+      selected = identical(row$point_id[[1]], selected_point_id),
       custom = list(
         model = row$model,
         year = row$year,
         category = row$category,
         description = row$description,
         image = row$image_url,
-        tooltipImage = tooltip_image_transform(row$image_url),
+        tooltipImage = tooltip_image_transform(row$tooltip_image_url),
         url = row$official_url,
         specs = row$specs[[1]]
       )
@@ -316,13 +381,16 @@ model_timeline_chart <- function(
       max = max(data$year) + 1,
       tickInterval = 10,
       allowDecimals = FALSE,
+      opposite = chart_theme$x_axis_opposite,
       gridLineWidth = 1,
-      gridLineColor = "rgba(255,255,255,0.10)",
-      lineColor = "rgba(255,255,255,0.28)",
-      tickColor = "rgba(255,255,255,0.28)",
+      gridLineColor = chart_theme$grid_line_color,
+      lineWidth = chart_theme$x_axis_line_width,
+      lineColor = chart_theme$axis_line_color,
+      tickLength = chart_theme$x_axis_tick_length,
+      tickColor = chart_theme$axis_line_color,
       labels = list(
         style = list(
-          color = "#b6b3ae",
+          color = chart_theme$axis_label_color,
           fontSize = "11px",
           fontFamily = font_family
         )
@@ -342,7 +410,7 @@ model_timeline_chart <- function(
         x = 2,
         formatter = category_label_formatter,
         style = list(
-          color = "#f3f1ed",
+          color = chart_theme$category_label_color,
           fontSize = "12px",
           fontFamily = font_family,
           textTransform = "uppercase",
@@ -358,28 +426,28 @@ model_timeline_chart <- function(
         marker = list(
           radius = 4,
           symbol = "circle",
-          fillColor = "rgba(220,218,213,0.48)",
-          lineColor = "rgba(255,255,255,0.42)",
+          fillColor = chart_theme$marker_fill_color,
+          lineColor = chart_theme$marker_line_color,
           lineWidth = 1,
           states = list(
             hover = list(
               enabled = TRUE,
               radius = 7,
               fillColor = accent,
-              lineColor = "#ffffff",
+              lineColor = chart_theme$marker_active_line_color,
               lineWidth = 1.5
             ),
             select = list(
               enabled = TRUE,
               radius = 7,
               fillColor = accent,
-              lineColor = "#ffffff",
+              lineColor = chart_theme$marker_active_line_color,
               lineWidth = 2
             )
           )
         ),
         point = list(events = list(click = click_handler)),
-        states = list(inactive = list(opacity = 1))
+        states = list(inactive = list(opacity = chart_theme$inactive_opacity))
       )
     ) |>
     highcharter::hc_add_series(
@@ -397,8 +465,8 @@ model_timeline_chart <- function(
       showDelay = 0,
       hideDelay = 50,
       borderWidth = 0,
-      borderRadius = 8,
-      backgroundColor = "#f4f1ea",
+      borderRadius = chart_theme$tooltip_border_radius,
+      backgroundColor = chart_theme$tooltip_background_color,
       shadow = TRUE,
       padding = 0,
       formatter = tooltip_formatter
@@ -408,7 +476,7 @@ model_timeline_chart <- function(
       enabled = nzchar(source_url),
       text = "Source data",
       href = source_url,
-      style = list(color = "#77736d")
+      style = list(color = chart_theme$credits_color)
     ) |>
     highcharter::hc_exporting(enabled = FALSE)
 

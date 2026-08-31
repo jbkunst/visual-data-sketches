@@ -23,10 +23,19 @@
 
 .porsche-page .model-timeline-title {
   max-width: none;
-  font-size: clamp(4.4rem, 8vw, 9.8rem);
+  font-size: clamp(3.6rem, 6.5vw, 7.2rem);
   font-weight: 200;
   letter-spacing: -0.04em;
-  line-height: 0.72;
+  line-height: 0.8;
+}
+
+.porsche-page .porsche-title-brand {
+  color: #111212;
+}
+
+.porsche-page .porsche-title-theme {
+  color: #6b6e6f;
+  font-weight: 200;
 }
 
 .porsche-page .model-timeline-eyebrow {
@@ -147,7 +156,7 @@
 
 @media (max-width: 640px) {
   .porsche-page .model-timeline-title {
-    font-size: clamp(4rem, 22vw, 6.5rem);
+    font-size: clamp(3.4rem, 18vw, 5.2rem);
   }
 
 }

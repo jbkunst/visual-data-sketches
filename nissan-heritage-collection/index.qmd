@@ -1,0 +1,185 @@
+---
+pagetitle: "Nissan Heritage Collection"
+date: 2026-08-31
+page-layout: custom
+navbar: false
+body-classes: model-timeline-page nissan-page
+format:
+  html:
+    css:
+      - ../assets/model-timeline.css
+      - styles.css
+    include-in-header:
+      text: |
+        <link rel="preconnect" href="https://www.nissan-global.com">
+        <script defer src="../assets/model-timeline.js"></script>
+resources:
+  - ../assets/model-timeline.js
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(dplyr)
+library(highcharter)
+library(readr)
+
+source(here::here("R", "model-timeline.R"))
+
+source_url <- paste0(
+  "https://raw.githubusercontent.com/jbkunst/motorsport-legends/",
+  "main/data/cars/nissan_heritage_collection.csv"
+)
+
+initial_model <- "Nissan R91CP"
+initial_point_id <- "model_124"
+
+source_data <- read_csv(
+  source_url,
+  show_col_types = FALSE,
+  col_select = -c(image_data_uri, thumb_data_uri)
+) |>
+  mutate(
+    display_image_url = coalesce(.data$image_url, .data$thumb_url),
+    vehicle_type_key = coalesce(.data$vehicle_type, ""),
+    timeline_category = case_when(
+      .data$category == "Competition" ~ "Competition",
+      stringr::str_detect(
+        .data$vehicle_type_key,
+        stringr::regex("sedan", ignore_case = TRUE)
+      ) ~ "Road / Sedans",
+      stringr::str_detect(
+        .data$vehicle_type_key,
+        stringr::regex("sport|specialty", ignore_case = TRUE)
+      ) ~ "Road / Sports & specialty",
+      stringr::str_detect(
+        .data$vehicle_type_key,
+        stringr::regex("commercial|suv|minivan|wagon", ignore_case = TRUE)
+      ) ~ "Road / Utility & commercial",
+      TRUE ~ "Road / Other"
+    )
+  ) |>
+  select(-all_of("vehicle_type_key"))
+
+cars <- model_timeline_adapt(
+  source_data,
+  mapping = list(
+    id = "no",
+    model = "model",
+    year = "year",
+    category = "timeline_category",
+    description = "description",
+    image_url = "display_image_url",
+    tooltip_image_url = "thumb_url",
+    official_url = "url"
+  ),
+  details = c(
+    "Vehicle type" = "vehicle_type",
+    "Engine" = "engine",
+    "Engine code" = "engine_code",
+    "Displacement (cc)" = "displacement_cc",
+    "Power (cv)" = "max_power_cv",
+    "Torque (Nm)" = "torque_nm",
+    "Weight (kg)" = "weight_kg"
+  ),
+  description_fallback = ""
+)
+```
+
+:::: {.model-timeline-shell}
+
+:::: {.model-timeline-header}
+
+::: {}
+
+[Heritage collection / 1920-2013]{.model-timeline-eyebrow}
+
+# [NISSAN]{.nissan-title-brand} heritage {.model-timeline-title}
+
+:::
+
+::: {.model-timeline-intro}
+
+393 vehicles in five display bands derived from the collection's road/competition and vehicle-type fields. [Nissan Heritage Collection](https://www.nissan-global.com/EN/HERITAGE_COLLECTION/).
+
+[Hover to see specifications. Click to reveal the vehicle's history.]{.model-timeline-instructions}
+
+:::
+
+::::
+
+::: {.model-timeline-main}
+
+::: {.model-timeline-chart aria-label="Interactive timeline of Nissan Heritage Collection vehicles by year and category"}
+
+```{r}
+#| label: nissan-heritage-timeline
+
+model_timeline_chart(
+  cars,
+  initial_model = initial_model,
+  initial_point_id = initial_point_id,
+  brand = "Nissan",
+  accent = "#006bb6",
+  font_family = "IBM Plex Sans",
+  source_url = source_url,
+  category_labels = c(
+    "Road / Sedans" = "Road / Sedans",
+    "Road / Sports & specialty" = "Road / Sports",
+    "Road / Utility & commercial" = "Road / Utility",
+    "Road / Other" = "Road / Other",
+    "Competition" = "Competition"
+  ),
+  category_order = c(
+    "Road / Sedans",
+    "Road / Sports & specialty",
+    "Road / Utility & commercial",
+    "Road / Other",
+    "Competition"
+  ),
+  point_spacing = 0.075,
+  stack_span = 0.82,
+  theme = list(
+    axis_label_color = "#526577",
+    category_label_color = "#14324a",
+    grid_line_color = "rgba(0, 74, 128, 0.12)",
+    axis_line_color = "rgba(0, 74, 128, 0.24)",
+    x_axis_opposite = TRUE,
+    x_axis_line_width = 0,
+    x_axis_tick_length = 0,
+    marker_fill_color = "rgba(0, 107, 182, 0.58)",
+    marker_line_color = "rgba(255, 255, 255, 0.90)",
+    marker_active_line_color = "#ffffff",
+    inactive_opacity = 0.34,
+    tooltip_background_color = "#ffffff",
+    tooltip_border_radius = 2,
+    credits_color = "#647789"
+  )
+)
+```
+
+:::
+
+:::
+
+```{r}
+#| label: selected-model
+#| results: asis
+
+cat(
+  model_timeline_hero(
+    cars,
+    initial_model,
+    brand = "Nissan",
+    link_label = "View in the heritage collection",
+    initial_point_id = initial_point_id
+  )
+)
+```
+
+::::

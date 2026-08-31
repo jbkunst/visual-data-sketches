@@ -1,0 +1,142 @@
+.model-timeline-shell {
+  --model-timeline-accent: #006bb6;
+  --nissan-red: #ed1b2f;
+  --model-timeline-canvas: #ffffff;
+  --model-timeline-panel: #f5f8fb;
+  --model-timeline-ink: #102a40;
+  --model-timeline-muted: #5b6d7d;
+  --model-timeline-rule: rgb(0 74 128 / 14%);
+  --model-timeline-font: "IBM Plex Sans", Arial, sans-serif;
+  --model-timeline-display-font: "IBM Plex Sans", Arial, sans-serif;
+  --model-timeline-chart-font: "IBM Plex Sans", Arial, sans-serif;
+  --model-timeline-eyebrow-color: #006bb6;
+  --model-timeline-eyebrow-size: 0.68rem;
+  --model-timeline-eyebrow-weight: 600;
+  --model-timeline-eyebrow-tracking: 0.09em;
+  --model-timeline-hero-category-color: #006bb6;
+}
+
+.nissan-page .model-timeline-header {
+  background: linear-gradient(118deg, #ffffff 0%, #ffffff 62%, #f2f7fb 100%);
+}
+
+.nissan-page .model-timeline-title {
+  max-width: none;
+  color: #102a40;
+  font-size: clamp(3.7rem, 7vw, 8.5rem);
+  font-weight: 300;
+  letter-spacing: -0.055em;
+  line-height: 0.76;
+}
+
+.nissan-page .nissan-title-brand {
+  color: var(--model-timeline-accent);
+  font-weight: 400;
+}
+
+.nissan-page .model-timeline-intro a:not(.model-timeline-instructions) {
+  color: #314f68;
+  text-decoration-color: rgb(0 104 181 / 35%);
+  text-underline-offset: 0.16em;
+}
+
+.nissan-page .model-timeline-instructions {
+  position: relative;
+  border-left: 0;
+}
+
+.nissan-page .model-timeline-instructions::after {
+  position: absolute;
+  top: 0;
+  left: -2px;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    var(--model-timeline-accent) 0 76%,
+    var(--nissan-red) 76% 100%
+  );
+  content: "";
+}
+
+.nissan-page .model-timeline-main {
+  background: #ffffff;
+}
+
+.nissan-page .model-timeline-chart .highcharts-axis-labels text,
+.nissan-page .model-timeline-chart .highcharts-axis-title {
+  font-family: var(--model-timeline-chart-font) !important;
+}
+
+.nissan-page .model-timeline-hero {
+  background: #f5f8fb;
+}
+
+.nissan-page .model-timeline-hero-media {
+  background: #ffffff;
+}
+
+.nissan-page .model-timeline-hero-media::after {
+  background:
+    radial-gradient(ellipse at 52% 79%, rgb(16 42 64 / 10%), transparent 38%),
+    linear-gradient(to bottom, transparent 68%, rgb(0 104 181 / 5%));
+}
+
+.nissan-page .model-timeline-hero-image {
+  object-fit: contain;
+  object-position: center;
+  padding: clamp(0.75rem, 1.6vw, 1.6rem);
+  filter: none;
+}
+
+.nissan-page .model-timeline-hero-watermark {
+  color: rgb(0 104 181 / 16%);
+  font-weight: 600;
+}
+
+.nissan-page .model-timeline-hero-copy {
+  background: #f5f8fb;
+}
+
+.nissan-page .model-timeline-hero-name {
+  color: #102a40;
+  font-size: clamp(2.6rem, 4vw, 4.8rem);
+  font-weight: 300;
+}
+
+.nissan-page .model-timeline-hero-name::after {
+  width: 4.2rem;
+  height: 3px;
+  background: linear-gradient(to right, var(--model-timeline-accent) 0 76%, var(--nissan-red) 76% 100%);
+}
+
+.nissan-page .model-timeline-hero-link {
+  color: #4d6375;
+  border-bottom-color: rgb(0 104 181 / 30%);
+}
+
+.nissan-page .model-timeline-hero-link:hover,
+.nissan-page .model-timeline-hero-link:focus-visible {
+  color: var(--model-timeline-accent);
+  border-bottom-color: var(--model-timeline-accent);
+}
+
+.nissan-page .model-timeline-hero-description:empty {
+  display: none;
+}
+
+.nissan-page .model-timeline-tooltip-image {
+  object-fit: contain;
+  background: #ffffff;
+  padding: 0.5rem;
+}
+
+.nissan-page .model-timeline-tooltip small {
+  color: var(--model-timeline-accent);
+}
+
+@media (max-width: 640px) {
+  .nissan-page .model-timeline-title {
+    font-size: clamp(3.4rem, 18vw, 5.8rem);
+  }
+}
