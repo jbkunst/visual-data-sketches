@@ -41,6 +41,8 @@ brand <- list(
   initial_model = "F40",
   accent = "#e10600",
   font_family = "IBM Plex Sans",
+  point_spacing = 0.14,
+  stack_span = 0.90,
   tooltip_image_transform = function(url) {
     sub("\\?.*$", "?width=320&height=180", url)
   },
@@ -119,7 +121,9 @@ model_timeline_chart(
   font_family = brand$font_family,
   source_url = source_url,
   category_labels = brand$category_labels,
-  tooltip_image_transform = brand$tooltip_image_transform
+  tooltip_image_transform = brand$tooltip_image_transform,
+  point_spacing = brand$point_spacing,
+  stack_span = brand$stack_span
 )
 ```
 

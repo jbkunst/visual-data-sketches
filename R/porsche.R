@@ -100,7 +100,9 @@ porsche_chart <- function(
   data,
   initial_model,
   source_url,
-  font_family = "IBM Plex Sans"
+  font_family = "IBM Plex Sans",
+  point_spacing = 0.09,
+  stack_span = 0.86
 ) {
   initial_index <- match(tolower(initial_model), tolower(data$model))
 
@@ -110,12 +112,12 @@ porsche_chart <- function(
 
   initial_point_id <- data$point_id[[initial_index]]
   display_order <- c(
+    "Race Cars",
     "911 Models",
-    "Boxster & Cayman Models",
     "Misc Models",
+    "Boxster & Cayman Models",
     "Supercars",
-    "Concept Cars",
-    "Race Cars"
+    "Concept Cars"
   )
   category_levels <- rev(display_order)
   category_labels <- c(
@@ -127,16 +129,11 @@ porsche_chart <- function(
     "Race Cars" = "Race Cars"
   )
 
-  plot_data <- data |>
-    dplyr::group_by(.data$year, .data$category) |>
-    dplyr::mutate(
-      y_offset = if (dplyr::n() == 1L) {
-        0
-      } else {
-        seq(-0.32, 0.32, length.out = dplyr::n())
-      }
-    ) |>
-    dplyr::ungroup()
+  plot_data <- model_timeline_stack_offsets(
+    data,
+    max_span = stack_span,
+    preferred_step = point_spacing
+  )
 
   points <- lapply(seq_len(nrow(plot_data)), function(index) {
     row <- plot_data[index, , drop = FALSE]

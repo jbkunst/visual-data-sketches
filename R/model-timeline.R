@@ -168,6 +168,32 @@ model_timeline_hero <- function(
   )
 }
 
+model_timeline_stack_offsets <- function(
+  data,
+  max_span = 0.86,
+  preferred_step = 0.09
+) {
+  data |>
+    dplyr::group_by(.data$year, .data$category) |>
+    dplyr::mutate(
+      y_offset = {
+        models_in_year <- dplyr::n()
+
+        if (models_in_year == 1L) {
+          0
+        } else {
+          stack_step <- min(
+            preferred_step,
+            max_span / (models_in_year - 1L)
+          )
+          stack_position <- dplyr::row_number() - (models_in_year + 1L) / 2
+          stack_position * stack_step
+        }
+      }
+    ) |>
+    dplyr::ungroup()
+}
+
 model_timeline_chart <- function(
   data,
   initial_model,
@@ -176,7 +202,9 @@ model_timeline_chart <- function(
   font_family = "IBM Plex Sans",
   source_url = "",
   category_labels = NULL,
-  tooltip_image_transform = identity
+  tooltip_image_transform = identity,
+  point_spacing = 0.09,
+  stack_span = 0.86
 ) {
   category_levels <- data |>
     dplyr::count(.data$category, sort = TRUE) |>
@@ -202,16 +230,11 @@ model_timeline_chart <- function(
 
   initial_point_id <- data$point_id[[initial_index]]
 
-  plot_data <- data |>
-    dplyr::group_by(.data$year, .data$category) |>
-    dplyr::mutate(
-      y_offset = if (dplyr::n() == 1L) {
-        0
-      } else {
-        seq(-0.32, 0.32, length.out = dplyr::n())
-      }
-    ) |>
-    dplyr::ungroup()
+  plot_data <- model_timeline_stack_offsets(
+    data,
+    max_span = stack_span,
+    preferred_step = point_spacing
+  )
 
   points <- lapply(seq_len(nrow(plot_data)), function(index) {
     row <- plot_data[index, , drop = FALSE]

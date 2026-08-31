@@ -25,7 +25,7 @@
   max-width: none;
   font-size: clamp(4.4rem, 8vw, 9.8rem);
   font-weight: 200;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.04em;
   line-height: 0.72;
 }
 
@@ -127,6 +127,16 @@
 
 .porsche-page .model-timeline-tooltip small {
   color: #171717;
+}
+
+.porsche-page .model-timeline-tooltip-specs div:nth-child(-n+2) {
+  grid-column: 1 / -1;
+}
+
+.porsche-page .model-timeline-tooltip-specs dd {
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .porsche-page .model-timeline-tooltip-image {
