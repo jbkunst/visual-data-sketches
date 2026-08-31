@@ -192,7 +192,83 @@
       });
   };
 
+  const resizeTables = (container) => {
+    if (!window.jQuery?.fn?.dataTable) return;
+
+    container.querySelectorAll("table.dataTable").forEach((table) => {
+      const api = window.jQuery(table).DataTable();
+      api.columns.adjust();
+      api.responsive?.recalc();
+    });
+  };
+
+  const setupViewSwitcher = () => {
+    const shell = document.querySelector(".model-timeline-shell");
+    const buttons = Array.from(
+      document.querySelectorAll("[data-model-timeline-view]")
+    );
+    const panels = Array.from(
+      document.querySelectorAll("[data-model-timeline-panel]")
+    );
+    const copy = Array.from(
+      document.querySelectorAll("[data-model-timeline-view-copy]")
+    );
+
+    if (!shell || buttons.length === 0 || panels.length === 0) return;
+
+    const activate = (view) => {
+      buttons.forEach((button) => {
+        const active = button.dataset.modelTimelineView === view;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-selected", String(active));
+        button.tabIndex = active ? 0 : -1;
+      });
+
+      panels.forEach((panel) => {
+        const active = panel.dataset.modelTimelinePanel === view;
+        panel.classList.toggle("is-active", active);
+        panel.setAttribute("aria-hidden", String(!active));
+      });
+
+      copy.forEach((element) => {
+        element.hidden = element.dataset.modelTimelineViewCopy !== view;
+      });
+
+      shell.dataset.modelTimelineActiveView = view;
+
+      requestAnimationFrame(() => {
+        if (view === "timeline") reflowCharts(shell);
+        if (view === "records") resizeTables(shell);
+      });
+    };
+
+    buttons.forEach((button, index) => {
+      button.addEventListener("click", () => {
+        activate(button.dataset.modelTimelineView);
+      });
+
+      button.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+        event.preventDefault();
+        const direction = event.key === "ArrowRight" ? 1 : -1;
+        const next = buttons[(index + direction + buttons.length) % buttons.length];
+        activate(next.dataset.modelTimelineView);
+        next.focus();
+      });
+    });
+
+    const requestedView = new URLSearchParams(window.location.search).get("view");
+    if (requestedView && panels.some((panel) => panel.dataset.modelTimelinePanel === requestedView)) {
+      activate(requestedView);
+    } else {
+      activate(buttons.find((button) => button.classList.contains("is-active"))?.dataset.modelTimelineView || "timeline");
+    }
+  };
+
   document.addEventListener("DOMContentLoaded", () => {
+    setupViewSwitcher();
+
     const chartRegion = document.querySelector(".model-timeline-chart");
     if (!chartRegion || !("ResizeObserver" in window)) return;
 

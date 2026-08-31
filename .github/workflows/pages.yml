@@ -38,6 +38,7 @@ jobs:
           packages: |
             any::cli
             any::dplyr
+            any::DT
             any::fs
             any::here
             github::jbkunst/highcharter@2feb9b0c66ccaa92ed20b9244fbee3c115053694

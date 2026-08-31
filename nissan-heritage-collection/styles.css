@@ -14,6 +14,18 @@
   --model-timeline-eyebrow-weight: 600;
   --model-timeline-eyebrow-tracking: 0.09em;
   --model-timeline-hero-category-color: #006bb6;
+  --model-timeline-record-arrow: var(--nissan-red);
+  --model-timeline-record-hover: rgb(0 74 128 / 4%);
+}
+
+.nissan-page .model-timeline-records {
+  background: #ffffff;
+}
+
+.nissan-page .model-timeline-record-photo img {
+  object-fit: contain;
+  padding: 0.2rem;
+  background: #ffffff;
 }
 
 .nissan-page .model-timeline-header {

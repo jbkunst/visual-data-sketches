@@ -8,6 +8,7 @@ format:
   html:
     css:
       - ../assets/model-timeline.css
+      - ../assets/model-timeline-records.css
       - styles.css
     include-in-header:
       text: |
@@ -26,6 +27,7 @@ execute:
 #| include: false
 
 library(dplyr)
+library(DT)
 library(highcharter)
 library(readr)
 
@@ -65,6 +67,34 @@ source_data <- read_csv(
     )
   ) |>
   select(-all_of("vehicle_type_key"))
+
+nissan_records <- source_data |>
+  transmute(
+    Model = model_timeline_record_link(.data$model, .data$url),
+    Photo = model_timeline_record_photo(
+      .data$display_image_url,
+      .data$thumb_url
+    ),
+    Year = .data$year,
+    Category = .data$category,
+    `Heritage category` = .data$heritage_category,
+    Decade = .data$heritage_decade,
+    `Vehicle type` = .data$vehicle_type,
+    Engine = .data$engine,
+    `Engine code` = .data$engine_code,
+    `Displacement (cc)` = .data$displacement_cc,
+    `Power (cv)` = .data$max_power_cv,
+    `Power rpm` = .data$rpm_max_power,
+    `Torque (Nm)` = .data$torque_nm,
+    `Torque rpm` = .data$rpm_max_torque,
+    `Top speed (km/h)` = .data$top_speed_kmh,
+    `Weight (kg)` = .data$weight_kg,
+    `Wheelbase (mm)` = .data$wheelbase_mm,
+    `Length (mm)` = .data$length_mm,
+    `Width (mm)` = .data$width_mm,
+    `Height (mm)` = .data$height_mm,
+    Description = .data$description
+  )
 
 cars <- model_timeline_adapt(
   source_data,
@@ -107,13 +137,19 @@ cars <- model_timeline_adapt(
 
 393 vehicles in five display bands derived from the collection's road/competition and vehicle-type fields. [Nissan Heritage Collection](https://www.nissan-global.com/EN/HERITAGE_COLLECTION/).
 
-[Hover to see specifications. Click to reveal the vehicle's history.]{.model-timeline-instructions}
+<span class="model-timeline-instructions" data-model-timeline-view-copy="timeline">Hover to see specifications. Click to reveal the vehicle's history.</span>
+<span class="model-timeline-instructions" data-model-timeline-view-copy="records" hidden>Search the archive. Expand a row to inspect.</span>
+
+<nav class="model-timeline-view-switcher" aria-label="Choose dashboard view" role="tablist">
+  <button type="button" class="is-active" role="tab" aria-selected="true" aria-controls="nissan-timeline-view" data-model-timeline-view="timeline">Timeline</button>
+  <button type="button" role="tab" aria-selected="false" aria-controls="nissan-records-view" data-model-timeline-view="records">Records <span>`r nrow(nissan_records)`</span></button>
+</nav>
 
 :::
 
 ::::
 
-::: {.model-timeline-main}
+::: {#nissan-timeline-view .model-timeline-main .is-active data-model-timeline-panel="timeline" role="tabpanel"}
 
 ::: {.model-timeline-chart aria-label="Interactive timeline of Nissan Heritage Collection vehicles by year and category"}
 
@@ -181,5 +217,22 @@ cat(
   )
 )
 ```
+
+::: {#nissan-records-view .model-timeline-records data-model-timeline-panel="records" role="tabpanel" aria-hidden="true"}
+
+```{r}
+#| label: nissan-records
+
+model_timeline_records_table(
+  nissan_records,
+  html_columns = c("Model", "Photo"),
+  visible_columns = c(
+    "Model", "Photo", "Year", "Category", "Engine",
+    "Displacement (cc)", "Power (cv)", "Top speed (km/h)"
+  )
+)
+```
+
+:::
 
 ::::

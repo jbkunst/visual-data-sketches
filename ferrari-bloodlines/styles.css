@@ -12,6 +12,7 @@
   --model-timeline-eyebrow-weight: 600;
   --model-timeline-eyebrow-tracking: 0.04em;
   --model-timeline-hero-category-color: rgb(244 242 238 / 82%);
+  --model-timeline-record-hover: rgb(255 255 255 / 3.5%);
 }
 
 .model-timeline-page .model-timeline-chart .highcharts-axis-labels text {

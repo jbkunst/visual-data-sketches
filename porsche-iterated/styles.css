@@ -15,6 +15,22 @@
   --model-timeline-eyebrow-weight: 600;
   --model-timeline-eyebrow-tracking: 0.11em;
   --model-timeline-hero-category-color: #1d1e1e;
+  --model-timeline-record-hover: rgb(0 0 0 / 3%);
+}
+
+.porsche-page .model-timeline-records {
+  --model-timeline-rule: rgb(17 18 18 / 14%);
+  background: linear-gradient(145deg, #eceeec 0%, #e3e5e3 100%);
+}
+
+.porsche-page .model-timeline-records .dataTables_filter input {
+  background: #f4f5f3;
+  border-color: rgb(17 18 18 / 22%);
+}
+
+.porsche-page .model-timeline-records .dataTables_filter input::placeholder {
+  color: #747776;
+  opacity: 1;
 }
 
 .porsche-page .model-timeline-header {

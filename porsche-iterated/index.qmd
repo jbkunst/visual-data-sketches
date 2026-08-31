@@ -8,6 +8,7 @@ format:
   html:
     css:
       - ../assets/model-timeline.css
+      - ../assets/model-timeline-records.css
       - styles.css
     include-in-header:
       text: |
@@ -26,6 +27,7 @@ execute:
 #| include: false
 
 library(dplyr)
+library(DT)
 library(highcharter)
 library(readr)
 
@@ -44,6 +46,32 @@ source_data <- read_csv(
   show_col_types = FALSE,
   col_select = -c(image_data_uri, image_profile_data_uri)
 )
+
+porsche_records <- source_data |>
+  transmute(
+    Model = model_timeline_record_link(.data$model, .data$url),
+    Photo = model_timeline_record_photo(.data$image_url),
+    Profile = model_timeline_record_photo(.data$image_profile_url),
+    Year = .data$year,
+    `Year end` = .data$year_end,
+    Category = .data$category,
+    Section = .data$section,
+    `Model family` = .data$model_family,
+    `Model code` = .data$model_code,
+    Generation = .data$generation,
+    Engine = .data$engine,
+    `Engine position` = .data$engine_position,
+    `Displacement (cc)` = .data$displacement_cc,
+    `Power (cv)` = .data$max_power_cv,
+    `Power rpm` = .data$rpm_max_power,
+    `Torque (Nm)` = .data$torque_nm,
+    `Torque rpm` = .data$rpm_max_torque,
+    `Top speed (km/h)` = .data$top_speed_kmh,
+    `0-100 km/h (s)` = .data$acceleration_0_100_kmh_s,
+    Production = .data$production_qty,
+    `Production ongoing` = .data$production_is_ongoing,
+    Description = .data$description
+  )
 
 cars <- porsche_prepare(source_data)
 initial_model <- "959 Komfort"
@@ -65,13 +93,19 @@ initial_model <- "959 Komfort"
 
 Seven decades of Porsche models, drawn from [the model research collection assembled by Stuttcars](https://www.stuttcars.com/porsche-model-research/).
 
-[Hover to compare specifications. Click to inspect a model.]{.model-timeline-instructions}
+<span class="model-timeline-instructions" data-model-timeline-view-copy="timeline">Hover to compare specifications. Click to inspect a model.</span>
+<span class="model-timeline-instructions" data-model-timeline-view-copy="records" hidden>Search the archive. Expand a row to inspect.</span>
+
+<nav class="model-timeline-view-switcher" aria-label="Choose dashboard view" role="tablist">
+  <button type="button" class="is-active" role="tab" aria-selected="true" aria-controls="porsche-timeline-view" data-model-timeline-view="timeline">Timeline</button>
+  <button type="button" role="tab" aria-selected="false" aria-controls="porsche-records-view" data-model-timeline-view="records">Records <span>`r nrow(porsche_records)`</span></button>
+</nav>
 
 :::
 
 ::::
 
-::: {.model-timeline-main}
+::: {#porsche-timeline-view .model-timeline-main .is-active data-model-timeline-panel="timeline" role="tabpanel"}
 
 ::: {.model-timeline-chart aria-label="Interactive timeline of Porsche models by debut year and family"}
 
@@ -102,5 +136,22 @@ cat(
   )
 )
 ```
+
+::: {#porsche-records-view .model-timeline-records data-model-timeline-panel="records" role="tabpanel" aria-hidden="true"}
+
+```{r}
+#| label: porsche-records
+
+model_timeline_records_table(
+  porsche_records,
+  html_columns = c("Model", "Photo", "Profile"),
+  visible_columns = c(
+    "Model", "Photo", "Year", "Category", "Engine",
+    "Displacement (cc)", "Power (cv)", "Top speed (km/h)"
+  )
+)
+```
+
+:::
 
 ::::

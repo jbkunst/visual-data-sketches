@@ -8,6 +8,7 @@ format:
   html:
     css:
       - ../assets/model-timeline.css
+      - ../assets/model-timeline-records.css
       - styles.css
     include-in-header:
       text: |
@@ -26,6 +27,7 @@ execute:
 #| include: false
 
 library(dplyr)
+library(DT)
 library(highcharter)
 library(readr)
 
@@ -64,6 +66,34 @@ brand <- list(
 source_data <- read_csv(source_url, show_col_types = FALSE) |>
   filter(.data$source_origin == "ferrari_past_models_scraper")
 
+ferrari_records <- source_data |>
+  transmute(
+    Model = model_timeline_record_link(.data$model, .data$url),
+    Photo = model_timeline_record_photo(
+      .data$image_url,
+      brand$tooltip_image_transform(.data$image_url)
+    ),
+    Year = .data$source_year,
+    Category = .data$source_category,
+    Engine = .data$engine,
+    `Displacement (cc)` = .data$displacement_cc,
+    `Power (cv)` = .data$max_power_cv,
+    `Power rpm` = .data$rpm_max_power,
+    `Top speed (km/h)` = .data$top_speed_kmh,
+    `Engine position` = .data$engine_position,
+    `Engine orientation` = .data$engine_orientation,
+    `Engine angle (deg)` = .data$engine_angle_deg,
+    `Compression ratio` = .data$compression_ratio,
+    `Bore (mm)` = .data$bore_mm,
+    `Stroke (mm)` = .data$stroke_mm,
+    `Weight (kg)` = .data$weight_kg,
+    `Wheelbase (mm)` = .data$wheelbase_mm,
+    `Length (mm)` = .data$length_mm,
+    `Width (mm)` = .data$width_mm,
+    `Height (mm)` = .data$height_mm,
+    Description = .data$description
+  )
+
 cars <- model_timeline_adapt(
   source_data,
   mapping = list(
@@ -100,13 +130,19 @@ cars <- model_timeline_adapt(
 
 From 1947 to present, every past model is placed by debut year and historical family.
 
-[Hover to see specs. Click to reveal the model's history.]{.model-timeline-instructions}
+<span class="model-timeline-instructions" data-model-timeline-view-copy="timeline">Hover to see specs. Click to reveal the model's history.</span>
+<span class="model-timeline-instructions" data-model-timeline-view-copy="records" hidden>Search the archive. Expand a row to inspect.</span>
+
+<nav class="model-timeline-view-switcher" aria-label="Choose dashboard view" role="tablist">
+  <button type="button" class="is-active" role="tab" aria-selected="true" aria-controls="ferrari-timeline-view" data-model-timeline-view="timeline">Timeline</button>
+  <button type="button" role="tab" aria-selected="false" aria-controls="ferrari-records-view" data-model-timeline-view="records">Records <span>220</span></button>
+</nav>
 
 :::
 
 ::::
 
-::: {.model-timeline-main}
+::: {#ferrari-timeline-view .model-timeline-main .is-active data-model-timeline-panel="timeline" role="tabpanel"}
 
 ::: {.model-timeline-chart aria-label="Interactive timeline of Ferrari models by year and category"}
 
@@ -137,5 +173,22 @@ model_timeline_chart(
 
 cat(model_timeline_hero(cars, brand$initial_model, brand$name))
 ```
+
+::: {#ferrari-records-view .model-timeline-records data-model-timeline-panel="records" role="tabpanel" aria-hidden="true"}
+
+```{r}
+#| label: ferrari-records
+
+model_timeline_records_table(
+  ferrari_records,
+  html_columns = c("Model", "Photo"),
+  visible_columns = c(
+    "Model", "Photo", "Year", "Category", "Engine",
+    "Displacement (cc)", "Power (cv)", "Top speed (km/h)"
+  )
+)
+```
+
+:::
 
 ::::

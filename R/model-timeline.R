@@ -7,6 +7,120 @@ model_timeline_fields <- c(
   "official_url"
 )
 
+model_timeline_external_credits_event <- htmlwidgets::JS(
+  "function () {",
+  "  if (this.credits && this.credits.element) {",
+  "    this.credits.element.setAttribute('target', '_blank');",
+  "    this.credits.element.setAttribute('rel', 'noopener noreferrer');",
+  "  }",
+  "}"
+)
+
+model_timeline_record_link <- function(label, url) {
+  label <- htmltools::htmlEscape(label)
+  url <- htmltools::htmlEscape(url, attribute = TRUE)
+
+  ifelse(
+    is.na(url) | !nzchar(url),
+    label,
+    sprintf(
+      paste0(
+        '<a href="%s" target="_blank" ',
+        'rel="noopener noreferrer">%s</a>'
+      ),
+      url,
+      label
+    )
+  )
+}
+
+model_timeline_record_photo <- function(image_url, thumbnail_url = image_url) {
+  thumbnail_url <- dplyr::coalesce(thumbnail_url, image_url)
+  full_url <- htmltools::htmlEscape(image_url, attribute = TRUE)
+  thumb_url <- htmltools::htmlEscape(thumbnail_url, attribute = TRUE)
+
+  ifelse(
+    is.na(full_url) | !nzchar(full_url),
+    "",
+    sprintf(
+      paste0(
+        '<a class="model-timeline-record-photo" href="%s" ',
+        'target="_blank" rel="noopener noreferrer" ',
+        'aria-label="Open model photograph">',
+        '<img src="%s" alt="" loading="lazy" decoding="async"></a>'
+      ),
+      full_url,
+      thumb_url
+    )
+  )
+}
+
+model_timeline_records_table <- function(
+  data,
+  html_columns,
+  visible_columns,
+  search_placeholder = "Search models, years or specifications",
+  scroll_y = "calc(100dvh - 29rem)"
+) {
+  missing_columns <- setdiff(c(html_columns, visible_columns), names(data))
+
+  if (length(missing_columns) > 0) {
+    stop(
+      "Record table columns not found: ",
+      paste(missing_columns, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  if (length(visible_columns) < 4) {
+    stop("visible_columns must contain at least four columns.", call. = FALSE)
+  }
+
+  visible_targets <- match(visible_columns, names(data)) - 1L
+  hidden_targets <- setdiff(seq_along(data) - 1L, visible_targets)
+
+  column_defs <- list(
+    list(responsivePriority = 1, targets = visible_targets[[1]]),
+    list(responsivePriority = 2, targets = visible_targets[[2]]),
+    list(responsivePriority = 3, targets = visible_targets[3:4]),
+    list(responsivePriority = 4, targets = visible_targets[-seq_len(4)])
+  )
+
+  if (length(hidden_targets) > 0) {
+    column_defs <- append(
+      column_defs,
+      list(list(className = "none", targets = hidden_targets))
+    )
+  }
+
+  DT::datatable(
+    data,
+    rownames = FALSE,
+    escape = setdiff(names(data), html_columns),
+    class = "hover",
+    extensions = "Responsive",
+    width = "100%",
+    options = list(
+      responsive = TRUE,
+      deferRender = TRUE,
+      processing = TRUE,
+      paging = FALSE,
+      autoWidth = FALSE,
+      scrollY = scroll_y,
+      scrollCollapse = TRUE,
+      dom = "frti",
+      columnDefs = column_defs,
+      language = list(
+        search = "",
+        searchPlaceholder = search_placeholder,
+        info = "_TOTAL_ archived models",
+        infoEmpty = "No models",
+        infoFiltered = "filtered from _MAX_"
+      )
+    )
+  )
+}
+
 model_timeline_adapt <- function(
   data,
   mapping,
@@ -165,7 +279,10 @@ model_timeline_hero <- function(
 
   paste0(
     paste0(
-      '<div class="model-timeline-hero" data-model-timeline-hero ',
+      paste0(
+        '<div class="model-timeline-hero is-active" data-model-timeline-hero ',
+        'data-model-timeline-panel="timeline" '
+      ),
       'role="region" aria-label="Selected model" aria-live="polite">'
     ),
     '<div class="model-timeline-hero-media">',
@@ -373,7 +490,8 @@ model_timeline_chart <- function(
       marginLeft = 145,
       zoomType = "x",
       animation = list(duration = 350),
-      style = list(fontFamily = font_family)
+      style = list(fontFamily = font_family),
+      events = list(render = model_timeline_external_credits_event)
     ) |>
     highcharter::hc_xAxis(
       title = list(text = NULL),

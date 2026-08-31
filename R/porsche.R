@@ -200,7 +200,8 @@ porsche_chart <- function(
       marginLeft = 142,
       zoomType = "x",
       animation = list(duration = 280),
-      style = list(fontFamily = font_family)
+      style = list(fontFamily = font_family),
+      events = list(render = model_timeline_external_credits_event)
     ) |>
     highcharter::hc_xAxis_multiples(
       list(
