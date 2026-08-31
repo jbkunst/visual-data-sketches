@@ -18,6 +18,7 @@ porsche_prepare <- function(data) {
       year = suppressWarnings(as.integer(.data$year)),
       power = suppressWarnings(as.numeric(.data$max_power_cv)),
       family = dplyr::coalesce(as.character(.data$model_family), "Other"),
+      generation = suppressWarnings(as.numeric(.data$generation)),
       section = dplyr::coalesce(as.character(.data$section), ""),
       engine = dplyr::coalesce(as.character(.data$engine), "Architecture not listed"),
       engine_position = dplyr::coalesce(as.character(.data$engine_position), "not listed"),
@@ -31,7 +32,19 @@ porsche_prepare <- function(data) {
         stringr::str_detect(.data$section, "Race Car") ~ "Competition",
         stringr::str_detect(.data$section, "Concept Car") ~ "Concepts",
         stringr::str_detect(.data$section, "Supercar") ~ "Supercars",
-        .data$family == "911" ~ "911",
+        .data$family == "911" & (
+          floor(.data$generation) == 930 |
+            (is.na(.data$generation) & .data$year <= 1988)
+        ) ~ "911 / Classic",
+        .data$family == "911" & (
+          floor(.data$generation) %in% c(964, 993) |
+            (is.na(.data$generation) & dplyr::between(.data$year, 1989, 1998))
+        ) ~ "911 / 964–993",
+        .data$family == "911" & (
+          floor(.data$generation) %in% c(996, 997) |
+            (is.na(.data$generation) & dplyr::between(.data$year, 1999, 2011))
+        ) ~ "911 / 996–997",
+        .data$family == "911" ~ "911 / 991–992",
         .data$family == "356" ~ "356",
         .data$family %in% c("Boxster", "Cayman", "718", "914") ~ "Mid-engine series",
         .data$family %in% c("924", "928", "944", "968") ~ "Transaxle series",
@@ -119,7 +132,10 @@ porsche_chart <- function(
 
   initial_point_id <- data$point_id[[initial_index]]
   display_order <- c(
-    "911",
+    "911 / Classic",
+    "911 / 964–993",
+    "911 / 996–997",
+    "911 / 991–992",
     "Competition",
     "356",
     "Mid-engine series",
@@ -130,7 +146,10 @@ porsche_chart <- function(
   )
   category_levels <- rev(display_order)
   category_labels <- c(
-    "911" = "911",
+    "911 / Classic" = "911 / Classic",
+    "911 / 964–993" = "911 / 964–993",
+    "911 / 996–997" = "911 / 996–997",
+    "911 / 991–992" = "911 / 991–992",
     "Competition" = "Competition",
     "356" = "356",
     "Mid-engine series" = "Mid-engine",
