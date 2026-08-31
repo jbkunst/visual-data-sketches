@@ -1,5 +1,5 @@
 (() => {
-  const hero = () => document.querySelector("[data-bloodlines-hero]");
+  const hero = () => document.querySelector("[data-model-timeline-hero]");
   const tooltipImageCache = new Map();
 
   const chartPoints = (chart) =>
@@ -20,11 +20,11 @@
     const canHover = window.matchMedia?.("(hover: hover) and (pointer: fine)").matches;
     const saveData = navigator.connection?.saveData;
 
-    if (!canHover || saveData || container.dataset.bloodlinesImagesWarmed === "true") {
+    if (!canHover || saveData || container.dataset.modelTimelineImagesWarmed === "true") {
       return;
     }
 
-    container.dataset.bloodlinesImagesWarmed = "true";
+    container.dataset.modelTimelineImagesWarmed = "true";
 
     const selectedYear = selectedPoint?.x ?? 0;
     const urls = chartPoints(chart)
@@ -95,14 +95,14 @@
       element.setAttribute("aria-pressed", String(point === selected));
       element.setAttribute("tabindex", point === selected ? "0" : "-1");
 
-      if (element.dataset.bloodlinesKeyboard === "true") return;
-      element.dataset.bloodlinesKeyboard = "true";
+      if (element.dataset.modelTimelineKeyboard === "true") return;
+      element.dataset.modelTimelineKeyboard = "true";
 
       element.addEventListener("keydown", (event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
           point.select(true, false);
-          window.Bloodlines.select(point);
+          window.ModelTimeline.select(point);
           return;
         }
 
@@ -128,7 +128,7 @@
   };
 
   const updateImage = (root, model) => {
-    const image = root.querySelector("[data-bloodlines-image]");
+    const image = root.querySelector("[data-model-timeline-image]");
     if (!image || image.tagName !== "IMG") return;
 
     if (!model.image) {
@@ -152,7 +152,7 @@
   };
 
   const updateLink = (root, url) => {
-    const link = root.querySelector("[data-bloodlines-link]");
+    const link = root.querySelector("[data-model-timeline-link]");
     if (!link) return;
 
     if (url) {
@@ -164,16 +164,16 @@
     }
   };
 
-  window.Bloodlines = {
+  window.ModelTimeline = {
     select(point) {
       const root = hero();
       const model = point?.custom || point?.options?.custom || {};
       if (!root) return;
 
-      setText(root, "[data-bloodlines-name]", model.model || point?.name);
-      setText(root, "[data-bloodlines-category]", model.category);
-      setText(root, "[data-bloodlines-description]", model.description);
-      setText(root, "[data-bloodlines-watermark]", model.year);
+      setText(root, "[data-model-timeline-name]", model.model || point?.name);
+      setText(root, "[data-model-timeline-category]", model.category);
+      setText(root, "[data-model-timeline-description]", model.description);
+      setText(root, "[data-model-timeline-watermark]", model.year);
       updateImage(root, model);
       updateLink(root, model.url);
       syncPointState(point);
@@ -193,7 +193,7 @@
   };
 
   document.addEventListener("DOMContentLoaded", () => {
-    const chartRegion = document.querySelector(".bloodlines-chart");
+    const chartRegion = document.querySelector(".model-timeline-chart");
     if (!chartRegion || !("ResizeObserver" in window)) return;
 
     let frame;

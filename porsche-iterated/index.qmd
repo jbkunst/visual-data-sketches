@@ -3,18 +3,18 @@ pagetitle: "Porsche, Iterated"
 date: 2026-08-31
 page-layout: custom
 navbar: false
-body-classes: bloodlines-page porsche-page
+body-classes: model-timeline-page porsche-page
 format:
   html:
     css:
-      - ../assets/bloodlines.css
+      - ../assets/model-timeline.css
       - styles.css
     include-in-header:
       text: |
         <link rel="preconnect" href="https://www.stuttcars.com">
-        <script defer src="../assets/bloodlines.js"></script>
+        <script defer src="../assets/model-timeline.js"></script>
 resources:
-  - ../assets/bloodlines.js
+  - ../assets/model-timeline.js
 execute:
   echo: false
   warning: false
@@ -29,7 +29,7 @@ library(dplyr)
 library(highcharter)
 library(readr)
 
-source(here::here("R", "bloodlines.R"))
+source(here::here("R", "model-timeline.R"))
 source(here::here("R", "porsche.R"))
 
 source_url <- paste0(
@@ -49,33 +49,33 @@ cars <- porsche_prepare(source_data)
 initial_model <- "959 Komfort"
 ```
 
-:::: {.bloodlines-shell}
+:::: {.model-timeline-shell}
 
-:::: {.bloodlines-header}
+:::: {.model-timeline-header}
 
 ::: {}
 
-[Model iterations / 1939—2026]{.bloodlines-eyebrow}
+[Model iterations / 1939—2026]{.model-timeline-eyebrow}
 
-# PORSCHE {.bloodlines-title}
+# PORSCHE {.model-timeline-title}
 
 :::
 
-::: {.bloodlines-intro}
+::: {.model-timeline-intro}
 
 Seven decades. Hundreds of answers to the same question: what can a sports car become?
 
 Built from [the model research collection assembled by Stuttcars](https://www.stuttcars.com/porsche-model-research/).
 
-[Hover to compare specifications. Click to inspect a model.]{.bloodlines-instructions}
+[Hover to compare specifications. Click to inspect a model.]{.model-timeline-instructions}
 
 :::
 
 ::::
 
-::: {.bloodlines-main}
+::: {.model-timeline-main}
 
-::: {.bloodlines-chart aria-label="Interactive timeline of Porsche models by debut year and family"}
+::: {.model-timeline-chart aria-label="Interactive timeline of Porsche models by debut year and family"}
 
 ```{r}
 #| label: porsche-power
@@ -96,7 +96,7 @@ porsche_chart(
 #| results: asis
 
 cat(
-  bloodlines_hero(
+  model_timeline_hero(
     cars,
     initial_model,
     brand = "Porsche",

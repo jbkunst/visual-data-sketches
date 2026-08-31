@@ -1,41 +1,41 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap");
 
 :root {
-  --bloodlines-accent: #d80f16;
-  --bloodlines-canvas: #0e0e0e;
-  --bloodlines-panel: #171717;
-  --bloodlines-ink: #f5f3ef;
-  --bloodlines-muted: #aaa7a1;
-  --bloodlines-rule: rgba(255, 255, 255, 0.16);
-  --bloodlines-gap: clamp(0.75rem, 1.25vw, 1.4rem);
-  --bloodlines-font: "IBM Plex Sans", Arial, sans-serif;
-  --bloodlines-display-font: var(--bloodlines-font);
-  --bloodlines-chart-font: var(--bloodlines-font);
-  --bloodlines-eyebrow-color: var(--bloodlines-muted);
-  --bloodlines-eyebrow-size: 0.7rem;
-  --bloodlines-eyebrow-weight: 500;
-  --bloodlines-eyebrow-tracking: 0.08em;
-  --bloodlines-hero-category-color: var(--bloodlines-ink);
+  --model-timeline-accent: #d80f16;
+  --model-timeline-canvas: #0e0e0e;
+  --model-timeline-panel: #171717;
+  --model-timeline-ink: #f5f3ef;
+  --model-timeline-muted: #aaa7a1;
+  --model-timeline-rule: rgba(255, 255, 255, 0.16);
+  --model-timeline-gap: clamp(0.75rem, 1.25vw, 1.4rem);
+  --model-timeline-font: "IBM Plex Sans", Arial, sans-serif;
+  --model-timeline-display-font: var(--model-timeline-font);
+  --model-timeline-chart-font: var(--model-timeline-font);
+  --model-timeline-eyebrow-color: var(--model-timeline-muted);
+  --model-timeline-eyebrow-size: 0.7rem;
+  --model-timeline-eyebrow-weight: 500;
+  --model-timeline-eyebrow-tracking: 0.08em;
+  --model-timeline-hero-category-color: var(--model-timeline-ink);
 }
 
 * {
   box-sizing: border-box;
 }
 
-body.bloodlines-page {
+body.model-timeline-page {
   margin: 0;
   min-width: 20rem;
   overflow: hidden;
-  background: var(--bloodlines-canvas);
-  color: var(--bloodlines-ink);
-  font-family: var(--bloodlines-font);
+  background: var(--model-timeline-canvas);
+  color: var(--model-timeline-ink);
+  font-family: var(--model-timeline-font);
 }
 
-body.bloodlines-page #title-block-header {
+body.model-timeline-page #title-block-header {
   display: none;
 }
 
-.bloodlines-shell {
+.model-timeline-shell {
   width: 100%;
   height: 100vh;
   height: 100dvh;
@@ -46,12 +46,12 @@ body.bloodlines-page #title-block-header {
   grid-template-areas:
     "header header"
     "main hero";
-  background: var(--bloodlines-canvas);
+  background: var(--model-timeline-canvas);
   padding-top: 0 !important;
   overflow: hidden;
 }
 
-.bloodlines-main {
+.model-timeline-main {
   grid-area: main;
   min-width: 0;
   min-height: 0;
@@ -60,7 +60,7 @@ body.bloodlines-page #title-block-header {
   padding: 0 clamp(1.25rem, 2.7vw, 3.25rem) clamp(1.25rem, 2.7vw, 3.25rem);
 }
 
-.bloodlines-header {
+.model-timeline-header {
   grid-area: header;
   position: relative;
   z-index: 2;
@@ -69,11 +69,11 @@ body.bloodlines-page #title-block-header {
   gap: 0;
   align-items: stretch;
   min-height: clamp(12rem, 22dvh, 16rem);
-  border-bottom: 1px solid var(--bloodlines-rule);
+  border-bottom: 1px solid var(--model-timeline-rule);
 }
 
-.bloodlines-header > :first-child,
-.bloodlines-intro {
+.model-timeline-header > :first-child,
+.model-timeline-intro {
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -81,89 +81,89 @@ body.bloodlines-page #title-block-header {
   padding: clamp(1.25rem, 2.7vw, 3.25rem);
 }
 
-.bloodlines-eyebrow,
-.bloodlines-index,
-.bloodlines-hero-kicker {
+.model-timeline-eyebrow,
+.model-timeline-index,
+.model-timeline-hero-kicker {
   display: block;
-  color: var(--bloodlines-eyebrow-color);
-  font-size: var(--bloodlines-eyebrow-size);
-  font-weight: var(--bloodlines-eyebrow-weight);
-  letter-spacing: var(--bloodlines-eyebrow-tracking);
+  color: var(--model-timeline-eyebrow-color);
+  font-size: var(--model-timeline-eyebrow-size);
+  font-weight: var(--model-timeline-eyebrow-weight);
+  letter-spacing: var(--model-timeline-eyebrow-tracking);
   line-height: 1.3;
   text-transform: uppercase;
 }
 
-.bloodlines-title {
+.model-timeline-title {
   max-width: 14ch;
   margin: 0;
-  color: var(--bloodlines-ink);
+  color: var(--model-timeline-ink);
   font-size: clamp(2.6rem, 5.3vw, 6.7rem);
   font-weight: 300;
   letter-spacing: -0.055em;
   line-height: 0.84;
-  font-family: var(--bloodlines-display-font);
+  font-family: var(--model-timeline-display-font);
 }
 
-.bloodlines-eyebrow {
+.model-timeline-eyebrow {
   margin-bottom: -0.3rem;
 }
 
-.bloodlines-intro {
+.model-timeline-intro {
   max-width: none;
   margin: 0;
-  color: var(--bloodlines-muted);
+  color: var(--model-timeline-muted);
   font-size: clamp(0.78rem, 1vw, 0.94rem);
   line-height: 1.55;
 }
 
-.bloodlines-intro p {
+.model-timeline-intro p {
   margin: 0;
 }
 
-.bloodlines-intro p + p {
+.model-timeline-intro p + p {
   margin-top: 0.85rem;
 }
 
-.bloodlines-instructions {
+.model-timeline-instructions {
   display: block;
   padding-left: 0.85rem;
-  color: var(--bloodlines-ink);
-  border-left: 2px solid var(--bloodlines-accent);
+  color: var(--model-timeline-ink);
+  border-left: 2px solid var(--model-timeline-accent);
   font-size: 0.76rem;
 }
 
-.bloodlines-index {
+.model-timeline-index {
   margin-bottom: 0.75rem;
 }
 
-.bloodlines-chart {
+.model-timeline-chart {
   min-width: 0;
   min-height: 0;
   height: 100%;
   padding-top: clamp(1rem, 2vw, 2rem);
 }
 
-.bloodlines-chart > .cell,
-.bloodlines-chart .cell-output,
-.bloodlines-chart .cell-output-display,
-.bloodlines-chart .html-widget,
-.bloodlines-chart .highchart {
+.model-timeline-chart > .cell,
+.model-timeline-chart .cell-output,
+.model-timeline-chart .cell-output-display,
+.model-timeline-chart .html-widget,
+.model-timeline-chart .highchart {
   width: 100% !important;
   height: 100% !important;
   min-height: 0;
 }
 
-.bloodlines-chart .cell-output-display {
+.model-timeline-chart .cell-output-display {
   margin: 0;
 }
 
-.bloodlines-chart .highcharts-root,
-.bloodlines-chart .highcharts-root text,
-.bloodlines-tooltip {
-  font-family: var(--bloodlines-chart-font) !important;
+.model-timeline-chart .highcharts-root,
+.model-timeline-chart .highcharts-root text,
+.model-timeline-tooltip {
+  font-family: var(--model-timeline-chart-font) !important;
 }
 
-.bloodlines-tooltip {
+.model-timeline-tooltip {
   width: 17.5rem;
   display: block;
   overflow: hidden;
@@ -171,61 +171,61 @@ body.bloodlines-page #title-block-header {
   color: #171717;
 }
 
-.bloodlines-tooltip-image {
+.model-timeline-tooltip-image {
   width: 100%;
   height: 9.84375rem;
   display: block;
   object-fit: cover;
 }
 
-.bloodlines-tooltip-body {
+.model-timeline-tooltip-body {
   display: grid;
   gap: 0.25rem;
   padding: 0.85rem 0.95rem 0.9rem;
 }
 
-.bloodlines-tooltip strong {
+.model-timeline-tooltip strong {
   font-size: 1rem;
   font-weight: 600;
 }
 
-.bloodlines-tooltip-meta {
+.model-timeline-tooltip-meta {
   color: #5c5852;
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.bloodlines-tooltip-specs {
+.model-timeline-tooltip-specs {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.45rem 0.8rem;
   margin: 0.65rem 0 0.45rem;
 }
 
-.bloodlines-tooltip-specs div {
+.model-timeline-tooltip-specs div {
   min-width: 0;
 }
 
-.bloodlines-tooltip-specs dt,
-.bloodlines-tooltip-specs dd {
+.model-timeline-tooltip-specs dt,
+.model-timeline-tooltip-specs dd {
   margin: 0;
 }
 
-.bloodlines-tooltip-specs dt {
+.model-timeline-tooltip-specs dt {
   color: #77716b;
   font-size: 0.6rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.bloodlines-tooltip-specs dd {
+.model-timeline-tooltip-specs dd {
   color: #211f1d;
   font-size: 0.75rem;
   font-weight: 600;
 }
 
-.bloodlines-tooltip small {
+.model-timeline-tooltip small {
   margin-top: 0.25rem;
   color: #8f1519;
   font-size: 0.65rem;
@@ -236,24 +236,24 @@ body.bloodlines-page #title-block-header {
   pointer-events: none !important;
 }
 
-.bloodlines-hero {
+.model-timeline-hero {
   grid-area: hero;
   min-width: 0;
   min-height: 0;
   display: grid;
   grid-template-rows: minmax(15rem, 38%) minmax(0, 62%);
-  background: var(--bloodlines-panel);
-  border-left: 1px solid var(--bloodlines-rule);
+  background: var(--model-timeline-panel);
+  border-left: 1px solid var(--model-timeline-rule);
 }
 
-.bloodlines-hero-media {
+.model-timeline-hero-media {
   position: relative;
   min-height: 0;
   overflow: hidden;
   background: #050505;
 }
 
-.bloodlines-hero-media::after {
+.model-timeline-hero-media::after {
   position: absolute;
   inset: 0;
   content: "";
@@ -263,7 +263,7 @@ body.bloodlines-page #title-block-header {
   pointer-events: none;
 }
 
-.bloodlines-hero-image {
+.model-timeline-hero-image {
   width: 100%;
   height: 100%;
   display: block;
@@ -272,12 +272,12 @@ body.bloodlines-page #title-block-header {
   transition: opacity 180ms ease, transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-.bloodlines-hero.is-updating .bloodlines-hero-image {
+.model-timeline-hero.is-updating .model-timeline-hero-image {
   opacity: 0.35;
   transform: scale(1.025);
 }
 
-.bloodlines-hero-watermark {
+.model-timeline-hero-watermark {
   position: absolute;
   right: 0.75rem;
   bottom: -0.16em;
@@ -290,8 +290,8 @@ body.bloodlines-page #title-block-header {
   pointer-events: none;
 }
 
-.bloodlines-hero-copy {
-  --bloodlines-hero-rhythm: 0.6rem;
+.model-timeline-hero-copy {
+  --model-timeline-hero-rhythm: 0.6rem;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -299,56 +299,56 @@ body.bloodlines-page #title-block-header {
   padding: clamp(1.6rem, 2.2vh, 2.4rem) clamp(1.6rem, 2.8vw, 3.1rem);
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--bloodlines-rule) transparent;
+  scrollbar-color: var(--model-timeline-rule) transparent;
 }
 
-.bloodlines-hero-name {
+.model-timeline-hero-name {
   margin: 0.75rem 0 0;
-  color: var(--bloodlines-ink);
+  color: var(--model-timeline-ink);
   font-size: clamp(2.5rem, 4.3vw, 5rem);
   font-weight: 200;
   letter-spacing: -0.055em;
   line-height: 0.9;
-  font-family: var(--bloodlines-font);
+  font-family: var(--model-timeline-font);
   border-bottom: 0;
 }
 
-.bloodlines-hero-name::after {
+.model-timeline-hero-name::after {
   width: 3.25rem;
   height: 2px;
   display: block;
-  margin-top: var(--bloodlines-hero-rhythm);
-  background: var(--bloodlines-accent);
+  margin-top: var(--model-timeline-hero-rhythm);
+  background: var(--model-timeline-accent);
   content: "";
 }
 
-.bloodlines-hero-meta {
+.model-timeline-hero-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
-  margin-top: var(--bloodlines-hero-rhythm);
-  color: var(--bloodlines-hero-category-color);
-  font-size: var(--bloodlines-eyebrow-size);
-  font-weight: var(--bloodlines-eyebrow-weight);
-  letter-spacing: var(--bloodlines-eyebrow-tracking);
+  margin-top: var(--model-timeline-hero-rhythm);
+  color: var(--model-timeline-hero-category-color);
+  font-size: var(--model-timeline-eyebrow-size);
+  font-weight: var(--model-timeline-eyebrow-weight);
+  letter-spacing: var(--model-timeline-eyebrow-tracking);
   line-height: 1;
   text-transform: uppercase;
 }
 
-.bloodlines-hero-description {
+.model-timeline-hero-description {
   max-width: 38rem;
   margin: clamp(1.25rem, 2.2vw, 2.25rem) 0 0.4rem;
-  color: var(--bloodlines-muted);
+  color: var(--model-timeline-muted);
   font-size: clamp(0.82rem, 1vw, 0.98rem);
   line-height: 1.62;
 }
 
-.bloodlines-hero-link {
+.model-timeline-hero-link {
   width: auto;
   display: inline-block;
   margin-top: 0;
   padding: 0;
-  color: var(--bloodlines-muted);
+  color: var(--model-timeline-muted);
   border: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.32);
   font-size: 0.78rem;
@@ -358,29 +358,29 @@ body.bloodlines-page #title-block-header {
   text-transform: none;
 }
 
-.bloodlines-hero-link-icon {
+.model-timeline-hero-link-icon {
   margin-left: 0.22rem;
   opacity: 0.62;
   font-size: 0.78em;
 }
 
-.bloodlines-hero-link:hover,
-.bloodlines-hero-link:focus-visible {
-  color: var(--bloodlines-accent);
-  border-bottom-color: var(--bloodlines-accent);
+.model-timeline-hero-link:hover,
+.model-timeline-hero-link:focus-visible {
+  color: var(--model-timeline-accent);
+  border-bottom-color: var(--model-timeline-accent);
 }
 
-.bloodlines-hero-link:focus-visible {
-  outline: 2px solid var(--bloodlines-accent);
+.model-timeline-hero-link:focus-visible {
+  outline: 2px solid var(--model-timeline-accent);
   outline-offset: 0.4rem;
 }
 
 @media (max-width: 900px) {
-  body.bloodlines-page {
+  body.model-timeline-page {
     overflow: auto;
   }
 
-  .bloodlines-shell {
+  .model-timeline-shell {
     height: auto;
     min-height: 100dvh;
     grid-template-columns: 1fr;
@@ -392,61 +392,61 @@ body.bloodlines-page #title-block-header {
     overflow: visible;
   }
 
-  .bloodlines-main {
+  .model-timeline-main {
     min-height: 78dvh;
     grid-template-rows: minmax(30rem, 1fr);
   }
 
-  .bloodlines-header {
+  .model-timeline-header {
     grid-template-columns: 1fr;
     gap: 0;
   }
 
-  .bloodlines-header > :first-child {
+  .model-timeline-header > :first-child {
     padding-bottom: 1rem;
   }
 
-  .bloodlines-intro {
+  .model-timeline-intro {
     padding-top: 0;
     border-left: 0;
   }
 
-  .bloodlines-hero {
+  .model-timeline-hero {
     min-height: 44rem;
     grid-template-columns: minmax(0, 1fr) minmax(20rem, 1fr);
     grid-template-rows: 1fr;
-    border-top: 1px solid var(--bloodlines-rule);
+    border-top: 1px solid var(--model-timeline-rule);
     border-left: 0;
   }
 
-  .bloodlines-hero-copy {
+  .model-timeline-hero-copy {
     overflow-y: visible;
   }
 }
 
 @media (max-width: 640px) {
-  .bloodlines-main {
+  .model-timeline-main {
     min-height: 46rem;
     padding: 1.1rem;
   }
 
-  .bloodlines-title {
+  .model-timeline-title {
     font-size: clamp(2.7rem, 14vw, 4.4rem);
   }
 
-  .bloodlines-hero {
+  .model-timeline-hero {
     min-height: 100dvh;
     grid-template-columns: 1fr;
     grid-template-rows: minmax(17rem, 43dvh) auto;
   }
 
-  .bloodlines-hero-copy {
+  .model-timeline-hero-copy {
     min-height: 24rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bloodlines-hero-image {
+  .model-timeline-hero-image {
     transition: none;
   }
 }

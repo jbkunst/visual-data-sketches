@@ -1,23 +1,23 @@
-.bloodlines-shell {
-  --bloodlines-accent: #e10600;
-  --bloodlines-canvas: #0b0b0b;
-  --bloodlines-panel: #171717;
-  --bloodlines-ink: #f4f2ee;
-  --bloodlines-muted: #aaa7a1;
-  --bloodlines-font: "IBM Plex Sans", Arial, sans-serif;
-  --bloodlines-display-font: "IBM Plex Serif", Georgia, serif;
-  --bloodlines-chart-font: "IBM Plex Sans", Arial, sans-serif;
-  --bloodlines-eyebrow-color: var(--bloodlines-accent);
-  --bloodlines-eyebrow-size: 0.68rem;
-  --bloodlines-eyebrow-weight: 600;
-  --bloodlines-eyebrow-tracking: 0.04em;
-  --bloodlines-hero-category-color: rgb(244 242 238 / 82%);
+.model-timeline-shell {
+  --model-timeline-accent: #e10600;
+  --model-timeline-canvas: #0b0b0b;
+  --model-timeline-panel: #171717;
+  --model-timeline-ink: #f4f2ee;
+  --model-timeline-muted: #aaa7a1;
+  --model-timeline-font: "IBM Plex Sans", Arial, sans-serif;
+  --model-timeline-display-font: "IBM Plex Serif", Georgia, serif;
+  --model-timeline-chart-font: "IBM Plex Sans", Arial, sans-serif;
+  --model-timeline-eyebrow-color: var(--model-timeline-accent);
+  --model-timeline-eyebrow-size: 0.68rem;
+  --model-timeline-eyebrow-weight: 600;
+  --model-timeline-eyebrow-tracking: 0.04em;
+  --model-timeline-hero-category-color: rgb(244 242 238 / 82%);
 }
 
-.bloodlines-page .bloodlines-chart .highcharts-axis-labels text {
-  font-family: var(--bloodlines-chart-font) !important;
-  font-size: var(--bloodlines-eyebrow-size) !important;
-  font-weight: var(--bloodlines-eyebrow-weight) !important;
-  letter-spacing: var(--bloodlines-eyebrow-tracking) !important;
+.model-timeline-page .model-timeline-chart .highcharts-axis-labels text {
+  font-family: var(--model-timeline-chart-font) !important;
+  font-size: var(--model-timeline-eyebrow-size) !important;
+  font-weight: var(--model-timeline-eyebrow-weight) !important;
+  letter-spacing: var(--model-timeline-eyebrow-tracking) !important;
   text-transform: uppercase;
 }

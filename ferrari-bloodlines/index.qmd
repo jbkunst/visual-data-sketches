@@ -3,18 +3,18 @@ pagetitle: "Ferrari Bloodlines"
 date: 2026-08-30
 page-layout: custom
 navbar: false
-body-classes: bloodlines-page
+body-classes: model-timeline-page
 format:
   html:
     css:
-      - ../assets/bloodlines.css
+      - ../assets/model-timeline.css
       - styles.css
     include-in-header:
       text: |
         <link rel="preconnect" href="https://cdn.ferrari.com">
-        <script defer src="../assets/bloodlines.js"></script>
+        <script defer src="../assets/model-timeline.js"></script>
 resources:
-  - ../assets/bloodlines.js
+  - ../assets/model-timeline.js
 execute:
   echo: false
   warning: false
@@ -29,7 +29,7 @@ library(dplyr)
 library(highcharter)
 library(readr)
 
-source(here::here("R", "bloodlines.R"))
+source(here::here("R", "model-timeline.R"))
 
 source_url <- paste0(
   "https://raw.githubusercontent.com/jbkunst/motorsport-legends/",
@@ -62,7 +62,7 @@ brand <- list(
 source_data <- read_csv(source_url, show_col_types = FALSE) |>
   filter(.data$source_origin == "ferrari_past_models_scraper")
 
-cars <- bloodlines_adapt(
+cars <- model_timeline_adapt(
   source_data,
   mapping = list(
     model = "model",
@@ -82,36 +82,36 @@ cars <- bloodlines_adapt(
 )
 ```
 
-:::: {.bloodlines-shell}
+:::: {.model-timeline-shell}
 
-:::: {.bloodlines-header}
+:::: {.model-timeline-header}
 
 ::: {}
 
-[The past models archive]{.bloodlines-eyebrow}
+[The past models archive]{.model-timeline-eyebrow}
 
-# Ferrari bloodlines {.bloodlines-title}
+# Ferrari bloodlines {.model-timeline-title}
 
 :::
 
-::: {.bloodlines-intro}
+::: {.model-timeline-intro}
 
 From 1947 to present, every past model is placed by debut year and historical family.
 
-[Hover to see specs. Click to reveal the model's history.]{.bloodlines-instructions}
+[Hover to see specs. Click to reveal the model's history.]{.model-timeline-instructions}
 
 :::
 
 ::::
 
-::: {.bloodlines-main}
+::: {.model-timeline-main}
 
-::: {.bloodlines-chart aria-label="Interactive timeline of Ferrari models by year and category"}
+::: {.model-timeline-chart aria-label="Interactive timeline of Ferrari models by year and category"}
 
 ```{r}
 #| label: ferrari-timeline
 
-bloodlines_chart(
+model_timeline_chart(
   cars,
   initial_model = brand$initial_model,
   brand = brand$name,
@@ -131,7 +131,7 @@ bloodlines_chart(
 #| label: selected-model
 #| results: asis
 
-cat(bloodlines_hero(cars, brand$initial_model, brand$name))
+cat(model_timeline_hero(cars, brand$initial_model, brand$name))
 ```
 
 ::::

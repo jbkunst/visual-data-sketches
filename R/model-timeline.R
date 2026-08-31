@@ -1,4 +1,4 @@
-bloodlines_fields <- c(
+model_timeline_fields <- c(
   "model",
   "year",
   "category",
@@ -7,12 +7,12 @@ bloodlines_fields <- c(
   "official_url"
 )
 
-bloodlines_adapt <- function(data, mapping, details = NULL) {
-  missing_mapping <- setdiff(bloodlines_fields, names(mapping))
+model_timeline_adapt <- function(data, mapping, details = NULL) {
+  missing_mapping <- setdiff(model_timeline_fields, names(mapping))
 
   if (length(missing_mapping) > 0) {
     stop(
-      "Missing bloodlines mappings: ",
+      "Missing model timeline mappings: ",
       paste(missing_mapping, collapse = ", "),
       call. = FALSE
     )
@@ -53,13 +53,6 @@ bloodlines_adapt <- function(data, mapping, details = NULL) {
     image_url = as.character(data[[mapping$image_url]]),
     official_url = as.character(data[[mapping$official_url]])
   ) |>
-    dplyr::filter(
-      !is.na(.data$model),
-      nzchar(.data$model),
-      !is.na(.data$year),
-      !is.na(.data$category),
-      nzchar(.data$category)
-    ) |>
     dplyr::mutate(
       description = dplyr::if_else(
         is.na(.data$description) | !nzchar(.data$description),
@@ -84,13 +77,13 @@ bloodlines_adapt <- function(data, mapping, details = NULL) {
   adapted <- dplyr::select(adapted, -.data$source_row)
 
   if (nrow(adapted) == 0) {
-    stop("The adapted bloodlines data has no usable rows.", call. = FALSE)
+    stop("The adapted model timeline data has no usable rows.", call. = FALSE)
   }
 
   adapted
 }
 
-bloodlines_initial <- function(data, initial_model) {
+model_timeline_initial <- function(data, initial_model) {
   index <- match(tolower(initial_model), tolower(data$model))
 
   if (is.na(index)) {
@@ -100,34 +93,34 @@ bloodlines_initial <- function(data, initial_model) {
   data[index, , drop = FALSE]
 }
 
-bloodlines_hero <- function(
+model_timeline_hero <- function(
   data,
   initial_model,
   brand,
   link_label = "Official model page"
 ) {
-  featured <- bloodlines_initial(data, initial_model)
+  featured <- model_timeline_initial(data, initial_model)
   escape <- function(x, attribute = FALSE) {
     htmltools::htmlEscape(as.character(x), attribute = attribute)
   }
 
   image_markup <- if (nzchar(featured$image_url)) {
     sprintf(
-      '<img class="bloodlines-hero-image" data-bloodlines-image src="%s" alt="%s">',
+      '<img class="model-timeline-hero-image" data-model-timeline-image src="%s" alt="%s">',
       escape(featured$image_url, TRUE),
       escape(featured$model, TRUE)
     )
   } else {
-    '<div class="bloodlines-hero-image bloodlines-hero-image--empty" data-bloodlines-image></div>'
+    '<div class="model-timeline-hero-image model-timeline-hero-image--empty" data-model-timeline-image></div>'
   }
 
   link_markup <- if (nzchar(featured$official_url)) {
     sprintf(
       paste0(
-        '<a class="bloodlines-hero-link" data-bloodlines-link href="%s" ',
+        '<a class="model-timeline-hero-link" data-model-timeline-link href="%s" ',
         'target="_blank" rel="noopener noreferrer">',
         '<span>%s</span>',
-        '<span class="bloodlines-hero-link-icon" aria-hidden="true">&#8599;</span>',
+        '<span class="model-timeline-hero-link-icon" aria-hidden="true">&#8599;</span>',
         '</a>'
       ),
       escape(featured$official_url, TRUE),
@@ -135,38 +128,38 @@ bloodlines_hero <- function(
     )
   } else {
     paste0(
-      '<a class="bloodlines-hero-link" data-bloodlines-link hidden>',
+      '<a class="model-timeline-hero-link" data-model-timeline-link hidden>',
       sprintf('<span>%s</span>', escape(link_label)),
-      '<span class="bloodlines-hero-link-icon" aria-hidden="true">&#8599;</span>',
+      '<span class="model-timeline-hero-link-icon" aria-hidden="true">&#8599;</span>',
       '</a>'
     )
   }
 
   paste0(
     paste0(
-      '<div class="bloodlines-hero" data-bloodlines-hero ',
+      '<div class="model-timeline-hero" data-model-timeline-hero ',
       'role="region" aria-label="Selected model" aria-live="polite">'
     ),
-    '<div class="bloodlines-hero-media">',
+    '<div class="model-timeline-hero-media">',
     image_markup,
     sprintf(
-      '<div class="bloodlines-hero-watermark" data-bloodlines-watermark>%s</div>',
+      '<div class="model-timeline-hero-watermark" data-model-timeline-watermark>%s</div>',
       escape(featured$year)
     ),
     '</div>',
-    '<div class="bloodlines-hero-copy">',
+    '<div class="model-timeline-hero-copy">',
     sprintf(
-      '<h2 class="bloodlines-hero-name" data-bloodlines-name>%s</h2>',
+      '<h2 class="model-timeline-hero-name" data-model-timeline-name>%s</h2>',
       escape(featured$model)
     ),
-    '<div class="bloodlines-hero-meta">',
+    '<div class="model-timeline-hero-meta">',
     sprintf(
-      '<span data-bloodlines-category>%s</span>',
+      '<span data-model-timeline-category>%s</span>',
       escape(featured$category)
     ),
     '</div>',
     sprintf(
-      '<p class="bloodlines-hero-description" data-bloodlines-description>%s</p>',
+      '<p class="model-timeline-hero-description" data-model-timeline-description>%s</p>',
       escape(featured$description)
     ),
     link_markup,
@@ -175,7 +168,7 @@ bloodlines_hero <- function(
   )
 }
 
-bloodlines_chart <- function(
+model_timeline_chart <- function(
   data,
   initial_model,
   brand,
@@ -245,7 +238,7 @@ bloodlines_chart <- function(
   click_handler <- htmlwidgets::JS(
     "function () {",
     "  this.select(true, false);",
-    "  if (window.Bloodlines) window.Bloodlines.select(this);",
+    "  if (window.ModelTimeline) window.ModelTimeline.select(this);",
     "  return false;",
     "}"
   )
@@ -258,17 +251,17 @@ bloodlines_chart <- function(
     "    node.textContent = String(value ?? '');",
     "    return node.innerHTML;",
     "  };",
-    "  const image = c.tooltipImage ? '<img class=\"bloodlines-tooltip-image\" src=\"' + esc(c.tooltipImage) + '\" alt=\"\" width=\"280\" height=\"158\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async\">' : '';",
+    "  const image = c.tooltipImage ? '<img class=\"model-timeline-tooltip-image\" src=\"' + esc(c.tooltipImage) + '\" alt=\"\" width=\"280\" height=\"158\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async\">' : '';",
     "  const entries = Object.entries(c.specs || {}).filter(([key, value]) =>",
     "    value !== null && value !== undefined && String(value).trim() !== ''",
     "  );",
-    "  const specs = entries.length ? '<dl class=\"bloodlines-tooltip-specs\">' + entries.map(([key, value]) =>",
+    "  const specs = entries.length ? '<dl class=\"model-timeline-tooltip-specs\">' + entries.map(([key, value]) =>",
     "    '<div><dt>' + esc(key) + '</dt><dd>' + esc(value) + '</dd></div>'",
     "  ).join('') + '</dl>' : '';",
-    "  return '<div class=\"bloodlines-tooltip\">' + image +",
-    "    '<div class=\"bloodlines-tooltip-body\">' +",
+    "  return '<div class=\"model-timeline-tooltip\">' + image +",
+    "    '<div class=\"model-timeline-tooltip-body\">' +",
     "      '<strong>' + esc(this.point.name) + '</strong>' +",
-    "      '<span class=\"bloodlines-tooltip-meta\">' + esc(c.year) + ' / ' + esc(c.category) + '</span>' +",
+    "      '<span class=\"model-timeline-tooltip-meta\">' + esc(c.year) + ' / ' + esc(c.category) + '</span>' +",
     "      specs +",
     "      '<small>Click for the full story</small>' +",
     "    '</div>' +",

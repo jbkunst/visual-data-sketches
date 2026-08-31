@@ -17,9 +17,6 @@ porsche_prepare <- function(data) {
       model = stringr::str_remove(.data$model, "^Porsche\\s+"),
       year = suppressWarnings(as.integer(.data$year)),
       power = suppressWarnings(as.numeric(.data$max_power_cv)),
-      family = dplyr::coalesce(as.character(.data$model_family), "Other"),
-      generation = suppressWarnings(as.numeric(.data$generation)),
-      section = dplyr::coalesce(as.character(.data$section), ""),
       engine = dplyr::coalesce(as.character(.data$engine), "Architecture not listed"),
       engine_position = dplyr::coalesce(as.character(.data$engine_position), "not listed"),
       architecture = dplyr::case_when(
@@ -28,27 +25,14 @@ porsche_prepare <- function(data) {
         .data$engine_position == "front" ~ paste("Front-engine", .data$engine, sep = " / "),
         TRUE ~ .data$engine
       ),
-      category = dplyr::case_when(
-        stringr::str_detect(.data$section, "Race Car") ~ "Competition",
-        stringr::str_detect(.data$section, "Concept Car") ~ "Concepts",
-        stringr::str_detect(.data$section, "Supercar") ~ "Supercars",
-        .data$family == "911" & (
-          floor(.data$generation) == 930 |
-            (is.na(.data$generation) & .data$year <= 1988)
-        ) ~ "911 / Classic",
-        .data$family == "911" & (
-          floor(.data$generation) %in% c(964, 993) |
-            (is.na(.data$generation) & dplyr::between(.data$year, 1989, 1998))
-        ) ~ "911 / 964–993",
-        .data$family == "911" & (
-          floor(.data$generation) %in% c(996, 997) |
-            (is.na(.data$generation) & dplyr::between(.data$year, 1999, 2011))
-        ) ~ "911 / 996–997",
-        .data$family == "911" ~ "911 / 991–992",
-        .data$family == "356" ~ "356",
-        .data$family %in% c("Boxster", "Cayman", "718", "914") ~ "Mid-engine series",
-        .data$family %in% c("924", "928", "944", "968") ~ "Transaxle series",
-        TRUE ~ "Other series"
+      category = dplyr::recode(
+        as.character(.data$category),
+        "Porsche 911 Model Guides" = "911 Models",
+        "Porsche Boxster & Cayman Model Guides" = "Boxster & Cayman Models",
+        "The Rest of the Porsche Model Guides" = "Misc Models",
+        "Porsche Supercar Model Guides" = "Supercars",
+        "Porsche Concept Car Guides" = "Concept Cars",
+        "Porsche Race Car Guides" = "Race Cars"
       ),
       description = as.character(.data$description),
       image_url = dplyr::coalesce(
@@ -67,12 +51,6 @@ porsche_prepare <- function(data) {
       top_speed = suppressWarnings(as.numeric(.data$top_speed_kmh)),
       acceleration = suppressWarnings(as.numeric(.data$acceleration_0_100_kmh_s)),
       production = suppressWarnings(as.numeric(.data$production_qty))
-    ) |>
-    dplyr::filter(
-      !is.na(.data$model),
-      nzchar(.data$model),
-      !is.na(.data$year),
-      !is.na(.data$power)
     ) |>
     dplyr::mutate(
       description = dplyr::if_else(
@@ -112,7 +90,7 @@ porsche_prepare <- function(data) {
     dplyr::arrange(.data$year, .data$power, .data$model)
 
   if (nrow(prepared) == 0) {
-    stop("The Porsche dataset has no rows with year and power.", call. = FALSE)
+    stop("The Porsche dataset has no rows.", call. = FALSE)
   }
 
   prepared
@@ -132,31 +110,21 @@ porsche_chart <- function(
 
   initial_point_id <- data$point_id[[initial_index]]
   display_order <- c(
-    "911 / Classic",
-    "911 / 964–993",
-    "911 / 996–997",
-    "911 / 991–992",
-    "Competition",
-    "356",
-    "Mid-engine series",
-    "Transaxle series",
+    "911 Models",
+    "Boxster & Cayman Models",
+    "Misc Models",
     "Supercars",
-    "Concepts",
-    "Other series"
+    "Concept Cars",
+    "Race Cars"
   )
   category_levels <- rev(display_order)
   category_labels <- c(
-    "911 / Classic" = "911 / Classic",
-    "911 / 964–993" = "911 / 964–993",
-    "911 / 996–997" = "911 / 996–997",
-    "911 / 991–992" = "911 / 991–992",
-    "Competition" = "Competition",
-    "356" = "356",
-    "Mid-engine series" = "Mid-engine",
-    "Transaxle series" = "Transaxle",
+    "911 Models" = "911 Models",
+    "Boxster & Cayman Models" = "Boxster & Cayman",
+    "Misc Models" = "Misc Models",
     "Supercars" = "Supercars",
-    "Concepts" = "Concepts",
-    "Other series" = "Other series"
+    "Concept Cars" = "Concept Cars",
+    "Race Cars" = "Race Cars"
   )
 
   plot_data <- data |>
@@ -196,7 +164,7 @@ porsche_chart <- function(
   click_handler <- htmlwidgets::JS(
     "function () {",
     "  this.select(true, false);",
-    "  if (window.Bloodlines) window.Bloodlines.select(this);",
+    "  if (window.ModelTimeline) window.ModelTimeline.select(this);",
     "  return false;",
     "}"
   )
@@ -209,17 +177,17 @@ porsche_chart <- function(
     "    node.textContent = String(value ?? '');",
     "    return node.innerHTML;",
     "  };",
-    "  const image = c.tooltipImage ? '<img class=\"bloodlines-tooltip-image\" src=\"' + esc(c.tooltipImage) + '\" alt=\"\" width=\"280\" height=\"158\" loading=\"eager\" decoding=\"async\">' : '';",
+    "  const image = c.tooltipImage ? '<img class=\"model-timeline-tooltip-image\" src=\"' + esc(c.tooltipImage) + '\" alt=\"\" width=\"280\" height=\"158\" loading=\"eager\" decoding=\"async\">' : '';",
     "  const entries = Object.entries(c.specs || {}).filter(([key, value]) =>",
     "    value !== null && value !== undefined && String(value).trim() !== '' && String(value) !== 'NA'",
     "  );",
-    "  const specs = entries.length ? '<dl class=\"bloodlines-tooltip-specs\">' + entries.map(([key, value]) =>",
+    "  const specs = entries.length ? '<dl class=\"model-timeline-tooltip-specs\">' + entries.map(([key, value]) =>",
     "    '<div><dt>' + esc(key) + '</dt><dd>' + esc(value) + '</dd></div>'",
     "  ).join('') + '</dl>' : '';",
-    "  return '<div class=\"bloodlines-tooltip\">' + image +",
-    "    '<div class=\"bloodlines-tooltip-body\">' +",
+    "  return '<div class=\"model-timeline-tooltip\">' + image +",
+    "    '<div class=\"model-timeline-tooltip-body\">' +",
     "      '<strong>' + esc(this.point.name) + '</strong>' +",
-    "      '<span class=\"bloodlines-tooltip-meta\">' + esc(c.year) + ' / ' + esc(c.category) + '</span>' +",
+    "      '<span class=\"model-timeline-tooltip-meta\">' + esc(c.year) + ' / ' + esc(c.category) + '</span>' +",
     "      specs +",
     "      '<small>Click to inspect the model</small>' +",
     "    '</div>' +",
@@ -231,26 +199,52 @@ porsche_chart <- function(
     highcharter::hc_chart(
       type = "scatter",
       backgroundColor = "transparent",
-      spacing = c(22, 18, 18, 8),
+      spacing = c(30, 18, 18, 8),
       marginLeft = 142,
       zoomType = "x",
       animation = list(duration = 280),
       style = list(fontFamily = font_family)
     ) |>
-    highcharter::hc_xAxis(
-      title = list(text = ""),
-      min = min(data$year) - 1,
-      max = max(data$year) + 1,
-      tickInterval = 10,
-      allowDecimals = FALSE,
-      gridLineWidth = 1,
-      gridLineDashStyle = "Dot",
-      gridLineColor = "rgba(0,0,0,0.09)",
-      lineWidth = 0,
-      tickLength = 0,
-      labels = list(
-        y = 18,
-        style = list(color = "#55595a", fontSize = "11px", fontFamily = font_family)
+    highcharter::hc_xAxis_multiples(
+      list(
+        title = list(text = ""),
+        min = min(data$year) - 1,
+        max = max(data$year) + 1,
+        tickInterval = 10,
+        allowDecimals = FALSE,
+        gridLineWidth = 1,
+        gridLineDashStyle = "Dot",
+        gridLineColor = "rgba(0,0,0,0.09)",
+        lineWidth = 0,
+        tickLength = 0,
+        crosshair = list(
+          color = "rgba(17,18,18,0.34)",
+          dashStyle = "ShortDot",
+          width = 1,
+          zIndex = 3,
+          snap = FALSE
+        ),
+        labels = list(
+          y = 18,
+          style = list(color = "#55595a", fontSize = "11px", fontFamily = font_family)
+        )
+      ),
+      list(
+        linkedTo = 0,
+        opposite = TRUE,
+        tickInterval = 10,
+        allowDecimals = FALSE,
+        gridLineWidth = 0,
+        lineWidth = 0,
+        tickLength = 0,
+        labels = list(
+          y = -7,
+          style = list(
+            color = "rgba(23,24,24,0.58)",
+            fontSize = "10px",
+            fontFamily = font_family
+          )
+        )
       )
     ) |>
     highcharter::hc_yAxis(
