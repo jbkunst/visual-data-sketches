@@ -4,6 +4,8 @@ Visual sketches, stories, maps, and experiments made with data.
 
 A small Quarto gallery for standalone visual pieces. Sketches may be static, interactive, or app-like; the only common rule is that the visual result comes first.
 
+Future sketch ideas and implementation notes are tracked in [TODO.md](TODO.md).
+
 ## Repository Structure
 
 - `<sketch-folder>/`: one sketch per top-level folder.
