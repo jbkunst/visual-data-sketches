@@ -1,0 +1,108 @@
+---
+pagetitle: "Porsche, Iterated"
+date: 2026-08-31
+page-layout: custom
+navbar: false
+body-classes: bloodlines-page porsche-page
+format:
+  html:
+    css:
+      - ../assets/bloodlines.css
+      - styles.css
+    include-in-header:
+      text: |
+        <link rel="preconnect" href="https://www.stuttcars.com">
+        <script defer src="../assets/bloodlines.js"></script>
+resources:
+  - ../assets/bloodlines.js
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(dplyr)
+library(highcharter)
+library(readr)
+
+source(here::here("R", "bloodlines.R"))
+source(here::here("R", "porsche.R"))
+
+source_url <- paste0(
+  "https://raw.githubusercontent.com/jbkunst/motorsport-legends/",
+  "main/data/cars/porsche_stuttcars_model_research.csv"
+)
+
+research_url <- "https://www.stuttcars.com/porsche-model-research/"
+
+source_data <- read_csv(
+  source_url,
+  show_col_types = FALSE,
+  col_select = -c(image_data_uri, image_profile_data_uri)
+)
+
+cars <- porsche_prepare(source_data)
+initial_model <- "959 Komfort"
+```
+
+:::: {.bloodlines-shell}
+
+:::: {.bloodlines-header}
+
+::: {}
+
+[Model iterations / 1939—2026]{.bloodlines-eyebrow}
+
+# PORSCHE {.bloodlines-title}
+
+:::
+
+::: {.bloodlines-intro}
+
+Seven decades. Hundreds of answers to the same question: what can a sports car become?
+
+Built from [the model research collection assembled by Stuttcars](https://www.stuttcars.com/porsche-model-research/).
+
+[Hover to compare specifications. Click to inspect a model.]{.bloodlines-instructions}
+
+:::
+
+::::
+
+::: {.bloodlines-main}
+
+::: {.bloodlines-chart aria-label="Interactive timeline of Porsche models by debut year and family"}
+
+```{r}
+#| label: porsche-power
+
+porsche_chart(
+  cars,
+  initial_model = initial_model,
+  source_url = research_url
+)
+```
+
+:::
+
+:::
+
+```{r}
+#| label: selected-model
+#| results: asis
+
+cat(
+  bloodlines_hero(
+    cars,
+    initial_model,
+    brand = "Porsche",
+    link_label = "Read model research"
+  )
+)
+```
+
+::::

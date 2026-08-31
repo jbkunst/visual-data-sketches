@@ -1,0 +1,137 @@
+---
+pagetitle: "Ferrari Bloodlines"
+date: 2026-08-30
+page-layout: custom
+navbar: false
+body-classes: bloodlines-page
+format:
+  html:
+    css:
+      - ../assets/bloodlines.css
+      - styles.css
+    include-in-header:
+      text: |
+        <link rel="preconnect" href="https://cdn.ferrari.com">
+        <script defer src="../assets/bloodlines.js"></script>
+resources:
+  - ../assets/bloodlines.js
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(dplyr)
+library(highcharter)
+library(readr)
+
+source(here::here("R", "bloodlines.R"))
+
+source_url <- paste0(
+  "https://raw.githubusercontent.com/jbkunst/motorsport-legends/",
+  "main/data/cars/ferrari_past_models_enriched.csv"
+)
+
+brand <- list(
+  name = "Ferrari",
+  initial_model = "F40",
+  accent = "#e10600",
+  font_family = "IBM Plex Sans",
+  tooltip_image_transform = function(url) {
+    sub("\\?.*$", "?width=320&height=180", url)
+  },
+  category_labels = c(
+    "Sports-racing prototypes" = "Sports prototypes",
+    "Mid-engined sports car" = "Mid‑engine sports",
+    "Front-engined V12 two-seat GT" = "Front V12 two‑seat",
+    "Competition derivatives" = "Competition",
+    "Front-engined V12 2+2 GT" = "Front V12 2+2",
+    "Mid-engined 2+2 GT" = "Mid‑engine 2+2",
+    "Front-engined V8 GT" = "Front V8 GT",
+    "Limited-series halo" = "Halo series",
+    "Hybrid supercar" = "Hybrid supercar",
+    "Mid-engined 12-cylinder supercar" = "Mid‑engine V12",
+    "Icona limited series" = "Icona series"
+  )
+)
+
+source_data <- read_csv(source_url, show_col_types = FALSE) |>
+  filter(.data$source_origin == "ferrari_past_models_scraper")
+
+cars <- bloodlines_adapt(
+  source_data,
+  mapping = list(
+    model = "model",
+    year = "start_year",
+    category = "main_family",
+    description = "description",
+    image_url = "image_url",
+    official_url = "url"
+  ),
+  details = c(
+    "Engine" = "engine",
+    "Displacement (cc)" = "displacement_cc",
+    "Power (cv)" = "max_power_cv",
+    "Top speed (km/h)" = "top_speed_kmh",
+    "Weight (kg)" = "weight_kg"
+  )
+)
+```
+
+:::: {.bloodlines-shell}
+
+:::: {.bloodlines-header}
+
+::: {}
+
+[The past models archive]{.bloodlines-eyebrow}
+
+# Ferrari bloodlines {.bloodlines-title}
+
+:::
+
+::: {.bloodlines-intro}
+
+From 1947 to present, every past model is placed by debut year and historical family.
+
+[Hover to see specs. Click to reveal the model's history.]{.bloodlines-instructions}
+
+:::
+
+::::
+
+::: {.bloodlines-main}
+
+::: {.bloodlines-chart aria-label="Interactive timeline of Ferrari models by year and category"}
+
+```{r}
+#| label: ferrari-timeline
+
+bloodlines_chart(
+  cars,
+  initial_model = brand$initial_model,
+  brand = brand$name,
+  accent = brand$accent,
+  font_family = brand$font_family,
+  source_url = source_url,
+  category_labels = brand$category_labels,
+  tooltip_image_transform = brand$tooltip_image_transform
+)
+```
+
+:::
+
+:::
+
+```{r}
+#| label: selected-model
+#| results: asis
+
+cat(bloodlines_hero(cars, brand$initial_model, brand$name))
+```
+
+::::

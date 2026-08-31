@@ -1,0 +1,143 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@200;300;400;500;600&display=swap");
+
+.bloodlines-shell {
+  --bloodlines-accent: #090909;
+  --bloodlines-canvas: #e7e8e6;
+  --bloodlines-panel: #d5d7d6;
+  --bloodlines-ink: #111212;
+  --bloodlines-muted: #5f6262;
+  --bloodlines-rule: transparent;
+  --bloodlines-font: "IBM Plex Sans", Arial, sans-serif;
+  --bloodlines-display-font: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  --bloodlines-chart-font: "IBM Plex Sans", Arial, sans-serif;
+  --bloodlines-eyebrow-color: #1a1a1a;
+  --bloodlines-eyebrow-size: 0.68rem;
+  --bloodlines-eyebrow-weight: 600;
+  --bloodlines-eyebrow-tracking: 0.11em;
+  --bloodlines-hero-category-color: #1d1e1e;
+}
+
+.porsche-page .bloodlines-header {
+  background: linear-gradient(112deg, #eef0ee 0%, #e5e7e5 64%, #dfe1df 100%);
+}
+
+.porsche-page .bloodlines-title {
+  max-width: none;
+  font-size: clamp(4.4rem, 8vw, 9.8rem);
+  font-weight: 200;
+  letter-spacing: -0.015em;
+  line-height: 0.72;
+}
+
+.porsche-page .bloodlines-eyebrow {
+  margin-bottom: 0.12rem;
+}
+
+.porsche-page .bloodlines-intro a:not(.bloodlines-instructions) {
+  color: inherit;
+  text-decoration-color: rgb(17 18 18 / 35%);
+  text-underline-offset: 0.16em;
+}
+
+.porsche-page .bloodlines-instructions {
+  position: relative;
+  padding-left: 1rem;
+  border-left: 0;
+}
+
+.porsche-page .bloodlines-instructions::before {
+  position: absolute;
+  top: 0.48em;
+  left: 0;
+  width: 0.38rem;
+  height: 0.38rem;
+  background: var(--bloodlines-accent);
+  content: "";
+}
+
+.porsche-page .bloodlines-main {
+  background: linear-gradient(145deg, #eceeec 0%, #e3e5e3 100%);
+}
+
+.porsche-page .bloodlines-chart .highcharts-axis-labels text,
+.porsche-page .bloodlines-chart .highcharts-axis-title {
+  font-family: var(--bloodlines-chart-font) !important;
+}
+
+.porsche-page .bloodlines-hero {
+  background: var(--bloodlines-panel);
+  border: 0;
+}
+
+.porsche-page .bloodlines-hero-media {
+  background: linear-gradient(145deg, #f0f1ef 0%, #cfd2d1 100%);
+}
+
+.porsche-page .bloodlines-hero-media::after {
+  background:
+    radial-gradient(circle at 60% 74%, rgb(0 0 0 / 10%), transparent 42%),
+    linear-gradient(to bottom, transparent 62%, rgb(0 0 0 / 8%));
+}
+
+.porsche-page .bloodlines-hero-image {
+  object-fit: cover;
+  object-position: center;
+  padding: 0;
+  filter: none;
+  mix-blend-mode: normal;
+  transform: scale(1);
+}
+
+.porsche-page .bloodlines-hero.is-updating .bloodlines-hero-image {
+  transform: scale(1.025);
+}
+
+.porsche-page .bloodlines-hero-watermark {
+  color: rgb(17 18 18 / 18%);
+  font-family: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  font-weight: 500;
+}
+
+.porsche-page .bloodlines-hero-copy {
+  background: #d5d7d6;
+}
+
+.porsche-page .bloodlines-hero-name {
+  font-family: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  font-size: clamp(2.6rem, 4vw, 4.8rem);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+}
+
+.porsche-page .bloodlines-hero-name::after {
+  height: 3px;
+  background: #0b0b0b;
+}
+
+.porsche-page .bloodlines-hero-link {
+  color: #4e5151;
+  border-bottom-color: rgb(17 18 18 / 30%);
+}
+
+.porsche-page .bloodlines-hero-link:hover,
+.porsche-page .bloodlines-hero-link:focus-visible {
+  color: #050505;
+  border-bottom-color: #050505;
+}
+
+.porsche-page .bloodlines-tooltip small {
+  color: #171717;
+}
+
+.porsche-page .bloodlines-tooltip-image {
+  object-fit: contain;
+  background: #e4e6e4;
+  filter: none;
+}
+
+@media (max-width: 640px) {
+  .porsche-page .bloodlines-title {
+    font-size: clamp(4rem, 22vw, 6.5rem);
+  }
+
+}

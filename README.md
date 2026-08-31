@@ -24,10 +24,10 @@ Each public sketch needs a `DESCRIPTION` file:
 ```text
 Title: Sketch title
 Description: A short sentence that describes the visual piece.
-Categories: maps, cars, interactive
+Categories: motorsport
 ```
 
-The folder name is the sketch slug. Categories become the tags shown in the gallery.
+The folder name is the sketch slug. Categories become the tags shown in the gallery and should describe the subject—such as `motorsport`, `cities`, or `music`—rather than the technology or interaction format.
 
 HTML is the default runtime:
 
@@ -37,14 +37,23 @@ Runtime: html
 
 HTML sketches need an `index.qmd` in their folder.
 
-For a Shiny app hosted externally:
+For a Shiny app:
 
 ```text
-Runtime: server
+Runtime: shiny
 AppURL: https://example.share.connect.posit.cloud/
 ```
 
-Server sketches link directly to `AppURL` and receive the generated `runtime-server` gallery tag.
+`AppURL` may be an absolute URL or a path relative to the published site, so an app can live on another host or below the same domain. Runtime is routing metadata and is not shown as a gallery category. `Runtime: server` remains accepted as a backwards-compatible alias.
+
+For a visualization hosted outside this Quarto project:
+
+```text
+Runtime: external
+AppURL: https://example.com/visualization/
+```
+
+Every gallery card opens in a new tab, whether its destination is local, Shiny, or external.
 
 Draft sketches can remain in the repository without appearing in the gallery:
 
@@ -57,10 +66,16 @@ Status: draft
 1. Create a new top-level folder.
 2. Add `DESCRIPTION`.
 3. For HTML sketches, add `index.qmd` and any sketch-specific assets or CSS.
-4. For server sketches, add `Runtime: server` and `AppURL`.
+4. For Shiny or externally hosted sketches, add the corresponding `Runtime` and `AppURL`.
 5. Run `source("R/build_site.R")`.
 6. Check the generated `screenshot.png` and commit it with the sketch.
 
-The build reuses an existing `screenshot.png`. If one is missing, it captures the rendered HTML sketch or the server `AppURL` with `webshot2` at 1440 x 900.
+The build reuses an existing `screenshot.png`. If one is missing, it captures the rendered HTML sketch or `AppURL` with `webshot2` at 1440 x 900.
 
 Each sketch should remain self-contained. It does not need to share the visual style of the gallery or of any other sketch.
+
+## Publishing
+
+GitHub Pages is deployed automatically by `.github/workflows/pages.yml` whenever a commit reaches `main`. The workflow installs R and Quarto, runs `R/build_site.R`, uploads `docs/` as a Pages artifact, and deploys it.
+
+In the repository settings, **Pages > Build and deployment > Source** must be set to **GitHub Actions**. A deployment can also be started manually from **Actions > Deploy website to GitHub Pages > Run workflow**.

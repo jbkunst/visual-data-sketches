@@ -1,0 +1,23 @@
+.bloodlines-shell {
+  --bloodlines-accent: #e10600;
+  --bloodlines-canvas: #0b0b0b;
+  --bloodlines-panel: #171717;
+  --bloodlines-ink: #f4f2ee;
+  --bloodlines-muted: #aaa7a1;
+  --bloodlines-font: "IBM Plex Sans", Arial, sans-serif;
+  --bloodlines-display-font: "IBM Plex Serif", Georgia, serif;
+  --bloodlines-chart-font: "IBM Plex Sans", Arial, sans-serif;
+  --bloodlines-eyebrow-color: var(--bloodlines-accent);
+  --bloodlines-eyebrow-size: 0.68rem;
+  --bloodlines-eyebrow-weight: 600;
+  --bloodlines-eyebrow-tracking: 0.04em;
+  --bloodlines-hero-category-color: rgb(244 242 238 / 82%);
+}
+
+.bloodlines-page .bloodlines-chart .highcharts-axis-labels text {
+  font-family: var(--bloodlines-chart-font) !important;
+  font-size: var(--bloodlines-eyebrow-size) !important;
+  font-weight: var(--bloodlines-eyebrow-weight) !important;
+  letter-spacing: var(--bloodlines-eyebrow-tracking) !important;
+  text-transform: uppercase;
+}

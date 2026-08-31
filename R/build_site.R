@@ -35,6 +35,35 @@ as_file_url <- function(x) {
   if (.Platform$OS.type == "windows") paste0("file:///", x) else paste0("file://", x)
 }
 
+configure_quarto <- function() {
+  if (!is.null(quarto::quarto_path())) return(invisible(TRUE))
+
+  candidates <- c(
+    file.path(
+      Sys.getenv("LOCALAPPDATA"),
+      "Programs", "Positron", "resources", "app", "quarto", "bin", "quarto.exe"
+    ),
+    file.path(Sys.getenv("ProgramFiles"), "Quarto", "bin", "quarto.exe")
+  )
+  candidates <- candidates[file_exists(candidates)]
+
+  if (length(candidates) == 0) {
+    stop("Quarto CLI not found. Add it to PATH or set QUARTO_PATH.", call. = FALSE)
+  }
+
+  Sys.setenv(QUARTO_PATH = candidates[[1]])
+  invisible(TRUE)
+}
+
+runtime_label <- function(x) {
+  # `server` remains an alias so older DESCRIPTION files keep working.
+  recode(x, server = "shiny")
+}
+
+launch_url <- function(sketch, runtime, app_url) {
+  if (runtime == "html") paste0(sketch, "/") else app_url
+}
+
 write_cards <- function(sketches) {
   cards <- sketches$sketch |>
     set_names() |>
@@ -44,16 +73,13 @@ write_cards <- function(sketches) {
         slice(1)
 
       screenshot <- path(sketch, "screenshot.png")
-      launch_url <- if (meta$runtime == "html") paste0(sketch, "/") else meta$app_url
+      url <- launch_url(sketch, meta$runtime, meta$app_url)
 
       card <- list(
         title = meta$title,
         description = meta$description,
-        categories = unique(c(
-          meta$categories[[1]],
-          if (meta$runtime == "server") "runtime-server"
-        )),
-        path = launch_url
+        categories = as.list(unique(meta$categories[[1]])),
+        path = url
       )
 
       if (file_exists(screenshot)) {
@@ -116,7 +142,7 @@ sketches <- map_dfr(sketch_dirs, function(sketch) {
     title = value(desc, "Title"),
     description = value(desc, "Description"),
     categories = list(as_csv(value(desc, "Categories"))),
-    runtime = str_to_lower(value(desc, "Runtime", "html")),
+    runtime = runtime_label(str_to_lower(value(desc, "Runtime", "html"))),
     app_url = value(desc, "AppURL"),
     status = str_to_lower(value(desc, "Status"))
   )
@@ -148,9 +174,9 @@ metadata_errors <- sketches |>
           if (!nzchar(title)) "Title",
           if (!nzchar(description)) "Description",
           if (length(categories) == 0) "Categories",
-          if (!runtime %in% c("html", "server")) "Runtime",
+          if (!runtime %in% c("html", "shiny", "external")) "Runtime",
           if (identical(runtime, "html") && !file_exists(path(sketch, "index.qmd"))) "index.qmd",
-          if (identical(runtime, "server") && !nzchar(app_url)) "AppURL"
+          if (runtime %in% c("shiny", "external") && !nzchar(app_url)) "AppURL"
         )
 
         paste(problems, collapse = ", ")
@@ -173,6 +199,7 @@ cli::cli_alert_success("Generated sketches.yml with {length(cards)} sketches.")
 
 # quarto -----------------------------------------------------------------
 cli::cli_h1("Quarto")
+configure_quarto()
 quarto::quarto_render(".")
 
 # screenshots ------------------------------------------------------------

@@ -5,14 +5,20 @@ project:
 website:
   title: "Visual Data Sketches"
   description: "Visual sketches, stories, maps, and experiments made with data."
+  site-url: "https://jbkunst.github.io/visual-data-sketches/"
   search: false
   navbar:
     title: "jk"
     pinned: true
-    tools:
-      - icon: github
+    right:
+      - text: Blog ↗
+        href: "https://jkunst.com/blog/"
+        target: _blank
+      - text: Visual Data Sketches
+        href: index.qmd
+      - text: GitHub ↗
         href: "https://github.com/jbkunst/visual-data-sketches"
-        aria-label: GitHub
+        target: _blank
 
 format:
   html:
