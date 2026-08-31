@@ -1,5 +1,5 @@
 ---
-pagetitle: "Porsche, Iterated"
+pagetitle: "Porsche Evolution"
 date: 2026-08-31
 page-layout: custom
 navbar: false
@@ -83,7 +83,7 @@ initial_model <- "959 Komfort"
 
 ::: {}
 
-[Model iterations / 1939—2026]{.model-timeline-eyebrow}
+[Model evolution / 1939—2026]{.model-timeline-eyebrow}
 
 # [PORSCHE]{.porsche-title-brand} [evolution]{.porsche-title-theme} {.model-timeline-title}
 
