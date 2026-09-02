@@ -13,6 +13,7 @@ listing:
     contents: sketches.yml
     type: grid
     grid-columns: 3
+    sort: "date desc"
     sort-ui: false
     filter-ui: true
     categories: true

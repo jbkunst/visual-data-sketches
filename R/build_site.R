@@ -78,6 +78,7 @@ write_cards <- function(sketches) {
       card <- list(
         title = meta$title,
         description = meta$description,
+        date = meta$date,
         categories = as.list(unique(meta$categories[[1]])),
         path = url
       )
@@ -89,7 +90,12 @@ write_cards <- function(sketches) {
       card
     })
 
-  write_yaml(unname(cards[sort(names(cards))]), "sketches.yml")
+  card_order <- sketches |>
+    arrange(desc(as.Date(.data$date)), .data$title) |>
+    pull(.data$sketch)
+  cards <- cards[card_order]
+
+  write_yaml(unname(cards), "sketches.yml")
   cards
 }
 
@@ -141,6 +147,7 @@ sketches <- map_dfr(sketch_dirs, function(sketch) {
     sketch = sketch,
     title = value(desc, "Title"),
     description = value(desc, "Description"),
+    date = value(desc, "Date"),
     categories = list(as_csv(value(desc, "Categories"))),
     runtime = runtime_label(str_to_lower(value(desc, "Runtime", "html"))),
     app_url = value(desc, "AppURL"),
@@ -168,11 +175,20 @@ if (nrow(sketches) == 0) {
 metadata_errors <- sketches |>
   mutate(
     missing = pmap_chr(
-      list(.data$sketch, .data$title, .data$description, .data$categories, .data$runtime, .data$app_url),
-      function(sketch, title, description, categories, runtime, app_url) {
+      list(
+        .data$sketch,
+        .data$title,
+        .data$description,
+        .data$date,
+        .data$categories,
+        .data$runtime,
+        .data$app_url
+      ),
+      function(sketch, title, description, date, categories, runtime, app_url) {
         problems <- c(
           if (!nzchar(title)) "Title",
           if (!nzchar(description)) "Description",
+          if (!str_detect(date, "^\\d{4}-\\d{2}-\\d{2}$") || is.na(as.Date(date))) "Date",
           if (length(categories) == 0) "Categories",
           if (!runtime %in% c("html", "shiny", "external")) "Runtime",
           if (identical(runtime, "html") && !file_exists(path(sketch, "index.qmd"))) "index.qmd",

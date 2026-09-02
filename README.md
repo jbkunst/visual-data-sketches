@@ -26,6 +26,7 @@ Each public sketch needs a `DESCRIPTION` file:
 ```text
 Title: Sketch title
 Description: A short sentence that describes the visual piece.
+Date: 2026-09-02
 Categories: motorsport
 ```
 
