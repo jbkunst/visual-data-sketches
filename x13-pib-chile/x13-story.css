@@ -85,8 +85,25 @@
   overflow: hidden;
 }
 
+.story-stage::after {
+  position: absolute;
+  z-index: 2;
+  inset: 0 auto 0 0;
+  width: min(46rem, 46vw);
+  content: "";
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 105% 82% at 0% 0%,
+    rgba(7, 21, 33, 0.88) 0%,
+    rgba(7, 21, 33, 0.8) 40%,
+    rgba(7, 21, 33, 0.5) 68%,
+    transparent 100%
+  );
+}
+
 #story-graphic {
   position: absolute;
+  z-index: 1;
   inset: 0;
   width: 100%;
   height: 100%;
@@ -253,6 +270,20 @@
   cursor: pointer;
 }
 
+.story-controls .story-arrow {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  place-items: center;
+}
+
+.story-arrow svg {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+}
+
 .story-controls button:hover,
 .story-controls button:focus-visible {
   border-color: rgba(143, 200, 255, 0.7);
@@ -267,6 +298,7 @@
 
 .story-progress {
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: clamp(0.25rem, 0.7vw, 0.6rem);
 }
@@ -317,23 +349,6 @@
   transform: translateY(1.5rem);
   transition: opacity 420ms ease, transform 600ms ease;
   pointer-events: auto;
-}
-
-.story-scene::before {
-  position: absolute;
-  z-index: -1;
-  top: 3%;
-  left: 0;
-  width: min(42rem, 40vw);
-  height: 86%;
-  content: "";
-  background: radial-gradient(
-    ellipse 92% 78% at 0% 42%,
-    rgba(7, 21, 33, 0.98) 0%,
-    rgba(7, 21, 33, 0.9) 48%,
-    rgba(7, 21, 33, 0.55) 68%,
-    transparent 100%
-  );
 }
 
 .story-scene.is-active {
@@ -426,6 +441,10 @@
     min-height: 34rem;
   }
 
+  .story-stage::after {
+    display: none;
+  }
+
   .story-brand,
   .story-legend {
     right: 1rem;
@@ -470,10 +489,6 @@
     width: 100%;
     padding: 8rem 1.25rem 8.3rem;
     background: linear-gradient(0deg, rgba(7, 21, 33, 0.98) 4%, rgba(7, 21, 33, 0.8) 50%, transparent 82%);
-  }
-
-  .story-scene::before {
-    display: none;
   }
 
   .story-page .story-scene h1,

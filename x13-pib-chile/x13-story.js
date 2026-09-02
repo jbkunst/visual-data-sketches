@@ -36,6 +36,25 @@
     return node;
   }
 
+  function arrowIcon(direction) {
+    const icon = svgElement("svg", {
+      viewBox: "0 0 16 16",
+      "aria-hidden": "true"
+    });
+    const path = direction === "previous"
+      ? "M13 8H3m4-4L3 8l4 4"
+      : "M3 8h10M9 4l4 4-4 4";
+    icon.appendChild(svgElement("path", {
+      d: path,
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-width": 1.5,
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round"
+    }));
+    return icon;
+  }
+
   function startStory(payload, config) {
     const dataConfig = config.data;
     const sourceRows = payload[dataConfig.rowsKey];
@@ -248,7 +267,10 @@
       plot.scales = Object.fromEntries(
         Object.entries(config.scales).map(([name, definition]) => [
           name,
-          linearScale(paddedDomain(numericExtent(definition.keys)), yRange)
+          linearScale(
+            paddedDomain(numericExtent(definition.keys), definition.padding ?? 0.07),
+            yRange
+          )
         ])
       );
 
@@ -376,7 +398,10 @@
       clear(layers.axes);
       const scale = yScale(scene);
       const scaleDefinition = config.scales[scene.scale];
-      const domain = paddedDomain(numericExtent(scaleDefinition.keys));
+      const domain = paddedDomain(
+        numericExtent(scaleDefinition.keys),
+        scaleDefinition.padding ?? 0.07
+      );
       const tickCount = plot.height < 620 ? 4 : 6;
       const yTicks = niceTicks(domain, tickCount);
       const axisTextRight = plot.width - (plot.width < 760 ? 16 : 32);
@@ -1144,9 +1169,10 @@
     const controls = htmlElement("footer", "story-controls");
     controls.setAttribute("aria-label", "Controles de la historia");
     const controlOptions = config.controls || {};
-    const previous = htmlElement("button", null, "←");
+    const previous = htmlElement("button", "story-arrow");
     previous.type = "button";
     previous.setAttribute("aria-label", "Escena anterior");
+    previous.appendChild(arrowIcon("previous"));
     const play = controlOptions.play === false
       ? null
       : htmlElement("button", null, "Reproducir");
@@ -1155,9 +1181,10 @@
       play.setAttribute("aria-label", "Reproducir animación");
       play.setAttribute("aria-pressed", "false");
     }
-    const next = htmlElement("button", null, "→");
+    const next = htmlElement("button", "story-arrow");
     next.type = "button";
     next.setAttribute("aria-label", "Escena siguiente");
+    next.appendChild(arrowIcon("next"));
     const progress = htmlElement("nav", "story-progress");
     progress.setAttribute("aria-label", "Escenas");
     const counter = controlOptions.counter === false
@@ -1181,10 +1208,13 @@
       const heading = htmlElement(index === 0 ? "h1" : "h2", null, scene.title);
       const description = htmlElement("p", "story-description");
       description.innerHTML = scene.descriptionHtml;
-      const formula = htmlElement("div", "story-formula");
-      if (scene.formulaCompact) formula.classList.add("is-compact");
-      formula.textContent = `\\(${scene.formulaTex}\\)`;
-      section.append(kicker, heading, description, formula);
+      section.append(kicker, heading, description);
+      if (scene.formulaTex) {
+        const formula = htmlElement("div", "story-formula");
+        if (scene.formulaCompact) formula.classList.add("is-compact");
+        formula.textContent = `\\(${scene.formulaTex}\\)`;
+        section.appendChild(formula);
+      }
       if (scene.downloads) {
         const downloads = htmlElement("p", "story-downloads");
         scene.downloads.forEach((download) => {

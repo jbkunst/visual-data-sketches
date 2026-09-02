@@ -45,7 +45,8 @@
     "growth": {
       "keys": ["growth_observed", "growth_adjusted"],
       "format": "fixed-1",
-      "decimals": 1
+      "decimals": 1,
+      "padding": 0.15
     }
   },
   "connectors": {
@@ -82,7 +83,8 @@
       "kicker": "1 · El punto de partida",
       "title": "Una serie observada",
       "descriptionHtml": "Cada observación es un trimestre del PIB chileno. La trayectoria reúne crecimiento, oscilaciones estacionales, calendario y episodios excepcionales en una sola línea.",
-      "formulaTex": "Y_t",
+      "formulaTex": "Y_t := \\text{PIB trimestral encadenado, ref. 2018}",
+      "formulaCompact": true,
       "scale": "level",
       "axisLabel": "PIB · escala original",
       "lines": [
@@ -169,7 +171,7 @@
     {
       "id": "seats",
       "kicker": "6 · Descomponer con SEATS",
-      "title": "Tres componentes, una identidad",
+      "title": "Las tres componentes",
       "descriptionHtml": "SEATS descompone la serie linealizada en una tendencia-ciclo persistente, un patrón estacional y un movimiento irregular. Los tres componentes aparecen ahora en bandas independientes.",
       "formulaTex": "z_t = T_t^{\\mathrm{lin}} + S_t^{\\mathrm{lin}} + I_t^{\\mathrm{lin}}",
       "scale": "log",
@@ -282,8 +284,8 @@
       "id": "quarterly-growth",
       "kicker": "11 · Comparar trimestres",
       "title": "Del nivel al crecimiento trimestral",
-      "descriptionHtml": "Después de volver a niveles, comparamos cada trimestre con el inmediatamente anterior. La serie observada conserva oscilaciones recurrentes que pueden alterar esa lectura.",
-      "formulaTex": "g_t=100\\left(Y_t^{\\mathrm{SA,final}}/Y_{t-1}^{\\mathrm{SA,final}}-1\\right)",
+      "descriptionHtml": "Después de volver a niveles, comparamos cada trimestre con el anterior. El Banco Central publica su propia estimación desestacionalizada. Compararla con este ejercicio es informativo, no una validación: las series pueden diferir por sus especificaciones, insumos y políticas de revisión.",
+      "formulaTex": "g_t = 100\\left(\\frac{Y_t^{SA}}{Y_{t-1}^{SA}} - 1\\right)",
       "formulaCompact": true,
       "scale": "growth",
       "axisLabel": "variación trimestral (%)",
@@ -297,20 +299,20 @@
       ]
     },
     {
-      "id": "official-reference",
-      "kicker": "12 · Poner el resultado en contexto",
-      "title": "Una referencia, no una validación mecánica",
-      "descriptionHtml": "La serie oficial del Banco Central —PIB encadenado desestacionalizado, referencia 2018— ofrece un contraste útil. Este ejercicio aplica un solo regARIMA y SEATS al PIB agregado y no reconstruye sus especificaciones, insumos ni políticas de revisión; por eso no se supone que ambas implementaciones sean idénticas.",
-      "formulaTex": "\\text{referencia útil} \\neq \\text{respuesta única}",
-      "scale": "growth",
-      "axisLabel": "variación trimestral (%)",
+      "id": "final-summary",
+      "kicker": "12 · Cierre",
+      "title": "El resultado final",
+      "descriptionHtml": "El recorrido termina con dos lecturas del PIB: la serie observada original y la serie desestacionalizada que facilita la comparación entre trimestres. Los puntos AO y LS señalan episodios extraordinarios que el modelo reconoce y conserva en el resultado final.",
+      "scale": "level",
+      "axisLabel": "PIB · miles de millones de pesos encadenados",
+      "eventSeries": "Y_SA_final",
       "lines": [
-        {"id": "linearized", "key": "growth_adjusted", "colour": "primary", "width": 2.5, "opacity": 0.72},
-        {"id": "observed", "key": "growth_observed", "colour": "observed", "width": 1.2, "opacity": 0.32}
+        {"id": "linearized", "key": "Y_SA_final", "colour": "primary", "width": 3},
+        {"id": "observed", "key": "Y", "colour": "observed", "width": 1.5, "opacity": 0.62}
       ],
       "legend": [
-        {"labelTex": "g_t", "label": "ajuste estimado en esta historia", "colour": "primary"},
-        {"labelTex": "g_{t,\\mathrm{obs}}", "label": "serie observada", "colour": "observed"}
+        {"labelTex": "Y_t^{\\mathrm{SA}}", "label": "PIB desestacionalizado", "colour": "primary"},
+        {"labelTex": "Y_t", "label": "PIB observado", "colour": "observed"}
       ]
     }
   ]
