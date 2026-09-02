@@ -126,9 +126,10 @@
     let animationFrame = null;
     let playing = false;
     let playTimer = null;
-    let scrollFrame = null;
-    let programmaticScrollTarget = null;
-    let programmaticScrollTimer = null;
+    let wheelDelta = 0;
+    let wheelLockedUntil = 0;
+    let wheelResetTimer = null;
+    let touchStart = null;
     let initialRevealDone = false;
 
     const progressButtons = scenes.map((scene, index) => {
@@ -967,8 +968,11 @@
       const sceneDefinition = scenes[index];
       activeScene = index;
       ui.scenes.forEach((scene, sceneIndex) => {
-        scene.classList.toggle("is-active", sceneIndex === index);
-        if (sceneIndex === index) scene.setAttribute("aria-current", "step");
+        const isActive = sceneIndex === index;
+        scene.classList.toggle("is-active", isActive);
+        scene.setAttribute("aria-hidden", String(!isActive));
+        scene.inert = !isActive;
+        if (isActive) scene.setAttribute("aria-current", "step");
         else scene.removeAttribute("aria-current");
       });
       progressButtons.forEach((button, buttonIndex) => {
@@ -987,25 +991,7 @@
 
     function goToScene(index) {
       const boundedIndex = Math.max(0, Math.min(scenes.length - 1, index));
-      if (!reducedMotion.matches) {
-        programmaticScrollTarget = boundedIndex;
-        clearTimeout(programmaticScrollTimer);
-        programmaticScrollTimer = window.setTimeout(
-          cancelProgrammaticScroll,
-          Math.max(1800, config.transitionDuration + 600)
-        );
-      }
       activateScene(boundedIndex);
-      ui.scenes[boundedIndex].scrollIntoView({
-        behavior: reducedMotion.matches ? "auto" : "smooth",
-        block: "center"
-      });
-    }
-
-    function cancelProgrammaticScroll() {
-      programmaticScrollTarget = null;
-      clearTimeout(programmaticScrollTimer);
-      programmaticScrollTimer = null;
     }
 
     function setPlaying(value) {
@@ -1035,30 +1021,6 @@
       }, config.sceneDuration);
     }
 
-    function updateFromScroll() {
-      scrollFrame = null;
-      const viewportCenter = window.innerHeight * 0.5;
-      if (programmaticScrollTarget !== null) {
-        const targetBounds = ui.scenes[programmaticScrollTarget].getBoundingClientRect();
-        const targetDistance = Math.abs(
-          targetBounds.top + targetBounds.height * 0.5 - viewportCenter
-        );
-        if (targetDistance > Math.max(8, window.innerHeight * 0.06)) return;
-        cancelProgrammaticScroll();
-      }
-      let closestIndex = activeScene;
-      let closestDistance = Infinity;
-      ui.scenes.forEach((scene, index) => {
-        const bounds = scene.getBoundingClientRect();
-        const distance = Math.abs(bounds.top + bounds.height * 0.5 - viewportCenter);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = index;
-        }
-      });
-      activateScene(closestIndex);
-    }
-
     function revealInitialLine() {
       if (initialRevealDone || reducedMotion.matches || activeScene !== 0) return;
       const path = pathNodes.get("observed");
@@ -1077,16 +1039,41 @@
       }, 1950);
     }
 
-    window.addEventListener("scroll", () => {
-      if (!scrollFrame) scrollFrame = requestAnimationFrame(updateFromScroll);
-    }, {passive: true});
-    window.addEventListener("wheel", () => {
-      cancelProgrammaticScroll();
+    root.addEventListener("wheel", (event) => {
+      if (event.ctrlKey) return;
+      event.preventDefault();
       setPlaying(false);
-    }, {passive: true});
-    window.addEventListener("touchstart", () => {
-      cancelProgrammaticScroll();
+      const deltaFactor = event.deltaMode === WheelEvent.DOM_DELTA_LINE
+        ? 16
+        : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+          ? window.innerHeight
+          : 1;
+      wheelDelta += event.deltaY * deltaFactor;
+      clearTimeout(wheelResetTimer);
+      wheelResetTimer = window.setTimeout(() => {
+        wheelDelta = 0;
+      }, 140);
+      const now = performance.now();
+      if (now < wheelLockedUntil || Math.abs(wheelDelta) < 40) return;
+      const direction = Math.sign(wheelDelta);
+      wheelDelta = 0;
+      wheelLockedUntil = now + Math.max(520, config.transitionDuration + 80);
+      goToScene(activeScene + direction);
+    }, {passive: false});
+    root.addEventListener("touchstart", (event) => {
       setPlaying(false);
+      const touch = event.changedTouches[0];
+      touchStart = touch ? {x: touch.clientX, y: touch.clientY} : null;
+    }, {passive: true});
+    root.addEventListener("touchend", (event) => {
+      if (!touchStart) return;
+      const touch = event.changedTouches[0];
+      if (!touch) return;
+      const deltaX = touch.clientX - touchStart.x;
+      const deltaY = touch.clientY - touchStart.y;
+      touchStart = null;
+      if (Math.abs(deltaY) < 44 || Math.abs(deltaY) <= Math.abs(deltaX)) return;
+      goToScene(activeScene + (deltaY < 0 ? 1 : -1));
     }, {passive: true});
     ui.previous.addEventListener("click", () => {
       setPlaying(false);
@@ -1103,17 +1090,30 @@
       if (!(bounds.top < window.innerHeight && bounds.bottom > 0)) return;
       const interactiveTarget = event.target.closest?.("a, button, input, select, textarea");
       if (interactiveTarget && (event.key === " " || event.key === "Enter")) return;
-      if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      const nextKeys = ["ArrowRight", "ArrowDown", "PageDown"];
+      const previousKeys = ["ArrowLeft", "ArrowUp", "PageUp"];
+      if (nextKeys.includes(event.key)) {
         event.preventDefault();
         setPlaying(false);
         goToScene(activeScene + 1);
-      } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      } else if (previousKeys.includes(event.key)) {
         event.preventDefault();
         setPlaying(false);
         goToScene(activeScene - 1);
+      } else if (event.key === "Home") {
+        event.preventDefault();
+        setPlaying(false);
+        goToScene(0);
+      } else if (event.key === "End") {
+        event.preventDefault();
+        setPlaying(false);
+        goToScene(scenes.length - 1);
       } else if (event.key === " " && ui.play) {
         event.preventDefault();
         setPlaying(!playing);
+      } else if (event.key === " ") {
+        event.preventDefault();
+        goToScene(activeScene + (event.shiftKey ? -1 : 1));
       }
     });
 
@@ -1128,14 +1128,12 @@
     new ResizeObserver(resize).observe(ui.graphic);
     resize();
     activateScene(0, true);
-    updateFromScroll();
     requestAnimationFrame(revealInitialLine);
     typesetMath(root);
   }
 
   function buildInterface(config) {
     root.innerHTML = "";
-    const scroll = htmlElement("div", "story-scroll");
     const stage = htmlElement("div", "story-stage");
     const graphic = svgElement("svg", {
       id: "story-graphic",
@@ -1150,9 +1148,7 @@
       graphicTitle,
       graphicDescription
     );
-    const brandLayer = htmlElement("div", "story-brand-layer");
     const brand = htmlElement("p", "story-brand", config.brand);
-    brandLayer.appendChild(brand);
     const legend = htmlElement("div", "story-legend");
     legend.setAttribute("aria-label", "Leyenda");
     const stripLabels = htmlElement("div", "story-strip-labels");
@@ -1197,7 +1193,7 @@
     if (play) controls.appendChild(play);
     controls.append(progress, next);
     if (counter) controls.appendChild(counter);
-    stage.append(graphic, legend, stripLabels, controls);
+    stage.append(graphic, brand, legend, stripLabels, controls);
     if (siteLink) stage.appendChild(siteLink);
 
     const sceneContainer = htmlElement("div", "story-scenes");
@@ -1229,8 +1225,8 @@
       return section;
     });
 
-    scroll.append(brandLayer, stage, sceneContainer);
-    root.append(scroll, announcer);
+    stage.appendChild(sceneContainer);
+    root.append(stage, announcer);
     return {
       graphic,
       graphicDescription,
