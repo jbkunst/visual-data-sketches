@@ -1,5 +1,9 @@
 ---
-pagetitle: "Ferrari Bloodlines"
+pagetitle: "Ferrari Bloodlines: Interactive Data Visualization"
+description: "Interactive data visualization of Ferrari road and race cars from 1947 to today, organized by debut year, historical family, engine, power, and speed."
+image: screenshot.png
+image-alt: "Interactive timeline of Ferrari road and race car families"
+lang: en
 date: 2026-08-30
 page-layout: custom
 navbar: false
@@ -128,7 +132,7 @@ cars <- model_timeline_adapt(
 
 ::: {.model-timeline-intro}
 
-From 1947 to present, every past model is placed by debut year and historical family.
+An interactive data visualization of Ferrari road and race cars from 1947 to today, organized by debut year and historical family. Explore engines, power, speed, and each model's history using the [Ferrari Past Models archive](https://www.ferrari.com/en-EN/auto/past-model).
 
 <span class="model-timeline-instructions" data-model-timeline-view-copy="timeline">Hover to see specs. Click to reveal the model's history.</span>
 <span class="model-timeline-instructions" data-model-timeline-view-copy="records" hidden>Search the archive. Expand a row to inspect.</span>
