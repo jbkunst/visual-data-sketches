@@ -1,5 +1,9 @@
 ---
-pagetitle: "Porsche Evolution"
+pagetitle: "Porsche Evolution: Interactive Data Visualization"
+description: "Interactive data visualization of Porsche models from 1939 to 2026, comparing road and race cars, engines, power, speed, production, and model families."
+image: screenshot.png
+image-alt: "Interactive timeline of Porsche road and race car evolution"
+lang: en
 date: 2026-08-31
 page-layout: custom
 navbar: false
@@ -91,7 +95,7 @@ initial_model <- "959 Komfort"
 
 ::: {.model-timeline-intro}
 
-Seven decades of Porsche models, drawn from [the model research collection assembled by Stuttcars](https://www.stuttcars.com/porsche-model-research/).
+An interactive data visualization of Porsche evolution from 1939 to 2026, comparing road cars, race cars, model families, engines, power, speed, and production. Data is drawn from [the model research collection assembled by Stuttcars](https://www.stuttcars.com/porsche-model-research/).
 
 <span class="model-timeline-instructions" data-model-timeline-view-copy="timeline">Hover to compare specifications. Click to inspect a model.</span>
 <span class="model-timeline-instructions" data-model-timeline-view-copy="records" hidden>Search the archive. Expand a row to inspect.</span>
