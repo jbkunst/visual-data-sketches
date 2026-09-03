@@ -373,6 +373,18 @@ html {
   line-height: 1.5;
 }
 
+.story-description a {
+  color: var(--story-blue);
+  text-decoration-color: rgba(143, 200, 255, 0.45);
+  text-underline-offset: 0.18em;
+}
+
+.story-description a:hover,
+.story-description a:focus-visible {
+  color: #c7e4ff;
+  text-decoration-color: currentColor;
+}
+
 .story-kicker {
   margin: 0 0 0.8rem;
   color: var(--story-blue);
