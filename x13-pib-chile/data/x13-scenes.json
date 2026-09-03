@@ -113,7 +113,7 @@
       "id": "regarima",
       "kicker": "3 · El preajuste regARIMA",
       "title": "Separar efectos identificables",
-      "descriptionHtml": "X-13 estima conjuntamente una regresión y un ARIMA. La regresión reúne calendario, cambios de nivel y outliers aditivos; los puntos destacan la fecha de cada intervención detectada.",
+      "descriptionHtml": "X-13 estima conjuntamente una regresión y un ARIMA. La regresión reúne efectos de calendario y dos tipos de intervenciones: los AO representan movimientos concentrados en un trimestre y los LS, cambios persistentes de nivel. Los puntos indican cuándo fueron detectados; describen quiebres estadísticos, no sus causas.",
       "formulaTex": "y_t = \\underbrace{C_t + L_t + A_t}_{X_t^{\\mathsf T}\\beta} + z_t",
       "formulaCompact": true,
       "scale": "log",
@@ -172,7 +172,7 @@
       "id": "seats",
       "kicker": "6 · Descomponer con SEATS",
       "title": "Las tres componentes",
-      "descriptionHtml": "SEATS descompone la serie linealizada en una tendencia-ciclo persistente, un patrón estacional y un movimiento irregular. Los tres componentes aparecen ahora en bandas independientes.",
+      "descriptionHtml": "SEATS descompone la serie linealizada en una tendencia-ciclo persistente, un patrón estacional y un movimiento irregular. Los tres componentes aparecen ahora en bandas independientes. El irregular de SEATS es una componente de la serie y no debe confundirse con las innovaciones del modelo ARIMA.",
       "formulaTex": "z_t = T_t^{\\mathrm{lin}} + S_t^{\\mathrm{lin}} + I_t^{\\mathrm{lin}}",
       "scale": "log",
       "axisLabel": "log(PIB)",
@@ -204,7 +204,7 @@
       "stripHeight": 80,
       "strips": [
         {"key": "T_lin", "labelTex": "T_t^{\\mathrm{lin}}", "label": "tendencia-ciclo", "colour": "trend", "type": "line", "scale": "extent"},
-        {"key": "S_lin", "labelTex": "S_t^{\\mathrm{lin}}", "label": "estacional", "colour": "seasonal", "type": "line", "opacity": 0.32},
+        {"key": "S_lin", "labelTex": "S_t^{\\mathrm{lin}}", "label": "estacional", "colour": "seasonal", "type": "line", "opacity": 0.12},
         {"key": "I_lin", "labelTex": "I_t^{\\mathrm{lin}}", "label": "irregular", "colour": "innovation", "type": "bars"}
       ],
       "lines": [
@@ -232,7 +232,7 @@
       "stripHeight": 80,
       "strips": [
         {"key": "T_final", "referenceKey": "T_lin", "labelTex": "T_t^{\\mathrm{final}} = T_t^{\\mathrm{lin}} + L_t", "label": "tendencia-ciclo", "colour": "trend", "type": "line", "scale": "extent", "effectColour": "regression", "threshold": 0.0001},
-        {"key": "S_lin", "labelTex": "S_t^{\\mathrm{lin}}", "label": "componente retirado", "colour": "seasonal", "type": "line", "opacity": 0.32},
+        {"key": "S_lin", "labelTex": "S_t^{\\mathrm{lin}}", "label": "componente retirado", "colour": "seasonal", "type": "line", "opacity": 0.12},
         {"key": "I_final", "referenceKey": "I_lin", "labelTex": "I_t^{\\mathrm{final}} = I_t^{\\mathrm{lin}} + A_t", "label": "irregular", "colour": "innovation", "type": "bars", "effectColour": "regression", "threshold": 0.0001}
       ],
       "lines": [
@@ -248,9 +248,9 @@
     },
     {
       "id": "final-adjustment",
-      "kicker": "9 · Leer el resultado",
-      "title": "La señal, lista para comparar",
-      "descriptionHtml": "La serie desestacionalizada final no es una tendencia suavizada: todavía contiene el irregular y los episodios extraordinarios. Esta es la serie apropiada para comparar trimestres consecutivos.",
+      "kicker": "9 · El resultado del ajuste",
+      "title": "La serie sin el componente estacional",
+      "descriptionHtml": "La serie final ya no contiene el componente estacional ni los efectos de calendario, pero no es una tendencia suavizada: conserva el irregular y los episodios extraordinarios. Como toda estimación de X-13, depende de la especificación elegida y puede revisarse al incorporar nuevas observaciones. Antes de comparar trimestres, falta volver a la escala original.",
       "formulaTex": "y_t^{\\mathrm{SA,final}} = T_t^{\\mathrm{final}} + I_t^{\\mathrm{final}}",
       "scale": "log",
       "axisLabel": "log(PIB)",
@@ -284,7 +284,7 @@
       "id": "quarterly-growth",
       "kicker": "11 · Comparar trimestres",
       "title": "Del nivel al crecimiento trimestral",
-      "descriptionHtml": "Después de volver a niveles, comparamos cada trimestre con el anterior. El Banco Central publica su propia estimación desestacionalizada. Compararla con este ejercicio es informativo, no una validación: las series pueden diferir por sus especificaciones, insumos y políticas de revisión.",
+      "descriptionHtml": "Ya en niveles, comparamos cada trimestre con el anterior. Como referencia, el Banco Central publica su propia serie desestacionalizada mediante un proceso institucional que puede considerar otras especificaciones, insumos, validaciones y políticas de revisión. Es una referencia útil, no un patrón contra el cual validar mecánicamente este ejercicio pedagógico.",
       "formulaTex": "g_t = 100\\left(\\frac{Y_t^{SA}}{Y_{t-1}^{SA}} - 1\\right)",
       "formulaCompact": true,
       "scale": "growth",
@@ -302,7 +302,7 @@
       "id": "final-summary",
       "kicker": "12 · Cierre",
       "title": "El resultado final",
-      "descriptionHtml": "El recorrido termina con dos lecturas del PIB: la serie observada original y la serie desestacionalizada que facilita la comparación entre trimestres. Los puntos AO y LS señalan episodios extraordinarios que el modelo reconoce y conserva en el resultado final.",
+      "descriptionHtml": "El recorrido termina con dos lecturas del PIB: la serie observada original y la serie desestacionalizada que facilita la comparación entre trimestres. Los puntos AO y LS señalan episodios extraordinarios que el modelo reconoce y conserva en el resultado final. Para profundizar en la metodología, las decisiones de modelación y el código de este ejercicio, revisa el <a href=\"https://jkunst.com/blog/posts/2026-09-01-desestacionalizar-pib-x13/\">análisis completo del ajuste estacional del PIB</a>.",
       "scale": "level",
       "axisLabel": "PIB · miles de millones de pesos encadenados",
       "eventSeries": "Y_SA_final",
