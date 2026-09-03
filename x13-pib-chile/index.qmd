@@ -36,10 +36,4 @@ $y_t$
 >
   <p class="story-loading" role="status">Preparando la historia…</p>
 </main>
-
-<noscript>
-  Esta historia necesita JavaScript. Los mismos valores están disponibles en
-  <a href="data/x13-series.csv">formato CSV</a> y
-  <a href="data/x13-series.json">formato JSON</a>.
-</noscript>
 ```

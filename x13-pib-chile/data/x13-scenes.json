@@ -80,9 +80,9 @@
   "scenes": [
     {
       "id": "observed",
-      "kicker": "1 · El punto de partida",
-      "title": "Una serie observada",
-      "descriptionHtml": "Cada observación es un trimestre del PIB chileno. La trayectoria reúne crecimiento, oscilaciones estacionales, calendario y episodios excepcionales en una sola línea.",
+      "kicker": "1 · El problema",
+      "title": "Comparando el PIB con su historia",
+      "descriptionHtml": "Cada punto representa un trimestre del PIB chileno. Esta trayectoria permite reconocer su crecimiento y episodios como crisis y recuperaciones, pero comparar un trimestre con otro no es tan directo: parte de sus subidas y bajadas responde a movimientos que se repiten durante el año. X-13ARIMA-SEATS ayuda a separar esos patrones y permite observar con mayor claridad cómo cambia la actividad económica de un trimestre al siguiente.",
       "formulaTex": "Y_t := \\text{PIB trimestral encadenado, ref. 2018}",
       "formulaCompact": true,
       "scale": "level",
@@ -134,7 +134,7 @@
       "id": "linearized",
       "kicker": "4 · Linealizar",
       "title": "Retirar temporalmente la regresión",
-      "descriptionHtml": "Al sustraer los efectos estimados queda la serie linealizada. La estacionalidad todavía está presente: <i>z</i><sub>t</sub> aún no es la serie desestacionalizada.",
+      "descriptionHtml": "Al sustraer los efectos estimados queda la serie linealizada. La estacionalidad todavía está presente: \\(z_t\\) aún no es la serie desestacionalizada.",
       "formulaTex": "z_t = y_t - (C_t + L_t + A_t)",
       "scale": "log",
       "axisLabel": "log(PIB)",
