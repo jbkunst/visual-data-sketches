@@ -1,5 +1,9 @@
 ---
-pagetitle: "Nissan Heritage Collection"
+pagetitle: "Nissan Heritage Collection: Interactive Data Visualization"
+description: "Interactive data visualization of 393 Nissan road and competition vehicles from 1920 to 2013, comparing categories, engines, power, and heritage."
+image: screenshot.png
+image-alt: "Interactive timeline of vehicles in the Nissan Heritage Collection"
+lang: en
 date: 2026-08-31
 page-layout: custom
 navbar: false
@@ -135,7 +139,7 @@ cars <- model_timeline_adapt(
 
 ::: {.model-timeline-intro}
 
-393 vehicles in five display bands derived from the collection's road/competition and vehicle-type fields. [Nissan Heritage Collection](https://www.nissan-global.com/EN/HERITAGE_COLLECTION/).
+An interactive data visualization of 393 road and competition vehicles in the [Nissan Heritage Collection](https://www.nissan-global.com/EN/HERITAGE_COLLECTION/) from 1920 to 2013, grouped into five bands by category and vehicle type. Compare engines, power, specifications, and model history.
 
 <span class="model-timeline-instructions" data-model-timeline-view-copy="timeline">Hover to see specifications. Click to reveal the vehicle's history.</span>
 <span class="model-timeline-instructions" data-model-timeline-view-copy="records" hidden>Search the archive. Expand a row to inspect.</span>
