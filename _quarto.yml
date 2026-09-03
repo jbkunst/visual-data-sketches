@@ -7,7 +7,8 @@ project:
 website:
   title: "Visual Data Sketches"
   description: "Visual sketches, stories, maps, and experiments made with data."
-  site-url: "https://jbkunst.github.io/visual-data-sketches/"
+  site-url: "https://jkunst.com/visual-data-sketches/"
+  google-analytics: "G-ECZ9XLT78C"
   search: false
   navbar:
     title: "jk"
