@@ -1,7 +1,9 @@
 ---
 title: "Visual Data Sketches"
-pagetitle: "Visual Data Sketches: Interactive Data Visualizations"
+pagetitle: "Interactive Data Visualizations by Joshua Kunst"
 description: "A curated collection of interactive data visualizations and visual stories about motorsport, economics, maps, and more."
+image: "porsche-evolution/screenshot.png"
+image-alt: "Visual Data Sketches represented by the Porsche Evolution timeline"
 lang: en
 open-graph: true
 twitter-card: true
