@@ -5,10 +5,11 @@ project:
     - "**/*.qmd"
 
 lang: en
+author-meta: "Joshua Kunst"
 
 website:
   title: "Visual Data Sketches"
-  description: "Interactive data visualizations, visual stories, maps, and experiments by Joshua Kunst."
+  description: "Interactive data visualizations, visual stories, maps, and experiments."
   site-url: "https://jkunst.com/visual-data-sketches/"
   google-analytics: "G-ECZ9XLT78C"
   open-graph: true

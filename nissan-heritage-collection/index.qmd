@@ -1,9 +1,8 @@
 ---
-pagetitle: "Nissan Heritage Collection: Interactive Data Visualization"
+pagetitle: "Nissan Heritage Collection"
 description: "Interactive data visualization of 393 Nissan road and competition vehicles from 1920 to 2013, comparing categories, engines, power, and heritage."
 image: screenshot.png
 image-alt: "Interactive timeline of vehicles in the Nissan Heritage Collection"
-lang: en
 date: 2026-08-31
 page-layout: custom
 navbar: false

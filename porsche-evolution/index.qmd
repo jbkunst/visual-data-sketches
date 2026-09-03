@@ -1,9 +1,8 @@
 ---
-pagetitle: "Porsche Evolution: Interactive Data Visualization"
+pagetitle: "Porsche Evolution"
 description: "Interactive data visualization of Porsche models from 1939 to 2026, comparing road and race cars, engines, power, speed, production, and model families."
 image: screenshot.png
 image-alt: "Interactive timeline of Porsche road and race car evolution"
-lang: en
 date: 2026-08-31
 page-layout: custom
 navbar: false

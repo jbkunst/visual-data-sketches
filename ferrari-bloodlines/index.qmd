@@ -1,9 +1,8 @@
 ---
-pagetitle: "Ferrari Bloodlines: Interactive Data Visualization"
+pagetitle: "Ferrari Bloodlines"
 description: "Interactive data visualization of Ferrari road and race cars from 1947 to today, organized by debut year, historical family, engine, power, and speed."
 image: screenshot.png
 image-alt: "Interactive timeline of Ferrari road and race car families"
-lang: en
 date: 2026-08-30
 page-layout: custom
 navbar: false

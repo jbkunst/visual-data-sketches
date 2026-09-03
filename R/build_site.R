@@ -216,7 +216,20 @@ cli::cli_alert_success("Generated sketches.yml with {length(cards)} sketches.")
 # quarto -----------------------------------------------------------------
 cli::cli_h1("Quarto")
 configure_quarto()
-quarto::quarto_render(".")
+
+qmd_files <- dir_ls(
+  ".",
+  recurse = TRUE,
+  type = "file",
+  glob = "*.qmd"
+) |>
+  path_rel() |>
+  sort()
+
+walk(qmd_files, function(input) {
+  cli::cli_alert_info("Render: {input}")
+  quarto::quarto_render(input)
+})
 
 # screenshots ------------------------------------------------------------
 cli::cli_h1("Screenshots")
