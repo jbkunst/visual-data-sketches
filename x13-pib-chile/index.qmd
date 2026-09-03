@@ -1,6 +1,8 @@
 ---
-title: "El recorrido del PIB en X-13"
-description: "Una historia visual del PIB trimestral de Chile a través de regARIMA y SEATS."
+title: "Desestacionalización del PIB de Chile con X-13ARIMA-SEATS"
+description: "Visualización interactiva del PIB trimestral de Chile que explica el ajuste estacional con regARIMA, outliers, SEATS, tendencia e irregular."
+image: screenshot.png
+image-alt: "Historia visual de la desestacionalización del PIB trimestral de Chile"
 date: 2026-09-02
 lang: es
 navbar: false
