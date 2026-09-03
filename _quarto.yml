@@ -4,11 +4,15 @@ project:
   render:
     - "**/*.qmd"
 
+lang: en
+
 website:
   title: "Visual Data Sketches"
-  description: "Visual sketches, stories, maps, and experiments made with data."
+  description: "Interactive data visualizations, visual stories, maps, and experiments by Joshua Kunst."
   site-url: "https://jkunst.com/visual-data-sketches/"
   google-analytics: "G-ECZ9XLT78C"
+  open-graph: true
+  twitter-card: true
   search: false
   navbar:
     title: "jk"
@@ -26,6 +30,7 @@ website:
 format:
   html:
     theme: cosmo
+    canonical-url: true
     toc: false
     anchor-sections: false
     smooth-scroll: true
