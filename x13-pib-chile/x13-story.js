@@ -405,7 +405,7 @@
       );
       const tickCount = plot.height < 620 ? 4 : 6;
       const yTicks = niceTicks(domain, tickCount);
-      const axisTextRight = plot.width - (plot.width < 760 ? 16 : 32);
+      const axisTextRight = plot.width - (plot.width < 760 ? 28 : 32);
 
       yTicks.forEach((value) => {
         const y = scale(value);
@@ -455,16 +455,22 @@
         layers.axes.appendChild(label);
       }
 
+      const axisTitleX = plot.width - (plot.width < 760 ? 8 : 12);
+      const axisTitleY = (
+        plot.margin.top + plot.height - plot.margin.bottom
+      ) / 2;
       const axisTitle = svgElement("text", {
-        x: axisTextRight,
-        y: plot.margin.top - 16,
+        x: axisTitleX,
+        y: axisTitleY,
+        transform: `rotate(90 ${axisTitleX} ${axisTitleY})`,
         fill: colours.axis,
         stroke: "#071521",
         "stroke-width": 4,
         "paint-order": "stroke",
         "font-family": "IBM Plex Sans, sans-serif",
-        "font-size": 11,
-        "text-anchor": "end"
+        "font-size": plot.width < 760 ? 8 : 11,
+        "text-anchor": "middle",
+        "dominant-baseline": "middle"
       });
       axisTitle.textContent = scene.axisLabel;
       layers.axes.appendChild(axisTitle);
@@ -870,15 +876,22 @@
         if (plot.width >= 760) {
           const event = row[dataConfig.eventKey];
           const offset = config.eventOffsets[event] || [28, -50];
+          const direction = offset[0] < 0 ? -1 : 1;
+          const labelInset = 4;
+          const underlineLength = Math.max(34, event.length * 7.2);
+          const underlineEnd = offset[0]
+            + direction * (labelInset + underlineLength);
           group.appendChild(svgElement("path", {
-            d: `M0,0 L${offset[0] * 0.55},${offset[1]} L${offset[0]},${offset[1]}`,
+            d: `M0,0 L${offset[0] * 0.55},${offset[1]} L${underlineEnd},${offset[1]}`,
             fill: "none",
             stroke: colour("regression"),
-            "stroke-width": 1.2
+            "stroke-width": 1.2,
+            "stroke-linecap": "round",
+            "stroke-linejoin": "round"
           }));
           const label = svgElement("text", {
-            x: offset[0],
-            y: offset[1] - 7,
+            x: offset[0] + direction * labelInset,
+            y: offset[1] - 6,
             fill: colour("regression"),
             stroke: "#071521",
             "stroke-width": 5,
@@ -887,7 +900,7 @@
             "font-family": "IBM Plex Sans, sans-serif",
             "font-size": 12,
             "font-weight": 600,
-            "text-anchor": offset[0] < 0 ? "end" : "start"
+            "text-anchor": direction < 0 ? "end" : "start"
           });
           label.textContent = event;
           group.appendChild(label);

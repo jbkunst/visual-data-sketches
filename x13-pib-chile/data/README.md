@@ -40,7 +40,7 @@ contienen nombres de columnas específicos del PIB.
 | `A` | Suma de outliers aditivos (`AO`). |
 | `z` | Serie linealizada: `y - XB`. |
 | `T_lin`, `S_lin`, `I_lin` | Componentes estimados por SEATS sobre `z`. |
-| `z_SA` | Ajuste interno: `T_lin + I_lin`. |
+| `z_SA` | Serie linealizada desestacionalizada: `T_lin + I_lin`. |
 | `T_final` | Tendencia-ciclo final: `T_lin + L`. |
 | `I_final` | Irregular final: `I_lin + A`. |
 | `y_SA_final` | Serie desestacionalizada final en logaritmos. |

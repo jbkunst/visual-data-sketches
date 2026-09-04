@@ -83,15 +83,15 @@
       "kicker": "1 · El problema",
       "title": "Comparando el PIB con su historia",
       "descriptionHtml": "Cada punto representa un trimestre del PIB chileno. Esta trayectoria permite reconocer su crecimiento y episodios como crisis y recuperaciones, pero comparar un trimestre con otro no es tan directo: parte de sus subidas y bajadas responde a movimientos que se repiten durante el año. X-13ARIMA-SEATS ayuda a separar esos patrones y permite observar con mayor claridad cómo cambia la actividad económica de un trimestre al siguiente.",
-      "formulaTex": "Y_t := \\text{PIB trimestral encadenado, ref. 2018}",
+      "formulaTex": "Y_t := \\text{PIB observado en el trimestre } t",
       "formulaCompact": true,
       "scale": "level",
-      "axisLabel": "PIB · escala original",
+      "axisLabel": "Miles de millones de pesos encadenados",
       "lines": [
         {"id": "observed", "key": "Y", "colour": "primary", "width": 2.8}
       ],
       "legend": [
-        {"labelTex": "Y_t", "label": "PIB observado", "colour": "primary"}
+        {"labelTex": "Y_t", "label": "PIB", "colour": "primary"}
       ]
     },
     {
@@ -101,12 +101,12 @@
       "descriptionHtml": "El logaritmo convierte una descomposición multiplicativa en una suma. Lo hacemos explícito como paso pedagógico: no cambian las observaciones ni las fechas, solo la escala en que seguimos la serie.",
       "formulaTex": "y_t = \\log(Y_t)",
       "scale": "log",
-      "axisLabel": "log(PIB)",
+      "axisLabel": "Miles de millones de pesos encadenados (escala logarítmica)",
       "lines": [
         {"id": "observed", "key": "y", "colour": "primary", "width": 2.8}
       ],
       "legend": [
-        {"labelTex": "y_t", "label": "serie observada en logaritmos", "colour": "primary"}
+        {"labelTex": "y_t", "label": "PIB en logaritmos", "colour": "primary"}
       ]
     },
     {
@@ -117,7 +117,7 @@
       "formulaTex": "y_t = x_t^\\top\\beta + z_t, \\qquad x_t^\\top\\beta = C_t + L_t + A_t",
       "formulaCompact": true,
       "scale": "log",
-      "axisLabel": "log(PIB)",
+      "axisLabel": "Miles de millones de pesos encadenados (escala logarítmica)",
       "eventSeries": "y",
       "stripHeight": 80,
       "strips": [
@@ -128,7 +128,7 @@
         {"id": "observed", "key": "y", "colour": "primary", "width": 2.8}
       ],
       "legend": [
-        {"labelTex": "y_t", "label": "observada", "colour": "primary"},
+        {"labelTex": "y_t", "label": "PIB en logaritmos", "colour": "primary"},
         {"labelTex": "z_t", "label": "sin efectos de regresión", "colour": "observed"},
         {"labelTex": "(X\\beta)_t", "label": "calendario + LS + AO", "colour": "regression"}
       ]
@@ -140,7 +140,7 @@
       "descriptionHtml": "Al sustraer los efectos estimados queda la serie linealizada. La estacionalidad todavía está presente: \\(z_t\\) aún no es la serie desestacionalizada.",
       "formulaTex": "z_t = y_t - (C_t + L_t + A_t)",
       "scale": "log",
-      "axisLabel": "log(PIB)",
+      "axisLabel": "Miles de millones de pesos encadenados (escala logarítmica)",
       "connector": "regression",
       "lines": [
         {"id": "observed-muted", "key": "y", "colour": "observed", "width": 1.3, "opacity": 0.35, "dash": "5 5"},
@@ -148,7 +148,7 @@
       ],
       "legend": [
         {"labelTex": "z_t", "label": "serie linealizada (efectos retirados)", "colour": "primary"},
-        {"labelTex": "y_t", "label": "serie observada", "colour": "observed"}
+        {"labelTex": "y_t", "label": "PIB en logaritmos", "colour": "observed"}
       ]
     },
     {
@@ -159,7 +159,7 @@
       "formulaTex": "\\underbrace{(1-B)(1-B^4)z_t}_{\\text{transformación de los datos}} = \\underbrace{(1-\\Theta B^4)\\varepsilon_t}_{\\text{modelo probabilístico}}",
       "formulaCompact": true,
       "scale": "log",
-      "axisLabel": "log(PIB)",
+      "axisLabel": "Miles de millones de pesos encadenados (escala logarítmica)",
       "strips": [
         {"key": "epsilon", "labelTex": "\\varepsilon_t", "label": "innovaciones", "colour": "innovation", "type": "bars"}
       ],
@@ -178,7 +178,7 @@
       "descriptionHtml": "SEATS descompone la serie linealizada en una tendencia-ciclo persistente, un patrón estacional y un movimiento irregular. Los tres componentes aparecen ahora en bandas independientes. El irregular de SEATS es una componente de la serie y no debe confundirse con las innovaciones del modelo ARIMA.",
       "formulaTex": "z_t = T_t^{\\mathrm{lin}} + S_t^{\\mathrm{lin}} + I_t^{\\mathrm{lin}}",
       "scale": "log",
-      "axisLabel": "log(PIB)",
+      "axisLabel": "Miles de millones de pesos encadenados (escala logarítmica)",
       "stripHeight": 80,
       "strips": [
         {"key": "T_lin", "labelTex": "T_t^{\\mathrm{lin}}", "label": "tendencia-ciclo", "colour": "trend", "type": "line", "scale": "extent"},
@@ -202,7 +202,7 @@
       "descriptionHtml": "SEATS retira el componente estacional de la serie linealizada. Quedan la tendencia-ciclo y el irregular: es un paso más del proceso antes de que X-13 complete el resultado final.",
       "formulaTex": "z_t^{\\mathrm{SA}} = z_t - S_t^{\\mathrm{lin}} = T_t^{\\mathrm{lin}} + I_t^{\\mathrm{lin}}",
       "scale": "log",
-      "axisLabel": "log(PIB)",
+      "axisLabel": "Miles de millones de pesos encadenados (escala logarítmica)",
       "connector": "seasonal",
       "stripHeight": 80,
       "strips": [
@@ -215,7 +215,7 @@
         {"id": "z-reference", "key": "z", "colour": "observed", "width": 1.3, "opacity": 0.38, "dash": "5 5"}
       ],
       "legend": [
-        {"labelTex": "z_t^{\\mathrm{SA}}", "label": "ajuste de SEATS", "colour": "primary"},
+        {"labelTex": "z_t^{\\mathrm{SA}}", "label": "serie linealizada desestacionalizada", "colour": "primary"},
         {"labelTex": "T_t^{\\mathrm{lin}}", "label": "tendencia-ciclo", "colour": "trend"},
         {"labelTex": "S_t^{\\mathrm{lin}}", "label": "estacional", "colour": "seasonal"},
         {"labelTex": "I_t^{\\mathrm{lin}}", "label": "irregular", "colour": "innovation"}
@@ -229,7 +229,7 @@
       "formulaTex": "y_t^{\\mathrm{SA,final}} = z_t^{\\mathrm{SA}} + L_t + A_t = T_t^{\\mathrm{final}} + I_t^{\\mathrm{final}}",
       "formulaCompact": true,
       "scale": "log",
-      "axisLabel": "log(PIB)",
+      "axisLabel": "Miles de millones de pesos encadenados (escala logarítmica)",
       "connector": "final-effects",
       "eventSeries": "y_SA_final",
       "stripHeight": 80,
@@ -244,9 +244,9 @@
         {"id": "observed", "key": "y", "colour": "observed", "width": 1.1, "opacity": 0.2}
       ],
       "legend": [
-        {"labelTex": "y_t^{\\mathrm{SA,final}}", "label": "ajuste final", "colour": "primary"},
-        {"labelTex": "z_t^{\\mathrm{SA}}", "label": "ajuste previo de SEATS", "colour": "observed"},
-        {"labelTex": "y_t", "label": "serie observada", "colour": "observed"}
+        {"labelTex": "y_t^{\\mathrm{SA,final}}", "label": "PIB desestacionalizado en logaritmos", "colour": "primary"},
+        {"labelTex": "z_t^{\\mathrm{SA}}", "label": "serie linealizada desestacionalizada", "colour": "observed"},
+        {"labelTex": "y_t", "label": "PIB en logaritmos", "colour": "observed"}
       ]
     },
     {
@@ -256,14 +256,14 @@
       "descriptionHtml": "La serie final ya no contiene el componente estacional ni los efectos de calendario, pero no es una tendencia suavizada: conserva el irregular y los episodios extraordinarios. Como toda estimación de X-13, depende de la especificación elegida y puede revisarse al incorporar nuevas observaciones. Antes de comparar trimestres, falta volver a la escala original.",
       "formulaTex": "y_t^{\\mathrm{SA,final}} = T_t^{\\mathrm{final}} + I_t^{\\mathrm{final}}",
       "scale": "log",
-      "axisLabel": "log(PIB)",
+      "axisLabel": "Miles de millones de pesos encadenados (escala logarítmica)",
       "lines": [
         {"id": "linearized", "key": "y_SA_final", "colour": "primary", "width": 3},
         {"id": "observed", "key": "y", "colour": "observed", "width": 1.4, "opacity": 0.58}
       ],
       "legend": [
-        {"labelTex": "y_t^{\\mathrm{SA,final}}", "label": "PIB desestacionalizado", "colour": "primary"},
-        {"labelTex": "y_t", "label": "PIB observado", "colour": "observed"}
+        {"labelTex": "y_t^{\\mathrm{SA,final}}", "label": "PIB desestacionalizado en logaritmos", "colour": "primary"},
+        {"labelTex": "y_t", "label": "PIB en logaritmos", "colour": "observed"}
       ]
     },
     {
@@ -273,14 +273,14 @@
       "descriptionHtml": "Como el modelo trabajó con logaritmos, aplicamos la exponencial para expresar nuevamente ambas series en miles de millones de pesos encadenados.",
       "formulaTex": "Y_t^{\\mathrm{SA,final}} = \\exp\\!\\left(y_t^{\\mathrm{SA,final}}\\right)",
       "scale": "level",
-      "axisLabel": "PIB · miles de millones de pesos encadenados",
+      "axisLabel": "Miles de millones de pesos encadenados",
       "lines": [
         {"id": "linearized", "key": "Y_SA_final", "colour": "primary", "width": 3},
         {"id": "observed", "key": "Y", "colour": "observed", "width": 1.5, "opacity": 0.7}
       ],
       "legend": [
         {"labelTex": "Y_t^{\\mathrm{SA,final}}", "label": "PIB desestacionalizado", "colour": "primary"},
-        {"labelTex": "Y_t", "label": "PIB observado", "colour": "observed"}
+        {"labelTex": "Y_t", "label": "PIB", "colour": "observed"}
       ]
     },
     {
@@ -291,10 +291,10 @@
       "formulaTex": "g_t = 100\\left(\\frac{Y_t^{SA}}{Y_{t-1}^{SA}} - 1\\right)",
       "formulaCompact": true,
       "scale": "growth",
-      "axisLabel": "variación trimestral (%)",
+      "axisLabel": "Variación trimestral (%)",
       "lines": [
         {"id": "linearized", "key": "growth_adjusted", "colour": "primary", "width": 2.7},
-        {"id": "observed", "key": "growth_observed", "colour": "observed", "width": 1.4, "opacity": 0.68}
+        {"id": "observed", "key": "growth_observed", "colour": "observed", "width": 1.1, "opacity": 0.35}
       ],
       "legend": [
         {"labelTex": "g_t", "label": "variación desestacionalizada", "colour": "primary"},
@@ -307,7 +307,7 @@
       "title": "El resultado final",
       "descriptionHtml": "El recorrido termina con dos lecturas del PIB: la serie observada original y la serie desestacionalizada que facilita la comparación entre trimestres. Los puntos AO y LS señalan episodios extraordinarios que el modelo reconoce y conserva en el resultado final. Para profundizar en la metodología, las decisiones de modelación y el código de este ejercicio, revisa el <a href=\"https://jkunst.com/blog/posts/2026-09-01-desestacionalizar-pib-x13/\">análisis completo del ajuste estacional del PIB</a>.",
       "scale": "level",
-      "axisLabel": "PIB · miles de millones de pesos encadenados",
+      "axisLabel": "Miles de millones de pesos encadenados",
       "eventSeries": "Y_SA_final",
       "lines": [
         {"id": "linearized", "key": "Y_SA_final", "colour": "primary", "width": 3},
@@ -315,7 +315,7 @@
       ],
       "legend": [
         {"labelTex": "Y_t^{\\mathrm{SA}}", "label": "PIB desestacionalizado", "colour": "primary"},
-        {"labelTex": "Y_t", "label": "PIB observado", "colour": "observed"}
+        {"labelTex": "Y_t", "label": "PIB", "colour": "observed"}
       ]
     }
   ]
