@@ -581,8 +581,8 @@
         ? plot.margin.left
         : Math.max(plot.margin.left, plot.width * 0.54);
       const xEnd = plot.width - plot.margin.right;
-      const stripHeightTarget = scene.stripHeight || 70;
-      const availableHeight = Math.min(240, definitions.length * stripHeightTarget);
+      const stripHeightTarget = (scene.stripHeight || 70) * 1.1;
+      const availableHeight = Math.min(264, definitions.length * stripHeightTarget);
       const areaTop = plot.width < 760
         ? plot.margin.top + 28
         : plot.height - plot.margin.bottom - 18 - availableHeight;
@@ -641,8 +641,8 @@
         ? plot.margin.left
         : Math.max(plot.margin.left, plot.width * 0.54);
       const xEnd = plot.width - plot.margin.right;
-      const stripHeightTarget = scene.stripHeight || 70;
-      const availableHeight = Math.min(240, definitions.length * stripHeightTarget);
+      const stripHeightTarget = (scene.stripHeight || 70) * 1.1;
+      const availableHeight = Math.min(264, definitions.length * stripHeightTarget);
       const areaTop = plot.width < 760
         ? plot.margin.top + 28
         : plot.height - plot.margin.bottom - 18 - availableHeight;

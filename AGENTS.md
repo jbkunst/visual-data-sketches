@@ -49,7 +49,9 @@ story, dashboard, interactive chart, table, map, Quarto page, or gallery entry.
 
 ### Validation before a pull request
 
-1. Run the repository's normal build with `Rscript R/build_site.R`.
+1. Do not run the repository build automatically. Ask the user to run
+   `Rscript R/build_site.R` and wait for them to share the result before
+   continuing with any validation that depends on generated output.
 2. Inspect generated HTML for the title, meta description, canonical link, Open
    Graph metadata, social image, correct language, and GA4 ID.
 3. Confirm that visualizations, tables, navigation, CSS, and JavaScript still
@@ -63,3 +65,10 @@ story, dashboard, interactive chart, table, map, Quarto page, or gallery entry.
 
 A sitemap helps discovery but does not guarantee indexing or ranking. Optimize
 for clear, useful content rather than attempting to manipulate search results.
+
+## X-13 PIB de Chile
+
+- When modifying `x13-pib-chile`, use
+  `https://jkunst.com/blog/posts/2026-09-01-desestacionalizar-pib-x13/` as the
+  canonical reference for the methodology, terminology, and mathematical
+  notation. Resolve inconsistencies in favor of the article.

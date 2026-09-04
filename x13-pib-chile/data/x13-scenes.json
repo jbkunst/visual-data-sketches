@@ -113,21 +113,24 @@
       "id": "regarima",
       "kicker": "3 · El preajuste regARIMA",
       "title": "Separar efectos identificables",
-      "descriptionHtml": "X-13 estima conjuntamente una regresión y un ARIMA. La regresión reúne efectos de calendario y dos tipos de intervenciones: los AO representan movimientos concentrados en un trimestre y los LS, cambios persistentes de nivel. Los puntos indican cuándo fueron detectados; describen quiebres estadísticos, no sus causas.",
-      "formulaTex": "y_t = \\underbrace{C_t + L_t + A_t}_{X_t^{\\mathsf T}\\beta} + z_t",
+      "descriptionHtml": "Primero, el modelo escribe \\(y_t = x_t^\\top\\beta + z_t\\). El efecto de regresión \\(x_t^\\top\\beta\\) combina calendario \\(C_t\\), cambios de nivel \\(L_t\\) y outliers aditivos \\(A_t\\). Aquí, \\(L_t\\) suma las intervenciones LS y \\(A_t\\), las intervenciones AO concentradas en un trimestre. X-13 estima esta regresión y el ARIMA conjuntamente. Los puntos indican cuándo fueron detectadas las intervenciones; describen quiebres estadísticos, no sus causas.",
+      "formulaTex": "y_t = x_t^\\top\\beta + z_t, \\qquad x_t^\\top\\beta = C_t + L_t + A_t",
       "formulaCompact": true,
       "scale": "log",
       "axisLabel": "log(PIB)",
-      "connector": "regression",
       "eventSeries": "y",
+      "stripHeight": 80,
+      "strips": [
+        {"key": "XB", "labelTex": "(X\\beta)_t", "label": "efecto total de regresión", "colour": "regression", "type": "line"},
+        {"key": "z", "labelTex": "z_t", "label": "serie linealizada", "colour": "observed", "type": "line", "scale": "extent"}
+      ],
       "lines": [
-        {"id": "observed", "key": "y", "colour": "primary", "width": 2.8},
-        {"id": "z-preview", "key": "z", "colour": "observed", "width": 1.4, "opacity": 0.62, "dash": "5 5"}
+        {"id": "observed", "key": "y", "colour": "primary", "width": 2.8}
       ],
       "legend": [
         {"labelTex": "y_t", "label": "observada", "colour": "primary"},
         {"labelTex": "z_t", "label": "sin efectos de regresión", "colour": "observed"},
-        {"labelTex": "C_t + L_t + A_t", "label": "efectos de regresión", "colour": "regression"}
+        {"labelTex": "(X\\beta)_t", "label": "calendario + LS + AO", "colour": "regression"}
       ]
     },
     {
@@ -152,7 +155,7 @@
       "id": "arima",
       "kicker": "5 · Modelar la dinámica",
       "title": "El ARIMA describe lo que queda",
-      "descriptionHtml": "El lado izquierdo transforma los datos; el derecho introduce el modelo probabilístico. Las innovaciones muestran la información nueva que el pasado de la serie no logró anticipar.",
+      "descriptionHtml": "Con los datos actuales, X-13 seleccionó para \\(z_t\\) un SARIMA \\((0,1,0)(0,1,1)_4\\): una diferencia regular, una diferencia estacional y un término de media móvil estacional de orden 1. El subíndice 4 corresponde a la frecuencia trimestral. En la ecuación, el lado izquierdo transforma los datos y el derecho introduce el modelo probabilístico. Las innovaciones muestran la información nueva que el pasado de la serie no logró anticipar.",
       "formulaTex": "\\underbrace{(1-B)(1-B^4)z_t}_{\\text{transformación de los datos}} = \\underbrace{(1-\\Theta B^4)\\varepsilon_t}_{\\text{modelo probabilístico}}",
       "formulaCompact": true,
       "scale": "log",
