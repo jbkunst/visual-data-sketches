@@ -1,0 +1,2557 @@
+{
+  "metadata": {
+    "country": "Estonia",
+    "cohort_from": "2018-01-01",
+    "cohort_to": "2022-12-01",
+    "max_age": 36,
+    "horizon_months": 3,
+    "max_start_age": 34,
+    "rate_definition": "Defaults during months a through a+2 divided by loans alive at the start of age a with an observable outcome window",
+    "weight": "loans_at_risk",
+    "link": "logit",
+    "correction": "q = (defaults_3m + 0.5) / (loans_at_risk + 1)",
+    "apc_order": ["mean", "age", "cohort", "period", "residual"],
+    "source_post": "https://jkunst.com/blog/posts/2026-09-12-decomposing-credit-vintages/",
+    "source_data": "https://goandgrow.eu/en/public-statistics/",
+    "source_snapshot": "https://raw.githubusercontent.com/jbkunst/jbkunst.github.io/754a9f03fa74fb1182ddbd9c3c04df39acaf0425/blog/posts/2026-09-12-decomposing-credit-vintages/data/bondora-apc-data.rds"
+  },
+  "example": {
+    "cohorts": ["2020-01-01", "2020-02-01", "2020-03-01"],
+    "ages": [1, 2, 3, 4, 5],
+    "rows": [
+      {
+        "cohort": "2020-01-01",
+        "age": 1,
+        "period": "2020-02-01",
+        "window_end_period": "2020-04-01",
+        "loans_at_risk": 2469,
+        "defaults_3m": 5,
+        "rd3m": 0.00202511138112596,
+        "q": 0.00222672064777328,
+        "y_logit": -6.10499613390701,
+        "mu": -4.7960476266059,
+        "residual_after_mean": -1.30894850730111,
+        "age_effect": -1.29959722727125,
+        "residual_after_age": -0.00935128002986141,
+        "cohort_effect": -0.0831695301662102,
+        "residual_after_cohort": 0.0738182501363488,
+        "period_effect": 0.0738182501363488,
+        "residual_after_period": 0,
+        "fitted_logit": -6.10499613390701,
+        "fitted_rd3m": 0.00222672064777328,
+        "reconstructed_q": 0.00222672064777328,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.00224759397922577,
+        "risk_after_cohort": 0.00206859608289094,
+        "risk_after_period": 0.00222672064777328,
+        "contribution_age": -0.00594703764738677,
+        "contribution_cohort": -0.000178997896334827,
+        "contribution_period": 0.000158124564882339,
+        "contribution_residual": -0.000201609266647318,
+        "reconstructed_rd3m": 0.00202511138112596
+      },
+      {
+        "cohort": "2020-01-01",
+        "age": 2,
+        "period": "2020-03-01",
+        "window_end_period": "2020-05-01",
+        "loans_at_risk": 2441,
+        "defaults_3m": 12,
+        "rd3m": 0.00491601802539943,
+        "q": 0.00511875511875512,
+        "y_logit": -5.2697121095377,
+        "mu": -4.7960476266059,
+        "residual_after_mean": -0.473664482931802,
+        "age_effect": -0.375843933358103,
+        "residual_after_age": -0.0978205495736999,
+        "cohort_effect": -0.0831695301662102,
+        "residual_after_cohort": -0.0146510194074897,
+        "period_effect": 0.0267785223032136,
+        "residual_after_period": -0.0414295417107033,
+        "fitted_logit": -5.228282567827,
+        "fitted_rd3m": 0.00533412207583682,
+        "reconstructed_q": 0.00511875511875512,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.00564181559810462,
+        "risk_after_cohort": 0.00519390978406969,
+        "risk_after_period": 0.00533412207583682,
+        "contribution_age": -0.00255281602850791,
+        "contribution_cohort": -0.000447905814034931,
+        "contribution_period": 0.000140212291767122,
+        "contribution_residual": -0.000418104050437389,
+        "reconstructed_rd3m": 0.00491601802539943
+      },
+      {
+        "cohort": "2020-01-01",
+        "age": 3,
+        "period": "2020-04-01",
+        "window_end_period": "2020-06-01",
+        "loans_at_risk": 2400,
+        "defaults_3m": 20,
+        "rd3m": 0.00833333333333333,
+        "q": 0.0085381091211995,
+        "y_logit": -4.75464094249021,
+        "mu": -4.7960476266059,
+        "residual_after_mean": 0.0414066841156897,
+        "age_effect": 0.210338956664895,
+        "residual_after_age": -0.168932272549205,
+        "cohort_effect": -0.0831695301662102,
+        "residual_after_cohort": -0.0857627423829951,
+        "period_effect": -0.147125818354907,
+        "residual_after_period": 0.0613630759719119,
+        "fitted_logit": -4.81600401846212,
+        "fitted_rd3m": 0.00803401815527318,
+        "reconstructed_q": 0.0085381091211995,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.010093601634965,
+        "risk_after_cohort": 0.00929557085518326,
+        "risk_after_period": 0.00803401815527318,
+        "contribution_age": 0.00189897000835247,
+        "contribution_cohort": -0.000798030779781748,
+        "contribution_period": -0.00126155269991008,
+        "contribution_residual": 0.000299315178060151,
+        "reconstructed_rd3m": 0.00833333333333333
+      },
+      {
+        "cohort": "2020-01-01",
+        "age": 4,
+        "period": "2020-05-01",
+        "window_end_period": "2020-07-01",
+        "loans_at_risk": 2347,
+        "defaults_3m": 31,
+        "rd3m": 0.0132083510864934,
+        "q": 0.0134156729131175,
+        "y_logit": -4.29782515902512,
+        "mu": -4.7960476266059,
+        "residual_after_mean": 0.498222467580785,
+        "age_effect": 0.656736868871016,
+        "residual_after_age": -0.158514401290231,
+        "cohort_effect": -0.0831695301662102,
+        "residual_after_cohort": -0.0753448711240209,
+        "period_effect": 0.0102884159151806,
+        "residual_after_period": -0.0856332870392015,
+        "fitted_logit": -4.21219187198591,
+        "fitted_rd3m": 0.0145976155646228,
+        "reconstructed_q": 0.0134156729131175,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.0156839249952865,
+        "risk_after_cohort": 0.0144503582917349,
+        "risk_after_period": 0.0145976155646228,
+        "contribution_age": 0.007489293368674,
+        "contribution_cohort": -0.00123356670355159,
+        "contribution_period": 0.000147257272887906,
+        "contribution_residual": -0.00138926447812945,
+        "reconstructed_rd3m": 0.0132083510864934
+      },
+      {
+        "cohort": "2020-01-01",
+        "age": 5,
+        "period": "2020-06-01",
+        "window_end_period": "2020-08-01",
+        "loans_at_risk": 2292,
+        "defaults_3m": 47,
+        "rd3m": 0.0205061082024433,
+        "q": 0.0207152202354993,
+        "y_logit": -3.8559537814872,
+        "mu": -4.7960476266059,
+        "residual_after_mean": 0.940093845118703,
+        "age_effect": 0.92022198216349,
+        "residual_after_age": 0.0198718629552131,
+        "cohort_effect": -0.0831695301662102,
+        "residual_after_cohort": 0.103041393121423,
+        "period_effect": 0.136347312602536,
+        "residual_after_period": -0.0333059194811129,
+        "fitted_logit": -3.82264786200608,
+        "fitted_rd3m": 0.0214017632823635,
+        "reconstructed_q": 0.0207152202354993,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.0203159138848578,
+        "risk_after_cohort": 0.0187249640315928,
+        "risk_after_period": 0.0214017632823635,
+        "contribution_age": 0.0121212822582453,
+        "contribution_cohort": -0.00159094985326503,
+        "contribution_period": 0.0026767992507707,
+        "contribution_residual": -0.000895655079920229,
+        "reconstructed_rd3m": 0.0205061082024433
+      },
+      {
+        "cohort": "2020-02-01",
+        "age": 1,
+        "period": "2020-03-01",
+        "window_end_period": "2020-05-01",
+        "loans_at_risk": 2054,
+        "defaults_3m": 4,
+        "rd3m": 0.00194741966893866,
+        "q": 0.00218978102189781,
+        "y_logit": -6.12176154805584,
+        "mu": -4.7960476266059,
+        "residual_after_mean": -1.32571392144994,
+        "age_effect": -1.29959722727125,
+        "residual_after_age": -0.0261166941786943,
+        "cohort_effect": -0.102130616343557,
+        "residual_after_cohort": 0.0760139221648625,
+        "period_effect": 0.0267785223032136,
+        "residual_after_period": 0.0492353998616489,
+        "fitted_logit": -6.17099694791749,
+        "fitted_rd3m": 0.00208479672839668,
+        "reconstructed_q": 0.00218978102189781,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.00224759397922577,
+        "risk_after_cohort": 0.00202982163415963,
+        "risk_after_period": 0.00208479672839668,
+        "contribution_age": -0.00594703764738677,
+        "contribution_cohort": -0.000217772345066138,
+        "contribution_period": 5.49750942370553e-05,
+        "contribution_residual": -0.000137377059458029,
+        "reconstructed_rd3m": 0.00194741966893866
+      },
+      {
+        "cohort": "2020-02-01",
+        "age": 2,
+        "period": "2020-04-01",
+        "window_end_period": "2020-06-01",
+        "loans_at_risk": 2017,
+        "defaults_3m": 8,
+        "rd3m": 0.00396628656420426,
+        "q": 0.00421209117938553,
+        "y_logit": -5.46557505039299,
+        "mu": -4.7960476266059,
+        "residual_after_mean": -0.669527423787085,
+        "age_effect": -0.375843933358103,
+        "residual_after_age": -0.293683490428982,
+        "cohort_effect": -0.102130616343557,
+        "residual_after_cohort": -0.191552874085426,
+        "period_effect": -0.147125818354907,
+        "residual_after_period": -0.0444270557305186,
+        "fitted_logit": -5.42114799466247,
+        "fitted_rd3m": 0.00440259863611797,
+        "reconstructed_q": 0.00421209117938553,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.00564181559810462,
+        "risk_after_cohort": 0.00509685262458855,
+        "risk_after_period": 0.00440259863611797,
+        "contribution_age": -0.00255281602850791,
+        "contribution_cohort": -0.000544962973516077,
+        "contribution_period": -0.000694253988470577,
+        "contribution_residual": -0.000436312071913707,
+        "reconstructed_rd3m": 0.00396628656420426
+      },
+      {
+        "cohort": "2020-02-01",
+        "age": 3,
+        "period": "2020-05-01",
+        "window_end_period": "2020-07-01",
+        "loans_at_risk": 1979,
+        "defaults_3m": 16,
+        "rd3m": 0.00808489135927236,
+        "q": 0.00833333333333333,
+        "y_logit": -4.77912349311153,
+        "mu": -4.7960476266059,
+        "residual_after_mean": 0.0169241334943706,
+        "age_effect": 0.210338956664895,
+        "residual_after_age": -0.193414823170524,
+        "cohort_effect": -0.102130616343557,
+        "residual_after_cohort": -0.0912842068269676,
+        "period_effect": 0.0102884159151806,
+        "residual_after_period": -0.101572622742148,
+        "fitted_logit": -4.67755087036938,
+        "fitted_rd3m": 0.00921604177102041,
+        "reconstructed_q": 0.00833333333333333,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.010093601634965,
+        "risk_after_cohort": 0.00912256995130967,
+        "risk_after_period": 0.00921604177102041,
+        "contribution_age": 0.00189897000835247,
+        "contribution_cohort": -0.000971031683655333,
+        "contribution_period": 9.34718197107397e-05,
+        "contribution_residual": -0.00113115041174805,
+        "reconstructed_rd3m": 0.00808489135927236
+      },
+      {
+        "cohort": "2020-02-01",
+        "age": 4,
+        "period": "2020-06-01",
+        "window_end_period": "2020-08-01",
+        "loans_at_risk": 1934,
+        "defaults_3m": 30,
+        "rd3m": 0.015511892450879,
+        "q": 0.0157622739018088,
+        "y_logit": -4.13424810230529,
+        "mu": -4.7960476266059,
+        "residual_after_mean": 0.661799524300608,
+        "age_effect": 0.656736868871016,
+        "residual_after_age": 0.00506265542959161,
+        "cohort_effect": -0.102130616343557,
+        "residual_after_cohort": 0.107193271773148,
+        "period_effect": 0.136347312602536,
+        "residual_after_period": -0.0291540408293878,
+        "fitted_logit": -4.1050940614759,
+        "fitted_rd3m": 0.0162210082627931,
+        "reconstructed_q": 0.0157622739018088,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.0156839249952865,
+        "risk_after_cohort": 0.0141827944768968,
+        "risk_after_period": 0.0162210082627931,
+        "contribution_age": 0.007489293368674,
+        "contribution_cohort": -0.00150113051838977,
+        "contribution_period": 0.00203821378589631,
+        "contribution_residual": -0.00070911581191406,
+        "reconstructed_rd3m": 0.015511892450879
+      },
+      {
+        "cohort": "2020-02-01",
+        "age": 5,
+        "period": "2020-07-01",
+        "window_end_period": "2020-09-01",
+        "loans_at_risk": 1883,
+        "defaults_3m": 38,
+        "rd3m": 0.0201805629314923,
+        "q": 0.0204352441613588,
+        "y_logit": -3.86984728117631,
+        "mu": -4.7960476266059,
+        "residual_after_mean": 0.926200345429586,
+        "age_effect": 0.92022198216349,
+        "residual_after_age": 0.00597836326609558,
+        "cohort_effect": -0.102130616343557,
+        "residual_after_cohort": 0.108108979609652,
+        "period_effect": 0.0472076914141812,
+        "residual_after_period": 0.0609012881954712,
+        "fitted_logit": -3.93074856937179,
+        "fitted_rd3m": 0.0192510941879856,
+        "reconstructed_q": 0.0204352441613588,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.0203159138848578,
+        "risk_after_cohort": 0.0183797273914538,
+        "risk_after_period": 0.0192510941879856,
+        "contribution_age": 0.0121212822582453,
+        "contribution_cohort": -0.00193618649340402,
+        "contribution_period": 0.000871366796531794,
+        "contribution_residual": 0.000929468743506693,
+        "reconstructed_rd3m": 0.0201805629314923
+      },
+      {
+        "cohort": "2020-03-01",
+        "age": 1,
+        "period": "2020-04-01",
+        "window_end_period": "2020-06-01",
+        "loans_at_risk": 1923,
+        "defaults_3m": 4,
+        "rd3m": 0.00208008320332813,
+        "q": 0.00233887733887734,
+        "y_logit": -6.05574261766458,
+        "mu": -4.7960476266059,
+        "residual_after_mean": -1.25969499105868,
+        "age_effect": -1.29959722727125,
+        "residual_after_age": 0.0399022362125672,
+        "cohort_effect": 0.217013499665827,
+        "residual_after_cohort": -0.17711126345326,
+        "period_effect": -0.147125818354907,
+        "residual_after_period": -0.0299854450983528,
+        "fitted_logit": -6.02575717256623,
+        "fitted_rd3m": 0.00240990010834633,
+        "reconstructed_q": 0.00233887733887734,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.00224759397922577,
+        "risk_after_cohort": 0.00279080258860512,
+        "risk_after_period": 0.00240990010834633,
+        "contribution_age": -0.00594703764738677,
+        "contribution_cohort": 0.000543208609379355,
+        "contribution_period": -0.000380902480258788,
+        "contribution_residual": -0.000329816905018202,
+        "reconstructed_rd3m": 0.00208008320332813
+      },
+      {
+        "cohort": "2020-03-01",
+        "age": 2,
+        "period": "2020-05-01",
+        "window_end_period": "2020-07-01",
+        "loans_at_risk": 1888,
+        "defaults_3m": 16,
+        "rd3m": 0.00847457627118644,
+        "q": 0.00873478030704076,
+        "y_logit": -4.73166933448484,
+        "mu": -4.7960476266059,
+        "residual_after_mean": 0.0643782921210603,
+        "age_effect": -0.375843933358103,
+        "residual_after_age": 0.440222225479163,
+        "cohort_effect": 0.217013499665827,
+        "residual_after_cohort": 0.223208725813336,
+        "period_effect": 0.0102884159151806,
+        "residual_after_period": 0.212920309898155,
+        "fitted_logit": -4.944589644383,
+        "fitted_rd3m": 0.00707147466342776,
+        "reconstructed_q": 0.00873478030704076,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.00564181559810462,
+        "risk_after_cohort": 0.00699960001390954,
+        "risk_after_period": 0.00707147466342776,
+        "contribution_age": -0.00255281602850791,
+        "contribution_cohort": 0.00135778441580491,
+        "contribution_period": 7.18746495182243e-05,
+        "contribution_residual": 0.00140310160775868,
+        "reconstructed_rd3m": 0.00847457627118644
+      },
+      {
+        "cohort": "2020-03-01",
+        "age": 3,
+        "period": "2020-06-01",
+        "window_end_period": "2020-08-01",
+        "loans_at_risk": 1855,
+        "defaults_3m": 28,
+        "rd3m": 0.0150943396226415,
+        "q": 0.0153556034482759,
+        "y_logit": -4.16080010434933,
+        "mu": -4.7960476266059,
+        "residual_after_mean": 0.635247522256572,
+        "age_effect": 0.210338956664895,
+        "residual_after_age": 0.424908565591677,
+        "cohort_effect": 0.217013499665827,
+        "residual_after_cohort": 0.20789506592585,
+        "period_effect": 0.136347312602536,
+        "residual_after_period": 0.0715477533233136,
+        "fitted_logit": -4.23234785767264,
+        "fitted_rd3m": 0.0143105000713014,
+        "reconstructed_q": 0.0153556034482759,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.010093601634965,
+        "risk_after_cohort": 0.0125092943307594,
+        "risk_after_period": 0.0143105000713014,
+        "contribution_age": 0.00189897000835247,
+        "contribution_cohort": 0.00241569269579442,
+        "contribution_period": 0.00180120574054199,
+        "contribution_residual": 0.000783839551340098,
+        "reconstructed_rd3m": 0.0150943396226415
+      },
+      {
+        "cohort": "2020-03-01",
+        "age": 4,
+        "period": "2020-07-01",
+        "window_end_period": "2020-09-01",
+        "loans_at_risk": 1805,
+        "defaults_3m": 34,
+        "rd3m": 0.0188365650969529,
+        "q": 0.0191029900332226,
+        "y_logit": -3.93862260026821,
+        "mu": -4.7960476266059,
+        "residual_after_mean": 0.857425026337688,
+        "age_effect": 0.656736868871016,
+        "residual_after_age": 0.200688157466672,
+        "cohort_effect": 0.217013499665827,
+        "residual_after_cohort": -0.0163253421991553,
+        "period_effect": 0.0472076914141812,
+        "residual_after_period": -0.0635330336133365,
+        "fitted_logit": -3.87508956665488,
+        "fitted_rd3m": 0.0203305693456962,
+        "reconstructed_q": 0.0191029900332226,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.0156839249952865,
+        "risk_after_cohort": 0.0194113090756686,
+        "risk_after_period": 0.0203305693456962,
+        "contribution_age": 0.007489293368674,
+        "contribution_cohort": 0.00372738408038209,
+        "contribution_period": 0.000919260270027599,
+        "contribution_residual": -0.00149400424874331,
+        "reconstructed_rd3m": 0.0188365650969529
+      },
+      {
+        "cohort": "2020-03-01",
+        "age": 5,
+        "period": "2020-08-01",
+        "window_end_period": "2020-10-01",
+        "loans_at_risk": 1752,
+        "defaults_3m": 34,
+        "rd3m": 0.0194063926940639,
+        "q": 0.0196805476326298,
+        "y_logit": -3.90824777225257,
+        "mu": -4.7960476266059,
+        "residual_after_mean": 0.887799854353326,
+        "age_effect": 0.92022198216349,
+        "residual_after_age": -0.0324221278101638,
+        "cohort_effect": 0.217013499665827,
+        "residual_after_cohort": -0.249435627475991,
+        "period_effect": -0.249435627475991,
+        "residual_after_period": 0,
+        "fitted_logit": -3.90824777225257,
+        "fitted_rd3m": 0.0196805476326298,
+        "reconstructed_q": 0.0196805476326298,
+        "risk_base": 0.00819463162661253,
+        "risk_after_age": 0.0203159138848578,
+        "risk_after_cohort": 0.0251160306440229,
+        "risk_after_period": 0.0196805476326298,
+        "contribution_age": 0.0121212822582453,
+        "contribution_cohort": 0.00480011675916505,
+        "contribution_period": -0.0054354830113931,
+        "contribution_residual": -0.000274154938565859,
+        "reconstructed_rd3m": 0.0194063926940639
+      }
+    ],
+    "mean": {
+      "weighted_sum": -148864.522282221,
+      "weight": 31039,
+      "mu": -4.7960476266059
+    },
+    "age": [
+      {
+        "age": 1,
+        "weighted_sum": -8377.20372699045,
+        "weight": 6446,
+        "effect": -1.29959722727125
+      },
+      {
+        "age": 2,
+        "weighted_sum": -2385.10560109052,
+        "weight": 6346,
+        "effect": -0.375843933358103
+      },
+      {
+        "age": 3,
+        "weighted_sum": 1311.25305584896,
+        "weight": 6234,
+        "effect": 0.210338956664895
+      },
+      {
+        "age": 4,
+        "weighted_sum": 3996.900583949,
+        "weight": 6086,
+        "effect": 0.656736868871016
+      },
+      {
+        "age": 5,
+        "weighted_sum": 5454.155688283,
+        "weight": 5927,
+        "effect": 0.92022198216349
+      }
+    ],
+    "cohort": [
+      {
+        "cohort": "2020-01-01",
+        "weighted_sum": -993.792715956046,
+        "weight": 11949,
+        "effect": -0.0831695301662102
+      },
+      {
+        "cohort": "2020-02-01",
+        "weighted_sum": -1007.72279146188,
+        "weight": 9867,
+        "effect": -0.102130616343557
+      },
+      {
+        "cohort": "2020-03-01",
+        "weighted_sum": 2001.51550741792,
+        "weight": 9223,
+        "effect": 0.217013499665827
+      }
+    ],
+    "period": [
+      {
+        "period": "2020-02-01",
+        "weighted_sum": 182.257259586645,
+        "weight": 2469,
+        "effect": 0.0738182501363488
+      },
+      {
+        "period": "2020-03-01",
+        "weighted_sum": 120.369457752945,
+        "weight": 4495,
+        "effect": 0.0267785223032136
+      },
+      {
+        "period": "2020-04-01",
+        "weighted_sum": -932.77768837011,
+        "weight": 6340,
+        "effect": -0.147125818354907
+      },
+      {
+        "period": "2020-05-01",
+        "weighted_sum": 63.9322164969322,
+        "weight": 6214,
+        "effect": 0.0102884159151806
+      },
+      {
+        "period": "2020-06-01",
+        "weighted_sum": 829.128007936023,
+        "weight": 6081,
+        "effect": 0.136347312602536
+      },
+      {
+        "period": "2020-07-01",
+        "weighted_sum": 174.1019659355,
+        "weight": 3688,
+        "effect": 0.0472076914141812
+      },
+      {
+        "period": "2020-08-01",
+        "weighted_sum": -437.011219337936,
+        "weight": 1752,
+        "effect": -0.249435627475991
+      }
+    ]
+  },
+  "effects": {
+    "age": [
+      {
+        "age": 1,
+        "age_effect": -1.7073653881347
+      },
+      {
+        "age": 2,
+        "age_effect": -0.802500335743768
+      },
+      {
+        "age": 3,
+        "age_effect": -0.337459829206784
+      },
+      {
+        "age": 4,
+        "age_effect": -0.182480278425218
+      },
+      {
+        "age": 5,
+        "age_effect": -0.110329660461367
+      },
+      {
+        "age": 6,
+        "age_effect": -0.00462210480800024
+      },
+      {
+        "age": 7,
+        "age_effect": 0.0795860484344686
+      },
+      {
+        "age": 8,
+        "age_effect": 0.14017796756865
+      },
+      {
+        "age": 9,
+        "age_effect": 0.188722894148899
+      },
+      {
+        "age": 10,
+        "age_effect": 0.249100324734697
+      },
+      {
+        "age": 11,
+        "age_effect": 0.289264109856582
+      },
+      {
+        "age": 12,
+        "age_effect": 0.294297372332265
+      },
+      {
+        "age": 13,
+        "age_effect": 0.303514845354915
+      },
+      {
+        "age": 14,
+        "age_effect": 0.282992614882479
+      },
+      {
+        "age": 15,
+        "age_effect": 0.290285959980498
+      },
+      {
+        "age": 16,
+        "age_effect": 0.255943184868061
+      },
+      {
+        "age": 17,
+        "age_effect": 0.264080020949498
+      },
+      {
+        "age": 18,
+        "age_effect": 0.253616829857505
+      },
+      {
+        "age": 19,
+        "age_effect": 0.241048700025503
+      },
+      {
+        "age": 20,
+        "age_effect": 0.19016434378928
+      },
+      {
+        "age": 21,
+        "age_effect": 0.159736706239509
+      },
+      {
+        "age": 22,
+        "age_effect": 0.116545108534489
+      },
+      {
+        "age": 23,
+        "age_effect": 0.134096448024832
+      },
+      {
+        "age": 24,
+        "age_effect": 0.136933913842919
+      },
+      {
+        "age": 25,
+        "age_effect": 0.153144376103385
+      },
+      {
+        "age": 26,
+        "age_effect": 0.150824454081345
+      },
+      {
+        "age": 27,
+        "age_effect": 0.182987039848669
+      },
+      {
+        "age": 28,
+        "age_effect": 0.161161887237147
+      },
+      {
+        "age": 29,
+        "age_effect": 0.142171123824215
+      },
+      {
+        "age": 30,
+        "age_effect": 0.125435575789942
+      },
+      {
+        "age": 31,
+        "age_effect": 0.116476719657313
+      },
+      {
+        "age": 32,
+        "age_effect": 0.132416258675008
+      },
+      {
+        "age": 33,
+        "age_effect": 0.139526428591446
+      },
+      {
+        "age": 34,
+        "age_effect": 0.131428628410337
+      }
+    ],
+    "cohort": [
+      {
+        "cohort": "2018-01-01",
+        "cohort_effect": -0.903694064077654
+      },
+      {
+        "cohort": "2018-02-01",
+        "cohort_effect": -0.82035510260232
+      },
+      {
+        "cohort": "2018-03-01",
+        "cohort_effect": -0.797040334567286
+      },
+      {
+        "cohort": "2018-04-01",
+        "cohort_effect": -0.670548228382767
+      },
+      {
+        "cohort": "2018-05-01",
+        "cohort_effect": -0.604624497788033
+      },
+      {
+        "cohort": "2018-06-01",
+        "cohort_effect": -0.691701000863048
+      },
+      {
+        "cohort": "2018-07-01",
+        "cohort_effect": -0.414820279205555
+      },
+      {
+        "cohort": "2018-08-01",
+        "cohort_effect": -0.362271220852935
+      },
+      {
+        "cohort": "2018-09-01",
+        "cohort_effect": -0.160883924245795
+      },
+      {
+        "cohort": "2018-10-01",
+        "cohort_effect": -0.20999797835227
+      },
+      {
+        "cohort": "2018-11-01",
+        "cohort_effect": -0.383668128956006
+      },
+      {
+        "cohort": "2018-12-01",
+        "cohort_effect": -0.290674468578005
+      },
+      {
+        "cohort": "2019-01-01",
+        "cohort_effect": -0.335708654744578
+      },
+      {
+        "cohort": "2019-02-01",
+        "cohort_effect": -0.137370755907561
+      },
+      {
+        "cohort": "2019-03-01",
+        "cohort_effect": -0.183247720356297
+      },
+      {
+        "cohort": "2019-04-01",
+        "cohort_effect": -0.181539291015407
+      },
+      {
+        "cohort": "2019-05-01",
+        "cohort_effect": -0.187160653650995
+      },
+      {
+        "cohort": "2019-06-01",
+        "cohort_effect": -0.17873367045125
+      },
+      {
+        "cohort": "2019-07-01",
+        "cohort_effect": -0.0215533548377784
+      },
+      {
+        "cohort": "2019-08-01",
+        "cohort_effect": -0.102756024847372
+      },
+      {
+        "cohort": "2019-09-01",
+        "cohort_effect": -0.000808609934271061
+      },
+      {
+        "cohort": "2019-10-01",
+        "cohort_effect": -0.0940095558367882
+      },
+      {
+        "cohort": "2019-11-01",
+        "cohort_effect": -0.286785702756875
+      },
+      {
+        "cohort": "2019-12-01",
+        "cohort_effect": -0.338374903856802
+      },
+      {
+        "cohort": "2020-01-01",
+        "cohort_effect": -0.460259000339776
+      },
+      {
+        "cohort": "2020-02-01",
+        "cohort_effect": -0.402260545724346
+      },
+      {
+        "cohort": "2020-03-01",
+        "cohort_effect": -0.442998901235747
+      },
+      {
+        "cohort": "2020-04-01",
+        "cohort_effect": -0.175822961216118
+      },
+      {
+        "cohort": "2020-05-01",
+        "cohort_effect": -0.358336644321347
+      },
+      {
+        "cohort": "2020-06-01",
+        "cohort_effect": -0.372020104154726
+      },
+      {
+        "cohort": "2020-07-01",
+        "cohort_effect": -0.441099565940383
+      },
+      {
+        "cohort": "2020-08-01",
+        "cohort_effect": -0.345324211753078
+      },
+      {
+        "cohort": "2020-09-01",
+        "cohort_effect": -0.261960962481931
+      },
+      {
+        "cohort": "2020-10-01",
+        "cohort_effect": -0.311138751112283
+      },
+      {
+        "cohort": "2020-11-01",
+        "cohort_effect": -0.31109840876479
+      },
+      {
+        "cohort": "2020-12-01",
+        "cohort_effect": -0.197253257520604
+      },
+      {
+        "cohort": "2021-01-01",
+        "cohort_effect": -0.149732914584156
+      },
+      {
+        "cohort": "2021-02-01",
+        "cohort_effect": 0.0215387872156831
+      },
+      {
+        "cohort": "2021-03-01",
+        "cohort_effect": 0.0974165379875073
+      },
+      {
+        "cohort": "2021-04-01",
+        "cohort_effect": 0.165785806917397
+      },
+      {
+        "cohort": "2021-05-01",
+        "cohort_effect": 0.11558797126143
+      },
+      {
+        "cohort": "2021-06-01",
+        "cohort_effect": 0.200474033435836
+      },
+      {
+        "cohort": "2021-07-01",
+        "cohort_effect": 0.135073310451643
+      },
+      {
+        "cohort": "2021-08-01",
+        "cohort_effect": 0.256382388503273
+      },
+      {
+        "cohort": "2021-09-01",
+        "cohort_effect": 0.508344333506932
+      },
+      {
+        "cohort": "2021-10-01",
+        "cohort_effect": 0.496040586341508
+      },
+      {
+        "cohort": "2021-11-01",
+        "cohort_effect": 0.495628653737158
+      },
+      {
+        "cohort": "2021-12-01",
+        "cohort_effect": 0.473817533210765
+      },
+      {
+        "cohort": "2022-01-01",
+        "cohort_effect": 0.577136397148297
+      },
+      {
+        "cohort": "2022-02-01",
+        "cohort_effect": 0.577406060948334
+      },
+      {
+        "cohort": "2022-03-01",
+        "cohort_effect": 0.566808764242674
+      },
+      {
+        "cohort": "2022-04-01",
+        "cohort_effect": 0.645612226635592
+      },
+      {
+        "cohort": "2022-05-01",
+        "cohort_effect": 0.495924910159257
+      },
+      {
+        "cohort": "2022-06-01",
+        "cohort_effect": 0.5060968714491
+      },
+      {
+        "cohort": "2022-07-01",
+        "cohort_effect": 0.419987672680638
+      },
+      {
+        "cohort": "2022-08-01",
+        "cohort_effect": 0.441026636492923
+      },
+      {
+        "cohort": "2022-09-01",
+        "cohort_effect": 0.605455691316152
+      },
+      {
+        "cohort": "2022-10-01",
+        "cohort_effect": 0.556741496668297
+      },
+      {
+        "cohort": "2022-11-01",
+        "cohort_effect": 0.519398945900685
+      },
+      {
+        "cohort": "2022-12-01",
+        "cohort_effect": 0.382530832333077
+      }
+    ],
+    "period": [
+      {
+        "period": "2018-02-01",
+        "period_effect": 0.580897072234713
+      },
+      {
+        "period": "2018-03-01",
+        "period_effect": -0.396507150136696
+      },
+      {
+        "period": "2018-04-01",
+        "period_effect": 0.27505240061418
+      },
+      {
+        "period": "2018-05-01",
+        "period_effect": -0.0687089727953612
+      },
+      {
+        "period": "2018-06-01",
+        "period_effect": -0.438695231395139
+      },
+      {
+        "period": "2018-07-01",
+        "period_effect": -0.410162795844821
+      },
+      {
+        "period": "2018-08-01",
+        "period_effect": -0.298646245234361
+      },
+      {
+        "period": "2018-09-01",
+        "period_effect": -0.4410899632397
+      },
+      {
+        "period": "2018-10-01",
+        "period_effect": -0.178129695122228
+      },
+      {
+        "period": "2018-11-01",
+        "period_effect": -0.0438615305362023
+      },
+      {
+        "period": "2018-12-01",
+        "period_effect": 0.112416524094737
+      },
+      {
+        "period": "2019-01-01",
+        "period_effect": 0.225471639234264
+      },
+      {
+        "period": "2019-02-01",
+        "period_effect": 0.0940197986978563
+      },
+      {
+        "period": "2019-03-01",
+        "period_effect": 0.099039815618788
+      },
+      {
+        "period": "2019-04-01",
+        "period_effect": 0.13539683365246
+      },
+      {
+        "period": "2019-05-01",
+        "period_effect": 0.125605706799516
+      },
+      {
+        "period": "2019-06-01",
+        "period_effect": 0.311937835130062
+      },
+      {
+        "period": "2019-07-01",
+        "period_effect": 0.379299877568343
+      },
+      {
+        "period": "2019-08-01",
+        "period_effect": 0.331113081031449
+      },
+      {
+        "period": "2019-09-01",
+        "period_effect": 0.279939824453181
+      },
+      {
+        "period": "2019-10-01",
+        "period_effect": 0.327238288421553
+      },
+      {
+        "period": "2019-11-01",
+        "period_effect": 0.340221937540722
+      },
+      {
+        "period": "2019-12-01",
+        "period_effect": 0.398743386412819
+      },
+      {
+        "period": "2020-01-01",
+        "period_effect": 0.267163533020558
+      },
+      {
+        "period": "2020-02-01",
+        "period_effect": 0.020954849412792
+      },
+      {
+        "period": "2020-03-01",
+        "period_effect": -0.109104323685269
+      },
+      {
+        "period": "2020-04-01",
+        "period_effect": -0.0839574631687652
+      },
+      {
+        "period": "2020-05-01",
+        "period_effect": 0.147768516703317
+      },
+      {
+        "period": "2020-06-01",
+        "period_effect": 0.304798858195984
+      },
+      {
+        "period": "2020-07-01",
+        "period_effect": 0.275080610897249
+      },
+      {
+        "period": "2020-08-01",
+        "period_effect": 0.214259832349531
+      },
+      {
+        "period": "2020-09-01",
+        "period_effect": 0.143894773994937
+      },
+      {
+        "period": "2020-10-01",
+        "period_effect": 0.200544233240718
+      },
+      {
+        "period": "2020-11-01",
+        "period_effect": 0.302336275571726
+      },
+      {
+        "period": "2020-12-01",
+        "period_effect": 0.160050155148238
+      },
+      {
+        "period": "2021-01-01",
+        "period_effect": -0.0170523393881472
+      },
+      {
+        "period": "2021-02-01",
+        "period_effect": -0.271661745630415
+      },
+      {
+        "period": "2021-03-01",
+        "period_effect": -0.520233929176068
+      },
+      {
+        "period": "2021-04-01",
+        "period_effect": -0.575798699208423
+      },
+      {
+        "period": "2021-05-01",
+        "period_effect": -0.604464695930074
+      },
+      {
+        "period": "2021-06-01",
+        "period_effect": -0.615056956882158
+      },
+      {
+        "period": "2021-07-01",
+        "period_effect": -0.598645632595379
+      },
+      {
+        "period": "2021-08-01",
+        "period_effect": -0.603066826573219
+      },
+      {
+        "period": "2021-09-01",
+        "period_effect": -0.597629828619684
+      },
+      {
+        "period": "2021-10-01",
+        "period_effect": -0.643647475931096
+      },
+      {
+        "period": "2021-11-01",
+        "period_effect": -0.663257137665227
+      },
+      {
+        "period": "2021-12-01",
+        "period_effect": -0.571170004196953
+      },
+      {
+        "period": "2022-01-01",
+        "period_effect": -0.575151865655676
+      },
+      {
+        "period": "2022-02-01",
+        "period_effect": -0.323592955257691
+      },
+      {
+        "period": "2022-03-01",
+        "period_effect": -0.0272117273172376
+      },
+      {
+        "period": "2022-04-01",
+        "period_effect": 0.13946557299406
+      },
+      {
+        "period": "2022-05-01",
+        "period_effect": 0.182199961940181
+      },
+      {
+        "period": "2022-06-01",
+        "period_effect": 0.163317043844825
+      },
+      {
+        "period": "2022-07-01",
+        "period_effect": 0.2976639458145
+      },
+      {
+        "period": "2022-08-01",
+        "period_effect": 0.288943584343451
+      },
+      {
+        "period": "2022-09-01",
+        "period_effect": 0.299585493365441
+      },
+      {
+        "period": "2022-10-01",
+        "period_effect": 0.328594061749957
+      },
+      {
+        "period": "2022-11-01",
+        "period_effect": 0.422005802626359
+      },
+      {
+        "period": "2022-12-01",
+        "period_effect": 0.487599424379471
+      },
+      {
+        "period": "2023-01-01",
+        "period_effect": 0.426373509370134
+      },
+      {
+        "period": "2023-02-01",
+        "period_effect": 0.39168808486067
+      },
+      {
+        "period": "2023-03-01",
+        "period_effect": 0.346482791206875
+      },
+      {
+        "period": "2023-04-01",
+        "period_effect": 0.319348850535649
+      },
+      {
+        "period": "2023-05-01",
+        "period_effect": 0.292095942153473
+      },
+      {
+        "period": "2023-06-01",
+        "period_effect": 0.239383581080561
+      },
+      {
+        "period": "2023-07-01",
+        "period_effect": 0.191184517457473
+      },
+      {
+        "period": "2023-08-01",
+        "period_effect": 0.0714730267921096
+      },
+      {
+        "period": "2023-09-01",
+        "period_effect": 0.0139751005053017
+      },
+      {
+        "period": "2023-10-01",
+        "period_effect": -0.0250776381505152
+      },
+      {
+        "period": "2023-11-01",
+        "period_effect": -0.0172058636289703
+      },
+      {
+        "period": "2023-12-01",
+        "period_effect": 0.0189999931988004
+      },
+      {
+        "period": "2024-01-01",
+        "period_effect": 0.0600410097677618
+      },
+      {
+        "period": "2024-02-01",
+        "period_effect": 0.0401744278599255
+      },
+      {
+        "period": "2024-03-01",
+        "period_effect": -0.0867707337031682
+      },
+      {
+        "period": "2024-04-01",
+        "period_effect": -0.166238059830077
+      },
+      {
+        "period": "2024-05-01",
+        "period_effect": -0.137386364523851
+      },
+      {
+        "period": "2024-06-01",
+        "period_effect": -0.0436523443082237
+      },
+      {
+        "period": "2024-07-01",
+        "period_effect": 0.012370769741451
+      },
+      {
+        "period": "2024-08-01",
+        "period_effect": -0.0445556309177286
+      },
+      {
+        "period": "2024-09-01",
+        "period_effect": -0.120872882653184
+      },
+      {
+        "period": "2024-10-01",
+        "period_effect": -0.216270605622804
+      },
+      {
+        "period": "2024-11-01",
+        "period_effect": -0.27190253939058
+      },
+      {
+        "period": "2024-12-01",
+        "period_effect": -0.280973561858756
+      },
+      {
+        "period": "2025-01-01",
+        "period_effect": -0.220096899446803
+      },
+      {
+        "period": "2025-02-01",
+        "period_effect": -0.119114391369798
+      },
+      {
+        "period": "2025-03-01",
+        "period_effect": -0.107925127268065
+      },
+      {
+        "period": "2025-04-01",
+        "period_effect": -0.235086272945408
+      },
+      {
+        "period": "2025-05-01",
+        "period_effect": -0.250974436629057
+      },
+      {
+        "period": "2025-06-01",
+        "period_effect": -0.223272625389369
+      },
+      {
+        "period": "2025-07-01",
+        "period_effect": -0.0940398023223301
+      },
+      {
+        "period": "2025-08-01",
+        "period_effect": -0.107057910710504
+      },
+      {
+        "period": "2025-09-01",
+        "period_effect": -0.297348527808966
+      },
+      {
+        "period": "2025-10-01",
+        "period_effect": -0.28999263268756
+      }
+    ]
+  },
+  "portfolio": [
+    {
+      "period": "2018-02-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.0177242144158541,
+      "cohort_component": -0.00238378688594843,
+      "period_component": 0.001279800378381,
+      "residual_component": -0.000413552917484436,
+      "fitted_rd3m": 0.0029093931837074,
+      "reconstructed_rd3m": 0.00249584026622296,
+      "loans_at_risk": 1202,
+      "defaults_3m": 3,
+      "observed_rd3m": 0.00249584026622296
+    },
+    {
+      "period": "2018-03-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.0145532398484666,
+      "cohort_component": -0.0041949046908724,
+      "period_component": -0.000976303620537086,
+      "residual_component": 0.000772369373081371,
+      "fitted_rd3m": 0.00201314594725289,
+      "reconstructed_rd3m": 0.00278551532033426,
+      "loans_at_risk": 2154,
+      "defaults_3m": 6,
+      "observed_rd3m": 0.00278551532033426
+    },
+    {
+      "period": "2018-04-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.0118242510394011,
+      "cohort_component": -0.00569938199589985,
+      "period_component": 0.00132524137217873,
+      "residual_component": -0.000437161627680145,
+      "fitted_rd3m": 0.00553920244400668,
+      "reconstructed_rd3m": 0.00510204081632653,
+      "loans_at_risk": 3136,
+      "defaults_3m": 16,
+      "observed_rd3m": 0.00510204081632653
+    },
+    {
+      "period": "2018-05-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.0101735472086214,
+      "cohort_component": -0.00648860904027759,
+      "period_component": -0.000335118668749038,
+      "residual_component": -0.000445401508736469,
+      "fitted_rd3m": 0.00474031918948092,
+      "reconstructed_rd3m": 0.00429491768074445,
+      "loans_at_risk": 4191,
+      "defaults_3m": 18,
+      "observed_rd3m": 0.00429491768074445
+    },
+    {
+      "period": "2018-06-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00887101005991608,
+      "cohort_component": -0.00700206978843316,
+      "period_component": -0.00207352855031202,
+      "residual_component": 0.000996452054841394,
+      "fitted_rd3m": 0.00379098570846768,
+      "reconstructed_rd3m": 0.00478743776330908,
+      "loans_at_risk": 5222,
+      "defaults_3m": 25,
+      "observed_rd3m": 0.00478743776330908
+    },
+    {
+      "period": "2018-07-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00765703570591596,
+      "cohort_component": -0.00747142350063829,
+      "period_component": -0.00221244081440454,
+      "residual_component": 8.18727724350844e-05,
+      "fitted_rd3m": 0.00439669408617016,
+      "reconstructed_rd3m": 0.00447856685860524,
+      "loans_at_risk": 6252,
+      "defaults_3m": 28,
+      "observed_rd3m": 0.00447856685860525
+    },
+    {
+      "period": "2018-08-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00658866085550576,
+      "cohort_component": -0.00779675467135915,
+      "period_component": -0.00188641718824616,
+      "residual_component": -1.98798399416399e-05,
+      "fitted_rd3m": 0.00546576139201788,
+      "reconstructed_rd3m": 0.00544588155207624,
+      "loans_at_risk": 7345,
+      "defaults_3m": 40,
+      "observed_rd3m": 0.00544588155207624
+    },
+    {
+      "period": "2018-09-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00574293495207493,
+      "cohort_component": -0.00791594092139931,
+      "period_component": -0.00286469604176935,
+      "residual_component": -5.21263683283389e-05,
+      "fitted_rd3m": 0.00521402219188535,
+      "reconstructed_rd3m": 0.00516189582355701,
+      "loans_at_risk": 8524,
+      "defaults_3m": 44,
+      "observed_rd3m": 0.00516189582355702
+    },
+    {
+      "period": "2018-10-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00488781433735961,
+      "cohort_component": -0.00786986467123912,
+      "period_component": -0.00145321598404183,
+      "residual_component": -0.000702172178287369,
+      "fitted_rd3m": 0.00752669911448838,
+      "reconstructed_rd3m": 0.00682452693620101,
+      "loans_at_risk": 9671,
+      "defaults_3m": 66,
+      "observed_rd3m": 0.00682452693620101
+    },
+    {
+      "period": "2018-11-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00445689046401576,
+      "cohort_component": -0.00754114178672702,
+      "period_component": -0.000413681505875995,
+      "residual_component": 0.000460436762077371,
+      "fitted_rd3m": 0.00932588035051017,
+      "reconstructed_rd3m": 0.00978631711258754,
+      "loans_at_risk": 11138,
+      "defaults_3m": 109,
+      "observed_rd3m": 0.00978631711258754
+    },
+    {
+      "period": "2018-12-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00363118458251995,
+      "cohort_component": -0.00745617657917776,
+      "period_component": 0.00125051140232909,
+      "residual_component": 0.0014895920239425,
+      "fitted_rd3m": 0.0119007443477603,
+      "reconstructed_rd3m": 0.0133903363717028,
+      "loans_at_risk": 12397,
+      "defaults_3m": 166,
+      "observed_rd3m": 0.0133903363717028
+    },
+    {
+      "period": "2019-01-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00316567337747171,
+      "cohort_component": -0.00729226574484928,
+      "period_component": 0.00280768649710159,
+      "residual_component": 9.08992588311962e-05,
+      "fitted_rd3m": 0.0140873414819095,
+      "reconstructed_rd3m": 0.0141782407407407,
+      "loans_at_risk": 13824,
+      "defaults_3m": 196,
+      "observed_rd3m": 0.0141782407407407
+    },
+    {
+      "period": "2019-02-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00261029590067566,
+      "cohort_component": -0.00724562764877772,
+      "period_component": 0.00115415730312291,
+      "residual_component": 0.000533415188290263,
+      "fitted_rd3m": 0.0130358278607985,
+      "reconstructed_rd3m": 0.0135692430490887,
+      "loans_at_risk": 15034,
+      "defaults_3m": 204,
+      "observed_rd3m": 0.0135692430490887
+    },
+    {
+      "period": "2019-03-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00192168054634098,
+      "cohort_component": -0.00720437096748042,
+      "period_component": 0.00129269836369878,
+      "residual_component": -0.000314417810869187,
+      "fitted_rd3m": 0.0139042409570063,
+      "reconstructed_rd3m": 0.0135898231461371,
+      "loans_at_risk": 16115,
+      "defaults_3m": 219,
+      "observed_rd3m": 0.0135898231461371
+    },
+    {
+      "period": "2019-04-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00158531968090447,
+      "cohort_component": -0.00697862200221263,
+      "period_component": 0.00187801127966434,
+      "residual_component": -0.000484102336390104,
+      "fitted_rd3m": 0.0150516637036762,
+      "reconstructed_rd3m": 0.0145675613672861,
+      "loans_at_risk": 17436,
+      "defaults_3m": 254,
+      "observed_rd3m": 0.0145675613672861
+    },
+    {
+      "period": "2019-05-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00145107287968601,
+      "cohort_component": -0.00667692254275433,
+      "period_component": 0.00178992058456256,
+      "residual_component": 0.000513067586952092,
+      "fitted_rd3m": 0.0153995192692512,
+      "reconstructed_rd3m": 0.0159125868562033,
+      "loans_at_risk": 18853,
+      "defaults_3m": 300,
+      "observed_rd3m": 0.0159125868562033
+    },
+    {
+      "period": "2019-06-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.00117318896269455,
+      "cohort_component": -0.00644412061177441,
+      "period_component": 0.00505749340665064,
+      "residual_component": -0.000724134084768762,
+      "fitted_rd3m": 0.0191777779393106,
+      "reconstructed_rd3m": 0.0184536438545419,
+      "loans_at_risk": 20267,
+      "defaults_3m": 374,
+      "observed_rd3m": 0.0184536438545419
+    },
+    {
+      "period": "2019-07-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.000758854121168603,
+      "cohort_component": -0.00627561490720158,
+      "period_component": 0.00662005908886717,
+      "residual_component": -0.00150781676740214,
+      "fitted_rd3m": 0.0213231841676259,
+      "reconstructed_rd3m": 0.0198153674002238,
+      "loans_at_risk": 21448,
+      "defaults_3m": 425,
+      "observed_rd3m": 0.0198153674002238
+    },
+    {
+      "period": "2019-08-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.000680760750378058,
+      "cohort_component": -0.00597138058462878,
+      "period_component": 0.00578256098438438,
+      "residual_component": -0.00144502916395269,
+      "fitted_rd3m": 0.0208680137565065,
+      "reconstructed_rd3m": 0.0194229845925538,
+      "loans_at_risk": 22911,
+      "defaults_3m": 445,
+      "observed_rd3m": 0.0194229845925538
+    },
+    {
+      "period": "2019-09-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.000710772805002778,
+      "cohort_component": -0.00562115488324001,
+      "period_component": 0.00486329986878004,
+      "residual_component": -0.00176403435646867,
+      "fitted_rd3m": 0.0202689662876662,
+      "reconstructed_rd3m": 0.0185049319311975,
+      "loans_at_risk": 24534,
+      "defaults_3m": 454,
+      "observed_rd3m": 0.0185049319311975
+    },
+    {
+      "period": "2019-10-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.000557434192316263,
+      "cohort_component": -0.00527652105670012,
+      "period_component": 0.00600594421401473,
+      "residual_component": -0.00131771164576351,
+      "fitted_rd3m": 0.0219095830721273,
+      "reconstructed_rd3m": 0.0205918714263638,
+      "loans_at_risk": 25884,
+      "defaults_3m": 533,
+      "observed_rd3m": 0.0205918714263638
+    },
+    {
+      "period": "2019-11-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.000894422297696586,
+      "cohort_component": -0.00483928910448925,
+      "period_component": 0.00632154981312662,
+      "residual_component": -0.00155655738026256,
+      "fitted_rd3m": 0.0223254325180697,
+      "reconstructed_rd3m": 0.0207688751378072,
+      "loans_at_risk": 28119,
+      "defaults_3m": 584,
+      "observed_rd3m": 0.0207688751378072
+    },
+    {
+      "period": "2019-12-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.000952469561273409,
+      "cohort_component": -0.00456676478475579,
+      "period_component": 0.00772872387553283,
+      "residual_component": -0.00176233193392808,
+      "fitted_rd3m": 0.0239470836366326,
+      "reconstructed_rd3m": 0.0221847517027045,
+      "loans_at_risk": 30246,
+      "defaults_3m": 671,
+      "observed_rd3m": 0.0221847517027045
+    },
+    {
+      "period": "2020-01-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.000800946099239974,
+      "cohort_component": -0.00447116496949993,
+      "period_component": 0.00491855477853323,
+      "residual_component": -0.00171333533629729,
+      "fitted_rd3m": 0.0213840378169223,
+      "reconstructed_rd3m": 0.019670702480625,
+      "loans_at_risk": 32129,
+      "defaults_3m": 632,
+      "observed_rd3m": 0.019670702480625
+    },
+    {
+      "period": "2020-02-01",
+      "base": 0.0217375941071289,
+      "age_component": -0.000422710877235664,
+      "cohort_component": -0.00454195183946798,
+      "period_component": 0.000348183878291815,
+      "residual_component": -0.000171460484588156,
+      "fitted_rd3m": 0.0171211152687171,
+      "reconstructed_rd3m": 0.016949654784129,
+      "loans_at_risk": 33747,
+      "defaults_3m": 572,
+      "observed_rd3m": 0.016949654784129
+    },
+    {
+      "period": "2020-03-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.000103106231499002,
+      "cohort_component": -0.00470026859513345,
+      "period_component": -0.00174039654920616,
+      "residual_component": -0.000169152087757559,
+      "fitted_rd3m": 0.0154000351942883,
+      "reconstructed_rd3m": 0.0152308831065308,
+      "loans_at_risk": 35126,
+      "defaults_3m": 535,
+      "observed_rd3m": 0.0152308831065308
+    },
+    {
+      "period": "2020-04-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.000578938994656148,
+      "cohort_component": -0.00487650083382781,
+      "period_component": -0.00137861600719267,
+      "residual_component": 0.000362293403320933,
+      "fitted_rd3m": 0.0160614162607646,
+      "reconstructed_rd3m": 0.0164237096640855,
+      "loans_at_risk": 36289,
+      "defaults_3m": 596,
+      "observed_rd3m": 0.0164237096640855
+    },
+    {
+      "period": "2020-05-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00122575517752829,
+      "cohort_component": -0.00506676540005724,
+      "period_component": 0.00278327877428965,
+      "residual_component": -0.000207892673570737,
+      "fitted_rd3m": 0.0206798626588896,
+      "reconstructed_rd3m": 0.0204719699853189,
+      "loans_at_risk": 36782,
+      "defaults_3m": 753,
+      "observed_rd3m": 0.0204719699853189
+    },
+    {
+      "period": "2020-06-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00176046545699561,
+      "cohort_component": -0.0052258035472514,
+      "period_component": 0.00633184180928345,
+      "residual_component": -0.000638720493183928,
+      "fitted_rd3m": 0.0246040978261566,
+      "reconstructed_rd3m": 0.0239653773329727,
+      "loans_at_risk": 36970,
+      "defaults_3m": 886,
+      "observed_rd3m": 0.0239653773329727
+    },
+    {
+      "period": "2020-07-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.0023393298290183,
+      "cohort_component": -0.00539075872663649,
+      "period_component": 0.00575633500587638,
+      "residual_component": -0.000625199328022554,
+      "fitted_rd3m": 0.0244425002153871,
+      "reconstructed_rd3m": 0.0238173008873646,
+      "loans_at_risk": 36738,
+      "defaults_3m": 875,
+      "observed_rd3m": 0.0238173008873646
+    },
+    {
+      "period": "2020-08-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00259493079140845,
+      "cohort_component": -0.00550004812061814,
+      "period_component": 0.00438386794204521,
+      "residual_component": -0.00101649163075698,
+      "fitted_rd3m": 0.0232163447199645,
+      "reconstructed_rd3m": 0.0221998530892075,
+      "loans_at_risk": 36757,
+      "defaults_3m": 816,
+      "observed_rd3m": 0.0221998530892075
+    },
+    {
+      "period": "2020-09-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00281286543367504,
+      "cohort_component": -0.00563013226034775,
+      "period_component": 0.00285744697099622,
+      "residual_component": -0.000643514360127322,
+      "fitted_rd3m": 0.0217777742514524,
+      "reconstructed_rd3m": 0.0211342598913251,
+      "loans_at_risk": 36623,
+      "defaults_3m": 774,
+      "observed_rd3m": 0.0211342598913251
+    },
+    {
+      "period": "2020-10-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00290265427412937,
+      "cohort_component": -0.00572035243647372,
+      "period_component": 0.00409447907441004,
+      "residual_component": -0.000347853825588181,
+      "fitted_rd3m": 0.0230143750191946,
+      "reconstructed_rd3m": 0.0226665211936065,
+      "loans_at_risk": 36662,
+      "defaults_3m": 831,
+      "observed_rd3m": 0.0226665211936065
+    },
+    {
+      "period": "2020-11-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00294648701238941,
+      "cohort_component": -0.00579604005142082,
+      "period_component": 0.00648144424254905,
+      "residual_component": 1.06730093120674e-05,
+      "fitted_rd3m": 0.0253694853106466,
+      "reconstructed_rd3m": 0.0253801583199587,
+      "loans_at_risk": 36761,
+      "defaults_3m": 933,
+      "observed_rd3m": 0.0253801583199587
+    },
+    {
+      "period": "2020-12-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00247115272078706,
+      "cohort_component": -0.00564392542201473,
+      "period_component": 0.00314447739833348,
+      "residual_component": 0.00106074259584052,
+      "fitted_rd3m": 0.0217092988042348,
+      "reconstructed_rd3m": 0.0227700414000753,
+      "loans_at_risk": 37198,
+      "defaults_3m": 847,
+      "observed_rd3m": 0.0227700414000753
+    },
+    {
+      "period": "2021-01-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00200619547989963,
+      "cohort_component": -0.00550363974825577,
+      "period_component": -0.000302218728115546,
+      "residual_component": 0.00119296449082658,
+      "fitted_rd3m": 0.0179379311106573,
+      "reconstructed_rd3m": 0.0191308956014838,
+      "loans_at_risk": 37740,
+      "defaults_3m": 722,
+      "observed_rd3m": 0.0191308956014838
+    },
+    {
+      "period": "2021-02-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.0018421457666516,
+      "cohort_component": -0.0053985760849205,
+      "period_component": -0.00425853824020186,
+      "residual_component": 7.46329920419454e-05,
+      "fitted_rd3m": 0.0139226255486582,
+      "reconstructed_rd3m": 0.0139972585407001,
+      "loans_at_risk": 37936,
+      "defaults_3m": 531,
+      "observed_rd3m": 0.0139972585407001
+    },
+    {
+      "period": "2021-03-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00171884303130369,
+      "cohort_component": -0.00523885043671381,
+      "period_component": -0.00730136418974267,
+      "residual_component": 0.000202737276632797,
+      "fitted_rd3m": 0.0109162225119762,
+      "reconstructed_rd3m": 0.011118959788609,
+      "loans_at_risk": 38223,
+      "defaults_3m": 425,
+      "observed_rd3m": 0.011118959788609
+    },
+    {
+      "period": "2021-04-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00145711567108561,
+      "cohort_component": -0.004979373505063,
+      "period_component": -0.00788468071442154,
+      "residual_component": -0.000167530976833244,
+      "fitted_rd3m": 0.01033065555873,
+      "reconstructed_rd3m": 0.0101631245818968,
+      "loans_at_risk": 38866,
+      "defaults_3m": 395,
+      "observed_rd3m": 0.0101631245818968
+    },
+    {
+      "period": "2021-05-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00120672882236468,
+      "cohort_component": -0.00461119174914347,
+      "period_component": -0.00822677700625433,
+      "residual_component": -0.000192159765298863,
+      "fitted_rd3m": 0.0101063541740958,
+      "reconstructed_rd3m": 0.00991419440879696,
+      "loans_at_risk": 39741,
+      "defaults_3m": 394,
+      "observed_rd3m": 0.00991419440879696
+    },
+    {
+      "period": "2021-06-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.000985870580967087,
+      "cohort_component": -0.00423457099802821,
+      "period_component": -0.00840276172720642,
+      "residual_component": -6.82516385662025e-05,
+      "fitted_rd3m": 0.0100861319628614,
+      "reconstructed_rd3m": 0.0100178803242952,
+      "loans_at_risk": 40827,
+      "defaults_3m": 409,
+      "observed_rd3m": 0.0100178803242952
+    },
+    {
+      "period": "2021-07-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00076336585039031,
+      "cohort_component": -0.00380783639529659,
+      "period_component": -0.00832785701253864,
+      "residual_component": 9.02426994203121e-05,
+      "fitted_rd3m": 0.010365266549684,
+      "reconstructed_rd3m": 0.0104555092491043,
+      "loans_at_risk": 41031,
+      "defaults_3m": 429,
+      "observed_rd3m": 0.0104555092491043
+    },
+    {
+      "period": "2021-08-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.000613933398754602,
+      "cohort_component": -0.00340310400786356,
+      "period_component": -0.00848619664976183,
+      "residual_component": 0.000286305795880873,
+      "fitted_rd3m": 0.0104622268482582,
+      "reconstructed_rd3m": 0.010748532644139,
+      "loans_at_risk": 41401,
+      "defaults_3m": 445,
+      "observed_rd3m": 0.010748532644139
+    },
+    {
+      "period": "2021-09-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.000541508873339028,
+      "cohort_component": -0.00294613068843757,
+      "period_component": -0.00859869187161698,
+      "residual_component": -9.17053902594604e-05,
+      "fitted_rd3m": 0.0107342804204134,
+      "reconstructed_rd3m": 0.010642575030154,
+      "loans_at_risk": 42283,
+      "defaults_3m": 450,
+      "observed_rd3m": 0.010642575030154
+    },
+    {
+      "period": "2021-10-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.000770933214187328,
+      "cohort_component": -0.00240020338537726,
+      "period_component": -0.0094370252980592,
+      "residual_component": -0.000344397176658376,
+      "fitted_rd3m": 0.0106712986378798,
+      "reconstructed_rd3m": 0.0103269014612214,
+      "loans_at_risk": 42704,
+      "defaults_3m": 441,
+      "observed_rd3m": 0.0103269014612214
+    },
+    {
+      "period": "2021-11-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.000697325692897671,
+      "cohort_component": -0.00169751474343289,
+      "period_component": -0.00993962063319111,
+      "residual_component": -0.000401869514195139,
+      "fitted_rd3m": 0.0107977844234026,
+      "reconstructed_rd3m": 0.0103959149092075,
+      "loans_at_risk": 43671,
+      "defaults_3m": 454,
+      "observed_rd3m": 0.0103959149092075
+    },
+    {
+      "period": "2021-12-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.000574731000350145,
+      "cohort_component": -0.000880803988938475,
+      "period_component": -0.00920419168264353,
+      "residual_component": -0.000361599537380301,
+      "fitted_rd3m": 0.0122273294358971,
+      "reconstructed_rd3m": 0.0118657298985168,
+      "loans_at_risk": 44835,
+      "defaults_3m": 532,
+      "observed_rd3m": 0.0118657298985168
+    },
+    {
+      "period": "2022-01-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.000732828515606008,
+      "cohort_component": -0.000102364890476069,
+      "period_component": -0.00965023557874351,
+      "residual_component": -2.84157186447976e-05,
+      "fitted_rd3m": 0.0127178221535154,
+      "reconstructed_rd3m": 0.0126894064348706,
+      "loans_at_risk": 45471,
+      "defaults_3m": 577,
+      "observed_rd3m": 0.0126894064348706
+    },
+    {
+      "period": "2022-02-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00123841656429406,
+      "cohort_component": 0.000663909729094774,
+      "period_component": -0.00641534560114816,
+      "residual_component": -0.000119050266736699,
+      "fitted_rd3m": 0.0172245747993696,
+      "reconstructed_rd3m": 0.0171055245326329,
+      "loans_at_risk": 45307,
+      "defaults_3m": 775,
+      "observed_rd3m": 0.0171055245326329
+    },
+    {
+      "period": "2022-03-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00138914633540037,
+      "cohort_component": 0.00143828213692389,
+      "period_component": -0.000642438510567081,
+      "residual_component": -7.35908544662142e-05,
+      "fitted_rd3m": 0.0239225840688861,
+      "reconstructed_rd3m": 0.0238489932144199,
+      "loans_at_risk": 45243,
+      "defaults_3m": 1079,
+      "observed_rd3m": 0.0238489932144199
+    },
+    {
+      "period": "2022-04-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00143931357359494,
+      "cohort_component": 0.00222760086814166,
+      "period_component": 0.0036813570659666,
+      "residual_component": 0.000590590770434989,
+      "fitted_rd3m": 0.0290858656148321,
+      "reconstructed_rd3m": 0.0296764563852671,
+      "loans_at_risk": 45558,
+      "defaults_3m": 1352,
+      "observed_rd3m": 0.0296764563852671
+    },
+    {
+      "period": "2022-05-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00138103844175734,
+      "cohort_component": 0.00307762630000323,
+      "period_component": 0.00505471855907549,
+      "residual_component": 0.000916126685044133,
+      "fitted_rd3m": 0.031250977407965,
+      "reconstructed_rd3m": 0.0321671040930091,
+      "loans_at_risk": 46103,
+      "defaults_3m": 1483,
+      "observed_rd3m": 0.0321671040930091
+    },
+    {
+      "period": "2022-06-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00144795109788907,
+      "cohort_component": 0.00388653185929538,
+      "period_component": 0.00463317591490136,
+      "residual_component": 0.000621959908365359,
+      "fitted_rd3m": 0.0317052529792148,
+      "reconstructed_rd3m": 0.0323272128875801,
+      "loans_at_risk": 46184,
+      "defaults_3m": 1493,
+      "observed_rd3m": 0.0323272128875801
+    },
+    {
+      "period": "2022-07-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00162992837955156,
+      "cohort_component": 0.00472337038530933,
+      "period_component": 0.00933054754317659,
+      "residual_component": -0.000226757683190785,
+      "fitted_rd3m": 0.0374214404151664,
+      "reconstructed_rd3m": 0.0371946827319756,
+      "loans_at_risk": 45813,
+      "defaults_3m": 1704,
+      "observed_rd3m": 0.0371946827319756
+    },
+    {
+      "period": "2022-08-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00178616152135479,
+      "cohort_component": 0.00541312239003557,
+      "period_component": 0.00927519780035439,
+      "residual_component": 0.000953911265387177,
+      "fitted_rd3m": 0.0382120758188737,
+      "reconstructed_rd3m": 0.0391659870842609,
+      "loans_at_risk": 45371,
+      "defaults_3m": 1777,
+      "observed_rd3m": 0.0391659870842609
+    },
+    {
+      "period": "2022-09-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00186097382535246,
+      "cohort_component": 0.00610905684619856,
+      "period_component": 0.00990721173303341,
+      "residual_component": 0.000825186788909469,
+      "fitted_rd3m": 0.0396148365117134,
+      "reconstructed_rd3m": 0.0404400233006228,
+      "loans_at_risk": 44634,
+      "defaults_3m": 1805,
+      "observed_rd3m": 0.0404400233006228
+    },
+    {
+      "period": "2022-10-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00202408618603973,
+      "cohort_component": 0.00692527817850663,
+      "period_component": 0.0113650678095498,
+      "residual_component": -0.000609343074241412,
+      "fitted_rd3m": 0.0420520262812251,
+      "reconstructed_rd3m": 0.0414426832069837,
+      "loans_at_risk": 43530,
+      "defaults_3m": 1804,
+      "observed_rd3m": 0.0414426832069837
+    },
+    {
+      "period": "2022-11-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00204784503518161,
+      "cohort_component": 0.00771679813589537,
+      "period_component": 0.0156503798535639,
+      "residual_component": 0.000135542174297377,
+      "fitted_rd3m": 0.0471526171317699,
+      "reconstructed_rd3m": 0.0472881593060672,
+      "loans_at_risk": 42886,
+      "defaults_3m": 2028,
+      "observed_rd3m": 0.0472881593060673
+    },
+    {
+      "period": "2022-12-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00208435982703885,
+      "cohort_component": 0.00851652354230761,
+      "period_component": 0.0191335948772486,
+      "residual_component": -0.000582451656716225,
+      "fitted_rd3m": 0.051472072353724,
+      "reconstructed_rd3m": 0.0508896206970077,
+      "loans_at_risk": 42209,
+      "defaults_3m": 2148,
+      "observed_rd3m": 0.0508896206970077
+    },
+    {
+      "period": "2023-01-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00207966915774191,
+      "cohort_component": 0.00914779812086844,
+      "period_component": 0.0165416781276615,
+      "residual_component": 0.000588027886613649,
+      "fitted_rd3m": 0.0495067395134007,
+      "reconstructed_rd3m": 0.0500947674000144,
+      "loans_at_risk": 41681,
+      "defaults_3m": 2088,
+      "observed_rd3m": 0.0500947674000144
+    },
+    {
+      "period": "2023-02-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00291613889278397,
+      "cohort_component": 0.0100038036452253,
+      "period_component": 0.0156942106723803,
+      "residual_component": -0.00161519363373523,
+      "fitted_rd3m": 0.0503517473175185,
+      "reconstructed_rd3m": 0.0487365536837832,
+      "loans_at_risk": 39416,
+      "defaults_3m": 1921,
+      "observed_rd3m": 0.0487365536837832
+    },
+    {
+      "period": "2023-03-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00355352802931475,
+      "cohort_component": 0.0105716480888095,
+      "period_component": 0.0140430408696375,
+      "residual_component": -0.00162609230494614,
+      "fitted_rd3m": 0.0499058110948908,
+      "reconstructed_rd3m": 0.0482797187899446,
+      "loans_at_risk": 37552,
+      "defaults_3m": 1813,
+      "observed_rd3m": 0.0482797187899446
+    },
+    {
+      "period": "2023-04-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00395247738957201,
+      "cohort_component": 0.0110621068095364,
+      "period_component": 0.0130815900324214,
+      "residual_component": -0.00169915885683832,
+      "fitted_rd3m": 0.0498337683386588,
+      "reconstructed_rd3m": 0.0481346094818205,
+      "loans_at_risk": 35837,
+      "defaults_3m": 1725,
+      "observed_rd3m": 0.0481346094818205
+    },
+    {
+      "period": "2023-05-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00426624380587551,
+      "cohort_component": 0.0114335683806932,
+      "period_component": 0.0120229657695518,
+      "residual_component": -0.00143052827681901,
+      "fitted_rd3m": 0.0494603720632494,
+      "reconstructed_rd3m": 0.0480298437864304,
+      "loans_at_risk": 34312,
+      "defaults_3m": 1648,
+      "observed_rd3m": 0.0480298437864304
+    },
+    {
+      "period": "2023-06-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00452096902786212,
+      "cohort_component": 0.0118137315421159,
+      "period_component": 0.00976985632993422,
+      "residual_component": -0.00148250322991109,
+      "fitted_rd3m": 0.0478421510070412,
+      "reconstructed_rd3m": 0.0463596477771301,
+      "loans_at_risk": 32593,
+      "defaults_3m": 1511,
+      "observed_rd3m": 0.0463596477771301
+    },
+    {
+      "period": "2023-07-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00469315541391544,
+      "cohort_component": 0.0121080203924818,
+      "period_component": 0.0077190446363709,
+      "residual_component": -0.00174122930947541,
+      "fitted_rd3m": 0.0462578145498971,
+      "reconstructed_rd3m": 0.0445165852404217,
+      "loans_at_risk": 31112,
+      "defaults_3m": 1385,
+      "observed_rd3m": 0.0445165852404217
+    },
+    {
+      "period": "2023-08-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00477826736218641,
+      "cohort_component": 0.0123675977367505,
+      "period_component": 0.00275347533155649,
+      "residual_component": -0.00148836117952683,
+      "fitted_rd3m": 0.0416369345376224,
+      "reconstructed_rd3m": 0.0401485733580956,
+      "loans_at_risk": 29615,
+      "defaults_3m": 1189,
+      "observed_rd3m": 0.0401485733580956
+    },
+    {
+      "period": "2023-09-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00482479151284277,
+      "cohort_component": 0.012660809554717,
+      "period_component": 0.000528789427946124,
+      "residual_component": -0.00144867916924,
+      "fitted_rd3m": 0.0397519846026348,
+      "reconstructed_rd3m": 0.0383033054333948,
+      "loans_at_risk": 28196,
+      "defaults_3m": 1080,
+      "observed_rd3m": 0.0383033054333948
+    },
+    {
+      "period": "2023-10-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.0048420679854354,
+      "cohort_component": 0.0131432500453262,
+      "period_component": -0.00094374783125805,
+      "residual_component": -0.00126318806424466,
+      "fitted_rd3m": 0.0387791643066325,
+      "reconstructed_rd3m": 0.0375159762423878,
+      "loans_at_risk": 26602,
+      "defaults_3m": 998,
+      "observed_rd3m": 0.0375159762423878
+    },
+    {
+      "period": "2023-11-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00479407328442028,
+      "cohort_component": 0.013587393032111,
+      "period_component": -0.000656271512552467,
+      "residual_component": -0.00091096874003152,
+      "fitted_rd3m": 0.0394627889111077,
+      "reconstructed_rd3m": 0.0385518201710762,
+      "loans_at_risk": 25135,
+      "defaults_3m": 969,
+      "observed_rd3m": 0.0385518201710762
+    },
+    {
+      "period": "2023-12-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00464001135525598,
+      "cohort_component": 0.0139376666985643,
+      "period_component": 0.000740501247543095,
+      "residual_component": -0.000764735851189021,
+      "fitted_rd3m": 0.0410557734084923,
+      "reconstructed_rd3m": 0.0402910375573033,
+      "loans_at_risk": 23777,
+      "defaults_3m": 958,
+      "observed_rd3m": 0.0402910375573033
+    },
+    {
+      "period": "2024-01-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00447563055465694,
+      "cohort_component": 0.0141680339030697,
+      "period_component": 0.00238889680599685,
+      "residual_component": -0.000796272453556487,
+      "fitted_rd3m": 0.0427701553708524,
+      "reconstructed_rd3m": 0.0419738829172959,
+      "loans_at_risk": 22514,
+      "defaults_3m": 945,
+      "observed_rd3m": 0.0419738829172959
+    },
+    {
+      "period": "2024-02-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00428175089625209,
+      "cohort_component": 0.0144029016243574,
+      "period_component": 0.00158572161305429,
+      "residual_component": -0.000846769279263315,
+      "fitted_rd3m": 0.0420079682407927,
+      "reconstructed_rd3m": 0.0411611989615294,
+      "loans_at_risk": 21185,
+      "defaults_3m": 872,
+      "observed_rd3m": 0.0411611989615294
+    },
+    {
+      "period": "2024-03-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00411790245473757,
+      "cohort_component": 0.0146657003390051,
+      "period_component": -0.00323960557144761,
+      "residual_component": -0.000578793245229362,
+      "fitted_rd3m": 0.037281591329424,
+      "reconstructed_rd3m": 0.0367027980841946,
+      "loans_at_risk": 19835,
+      "defaults_3m": 728,
+      "observed_rd3m": 0.0367027980841946
+    },
+    {
+      "period": "2024-04-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00391933296366644,
+      "cohort_component": 0.0150043641980388,
+      "period_component": -0.00600787655326032,
+      "residual_component": -0.000475517141449884,
+      "fitted_rd3m": 0.0346534147155739,
+      "reconstructed_rd3m": 0.034177897574124,
+      "loans_at_risk": 18550,
+      "defaults_3m": 634,
+      "observed_rd3m": 0.034177897574124
+    },
+    {
+      "period": "2024-05-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00379022895454192,
+      "cohort_component": 0.0153989181089355,
+      "period_component": -0.00506251310598012,
+      "residual_component": -0.000343037436174395,
+      "fitted_rd3m": 0.0358642280646262,
+      "reconstructed_rd3m": 0.0355211906284518,
+      "loans_at_risk": 17201,
+      "defaults_3m": 611,
+      "observed_rd3m": 0.0355211906284518
+    },
+    {
+      "period": "2024-06-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.0036347286538467,
+      "cohort_component": 0.0159192828665985,
+      "period_component": -0.00169327676857019,
+      "residual_component": 2.79800004856517e-05,
+      "fitted_rd3m": 0.039598328859004,
+      "reconstructed_rd3m": 0.0396263088594896,
+      "loans_at_risk": 15949,
+      "defaults_3m": 632,
+      "observed_rd3m": 0.0396263088594896
+    },
+    {
+      "period": "2024-07-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00350246295255217,
+      "cohort_component": 0.0163262095224,
+      "period_component": 0.000495539309031697,
+      "residual_component": -0.000170926523222383,
+      "fitted_rd3m": 0.0420618058911129,
+      "reconstructed_rd3m": 0.0418908793678905,
+      "loans_at_risk": 14681,
+      "defaults_3m": 615,
+      "observed_rd3m": 0.0418908793678905
+    },
+    {
+      "period": "2024-08-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00334727942957938,
+      "cohort_component": 0.0162315493510635,
+      "period_component": -0.00172891397400885,
+      "residual_component": -0.000231910855796184,
+      "fitted_rd3m": 0.0395875089137629,
+      "reconstructed_rd3m": 0.0393555980579667,
+      "loans_at_risk": 13594,
+      "defaults_3m": 535,
+      "observed_rd3m": 0.0393555980579667
+    },
+    {
+      "period": "2024-09-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00325102609562744,
+      "cohort_component": 0.016224653496676,
+      "period_component": -0.00451939754358505,
+      "residual_component": -0.000115464750552053,
+      "fitted_rd3m": 0.0366938761558474,
+      "reconstructed_rd3m": 0.0365784114052953,
+      "loans_at_risk": 12275,
+      "defaults_3m": 449,
+      "observed_rd3m": 0.0365784114052953
+    },
+    {
+      "period": "2024-10-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00319809787445331,
+      "cohort_component": 0.0162754444823811,
+      "period_component": -0.007745354429006,
+      "residual_component": -0.000229577336359646,
+      "fitted_rd3m": 0.0334657820349574,
+      "reconstructed_rd3m": 0.0332362046985977,
+      "loans_at_risk": 10982,
+      "defaults_3m": 365,
+      "observed_rd3m": 0.0332362046985977
+    },
+    {
+      "period": "2024-11-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00324565484268241,
+      "cohort_component": 0.0164410718393088,
+      "period_component": -0.00954615281207659,
+      "residual_component": -0.000183082721276236,
+      "fitted_rd3m": 0.0318781679770435,
+      "reconstructed_rd3m": 0.0316950852557673,
+      "loans_at_risk": 9970,
+      "defaults_3m": 316,
+      "observed_rd3m": 0.0316950852557673
+    },
+    {
+      "period": "2024-12-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00324394173975642,
+      "cohort_component": 0.0163369286596901,
+      "period_component": -0.0098000692868326,
+      "residual_component": 9.95725081245287e-05,
+      "fitted_rd3m": 0.0315183952197429,
+      "reconstructed_rd3m": 0.0316179677278674,
+      "loans_at_risk": 9172,
+      "defaults_3m": 290,
+      "observed_rd3m": 0.0316179677278674
+    },
+    {
+      "period": "2025-01-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00326617550962181,
+      "cohort_component": 0.0161524003726837,
+      "period_component": -0.0078582279909908,
+      "residual_component": 9.16433438900198e-05,
+      "fitted_rd3m": 0.0332979419984436,
+      "reconstructed_rd3m": 0.0333895853423337,
+      "loans_at_risk": 8296,
+      "defaults_3m": 277,
+      "observed_rd3m": 0.0333895853423337
+    },
+    {
+      "period": "2025-02-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00324169031964003,
+      "cohort_component": 0.0159265151754362,
+      "period_component": -0.00442475618089099,
+      "residual_component": 3.99899886682557e-05,
+      "fitted_rd3m": 0.0364810434213142,
+      "reconstructed_rd3m": 0.0365210334099824,
+      "loans_at_risk": 7393,
+      "defaults_3m": 270,
+      "observed_rd3m": 0.0365210334099824
+    },
+    {
+      "period": "2025-03-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00322193980658412,
+      "cohort_component": 0.0151569368603952,
+      "period_component": -0.00395516519962477,
+      "residual_component": -0.000474969684672847,
+      "fitted_rd3m": 0.0361613055744835,
+      "reconstructed_rd3m": 0.0356863358898106,
+      "loans_at_risk": 6389,
+      "defaults_3m": 228,
+      "observed_rd3m": 0.0356863358898106
+    },
+    {
+      "period": "2025-04-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00308681318068213,
+      "cohort_component": 0.0150283077379364,
+      "period_component": -0.00808283432783986,
+      "residual_component": -0.000502327805190907,
+      "fitted_rd3m": 0.0317698806979076,
+      "reconstructed_rd3m": 0.0312675528927167,
+      "loans_at_risk": 5341,
+      "defaults_3m": 167,
+      "observed_rd3m": 0.0312675528927167
+    },
+    {
+      "period": "2025-05-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00297636472903902,
+      "cohort_component": 0.0148730043331918,
+      "period_component": -0.00851222154829138,
+      "residual_component": -0.000437210645623461,
+      "fitted_rd3m": 0.0310747416210684,
+      "reconstructed_rd3m": 0.0306375309754449,
+      "loans_at_risk": 4439,
+      "defaults_3m": 136,
+      "observed_rd3m": 0.0306375309754449
+    },
+    {
+      "period": "2025-06-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00291710782036666,
+      "cohort_component": 0.0153851021897637,
+      "period_component": -0.00775175934440652,
+      "residual_component": -0.000679653164461228,
+      "fitted_rd3m": 0.0322880447728528,
+      "reconstructed_rd3m": 0.0316083916083916,
+      "loans_at_risk": 3575,
+      "defaults_3m": 113,
+      "observed_rd3m": 0.0316083916083916
+    },
+    {
+      "period": "2025-07-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00293987007666449,
+      "cohort_component": 0.0159979006155423,
+      "period_component": -0.00351412309091348,
+      "residual_component": -0.000764845312025874,
+      "fitted_rd3m": 0.0371612417084223,
+      "reconstructed_rd3m": 0.0363963963963964,
+      "loans_at_risk": 2775,
+      "defaults_3m": 101,
+      "observed_rd3m": 0.0363963963963964
+    },
+    {
+      "period": "2025-08-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00305013816940346,
+      "cohort_component": 0.0149622522051048,
+      "period_component": -0.00389021029293087,
+      "residual_component": -0.000722072384337901,
+      "fitted_rd3m": 0.0358597741887064,
+      "reconstructed_rd3m": 0.0351377018043685,
+      "loans_at_risk": 2106,
+      "defaults_3m": 74,
+      "observed_rd3m": 0.0351377018043685
+    },
+    {
+      "period": "2025-09-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00307725886399204,
+      "cohort_component": 0.0136271457912753,
+      "period_component": -0.009601582532965,
+      "residual_component": -0.000620445172991338,
+      "fitted_rd3m": 0.0288404162294313,
+      "reconstructed_rd3m": 0.0282199710564399,
+      "loans_at_risk": 1382,
+      "defaults_3m": 39,
+      "observed_rd3m": 0.0282199710564399
+    },
+    {
+      "period": "2025-10-01",
+      "base": 0.0217375941071289,
+      "age_component": 0.00297772609036222,
+      "cohort_component": 0.0111045530341022,
+      "period_component": -0.00877308960586241,
+      "residual_component": -0.000692464445643144,
+      "fitted_rd3m": 0.027046783625731,
+      "reconstructed_rd3m": 0.0263543191800878,
+      "loans_at_risk": 683,
+      "defaults_3m": 18,
+      "observed_rd3m": 0.0263543191800878
+    }
+  ]
+}
