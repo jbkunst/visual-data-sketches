@@ -1,0 +1,29 @@
+---
+title: "Decomposing three-month credit risk"
+description: "Visual explanation of three-month default risk and its age, cohort and period contributions using public Bondora loan data."
+date: 2026-09-12
+lang: en
+navbar: false
+page-layout: full
+toc: false
+title-block-banner: false
+resources:
+  - data
+format:
+  html:
+    theme: none
+    minimal: true
+    code-tools: false
+---
+
+# Decomposing three-month credit risk
+
+This visual story starts with three-month forward default risk in a credit vintage, then follows the same observations through a sequential age-cohort-period decomposition and back to portfolio RD3M.
+
+The data preparation is separate from the visualization. `prepare-data.R` creates static checked outputs under `data/`; the interactive renderer will only explain those precomputed results.
+
+```{=html}
+<main id="rd3m-story" data-source="data/rd3m-data.json">
+  <p>Interactive story renderer coming next.</p>
+</main>
+```
