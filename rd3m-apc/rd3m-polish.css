@@ -1,0 +1,65 @@
+.story-copy {
+  align-self: start;
+  width: 100%;
+  min-height: 520px;
+  padding-top: clamp(52px, 8vh, 86px);
+}
+
+.story-step {
+  min-height: 18px;
+}
+
+.story-copy h1 {
+  min-height: 118px;
+  margin-bottom: 18px;
+}
+
+.story-text {
+  min-height: 118px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.story-formula {
+  min-height: 66px;
+  margin-top: 18px;
+}
+
+.story-copy.copy-fade-in > * {
+  animation: copyFade .7s ease both;
+}
+
+/* Scene 2 reuses the already-drawn line: only opacity and the focal mark change. */
+.portfolio-line.muted {
+  stroke-dasharray: none !important;
+  stroke-dashoffset: 0 !important;
+  transition: opacity 1.15s ease !important;
+}
+
+.dot-caption {
+  margin-top: 4px;
+  gap: 30px;
+  font-size: 13px;
+  color: #aab8c3;
+}
+
+.dot-caption i {
+  width: 11px;
+  height: 11px;
+}
+
+@keyframes copyFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 1000px) {
+  .story-copy {
+    min-height: 0;
+    padding-top: 22px;
+  }
+  .story-copy h1,
+  .story-text {
+    min-height: 0;
+  }
+}
