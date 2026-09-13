@@ -16,6 +16,24 @@ The sequence is:
 6. From that point on, add at most one new calculated column per scene.
 7. AGE, COHORT, and PERIOD must be filled with mini-animations that show each group calculation before writing the result.
 
+## Methodological reference
+
+Use the source post below as the canonical reference for the methodology, terminology, and mathematical explanations in this sketch:
+
+https://jkunst.com/blog/posts/2026-09-12-decomposing-credit-vintages/
+
+The sketch adapts that one-month APC explanation to a three-month forward default horizon, so explanations must remain conceptually consistent with the post while using the RD3M definitions implemented in `prepare-data.R`.
+
+In particular, keep the explanations aligned with the post for:
+
+- why an adjusted probability `q` is needed when some cells have zero defaults;
+- why the add-half correction adds `0.5` to the numerator and `1` to the denominator;
+- why the decomposition moves to `logit(q)` before adding components;
+- why AGE, COHORT, and PERIOD are estimated sequentially from successive residuals;
+- why the final residual remains after the three systematic components are removed.
+
+If prose, formulas, and code disagree, resolve the inconsistency in favor of the implemented RD3M calculation in `prepare-data.R`, while preserving the methodological logic of the source post.
+
 ## Fixed sheet geometry
 
 - Once the sheet appears, `Cohort`, `Age`, and every existing column must remain at exactly the same x-position in later scenes.
@@ -48,7 +66,8 @@ Examples:
 
 - Scene copy (`kicker`, title, body, formula) stays anchored at the same vertical position and changes with a fade. Do not let copy length move the kicker up or down.
 - Scene 2 must reuse the portfolio line visually: lower the line opacity and fade in the focal point / annotation. The focal point must not translate or drop into position.
-- Loan-dot age-group changes use fades; default loans remain part of their age group and remain visibly red.
+- Loan-dot age-group changes use color / opacity transitions on the marks themselves; the full loan field must remain visible and must not fade out as a whole.
+- Default loans remain part of their age group and remain visibly red.
 - The transition from the loan-dot grouping scene to the sheet is a fade.
 - Prefer slower, legible transitions over rapid motion.
 
@@ -72,8 +91,9 @@ Examples:
 
 - Start each scene with the general group formula.
 - For each group, replace the formula with the concrete calculation being executed, e.g. `A_1 = ...`, `A_2 = ...`, or the relevant cohort / period label.
-- Show the actual values being used. When the group has many rows, show a few representative terms plus `\\cdots`, then show the full weighted numerator, denominator, and resulting value.
+- Show the actual values being used. When the group has many rows, show the first term, `\\cdots`, and the last term, then show the full weighted numerator, denominator, and resulting value.
 - Keep the relevant input rows / columns highlighted while that concrete formula is visible.
 - Fill the output cells for that group only after / while its concrete calculation is shown.
+- During these internal group cycles, keep the kicker, title, and body fixed; only the formula callout should fade between concrete calculations.
 - Slow these scenes down relative to simple row-wise residual scenes.
 - After the final group is filled, return to the general formula before the user advances.
