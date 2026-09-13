@@ -23,6 +23,11 @@
 .story-formula {
   min-height: 66px;
   margin-top: 18px;
+  transition: opacity .22s ease;
+}
+
+.story-formula.formula-fade {
+  opacity: 0;
 }
 
 .story-copy.copy-fade-in > * {
@@ -37,7 +42,7 @@
 }
 
 .dot-caption {
-  margin: 0 0 10px;
+  margin: 0 0 2px;
   gap: 34px;
   font-size: 15px;
   color: #b4c0ca;
