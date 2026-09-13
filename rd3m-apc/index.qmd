@@ -18,7 +18,9 @@ format:
     code-tools: false
     html-math-method: mathjax
     css: rd3m-story.css
-    include-after-body: rd3m-story.js
+    include-after-body:
+      - rd3m-story.js
+      - rd3m-polish.js
 ---
 
 ::: {.story-math-loader}
