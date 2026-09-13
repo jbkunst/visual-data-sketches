@@ -6,7 +6,7 @@
   if (!root) return;
 
   const sourceUrl = new URL(root.dataset.source, window.location.href);
-  sourceUrl.searchParams.set("v", root.dataset.dataVersion || "3");
+  sourceUrl.searchParams.set("v", root.dataset.dataVersion || "4");
 
   fetch(sourceUrl, {cache: "no-store"})
     .then((response) => {
@@ -14,50 +14,51 @@
       return response.json();
     })
     .then((data) => {
-      if (!Array.isArray(data?.portfolio) || !data?.focal || !Array.isArray(data?.story?.rows)) {
-        throw new Error("Run Rscript rd3m-apc/prepare-data.R to regenerate the V3 story data.");
-      }
-      startStory(data);
+      validate(data);
+      start(data);
     })
     .catch((error) => {
       root.innerHTML = `<p class="story-error">Could not load the story: ${error.message}</p>`;
     });
 
-  function startStory(data) {
+  function validate(data) {
+    if (!Array.isArray(data?.portfolio)) throw new Error("Missing portfolio data");
+    if (!Array.isArray(data?.focal?.cells)) throw new Error("Missing focal cells");
+    if (!Array.isArray(data?.story?.rows)) throw new Error("Missing story rows. Re-run prepare-data.R");
+  }
+
+  function start(data) {
     const portfolio = data.portfolio;
     const focal = data.focal;
     const rows = data.story.rows;
     const focalPeriod = data.metadata.focal_period;
-
-    const sheetSteps = [
-      {id:"sheet", step:"5 · The base sheet", title:"Keep only the structure we need", text:"The individual loans collapse into cohort × age cells. From here on, this same sheet stays in place. We only add new columns to the right.", formula:"cell RD3M = defaults in next 3 months / loans at risk", columns:["cohort","age","rd3m"]},
-      {id:"q", step:"6 · Adjust the rate", title:"Add a finite probability", text:"Some cells can have zero defaults. The add-half correction changes the rate only slightly but keeps the next transformation finite.", formula:"q = (defaults + 0.5) / (loans at risk + 1)", columns:["cohort","age","rd3m","q"], added:"q"},
-      {id:"logit", step:"7 · Change scale", title:"Move RD3M to an additive scale", text:"The logit turns the bounded probability into a quantity that can be decomposed additively.", formula:"y = log(q / (1 − q))", columns:["cohort","age","rd3m","q","y_logit"], added:"y_logit"},
-      {id:"mu", step:"8 · Baseline", title:"Calculate one weighted level", text:"All visible cells contribute to μ, weighted by loans at risk. The original three columns do not move; μ simply appears to their right.", formula:"μ = Σ(nᵢ yᵢ) / Σnᵢ", columns:["cohort","age","rd3m","q","y_logit","mu"], added:"mu", highlight:"all"},
-      {id:"r0", step:"9 · First residual", title:"What is left after the baseline?", text:"The first residual is just the difference between each cell's logit and the common baseline.", formula:"residual₀ = y − μ", columns:["cohort","age","rd3m","q","y_logit","mu","residual_after_mean"], added:"residual_after_mean"},
-      {id:"age", step:"10 · AGE", title:"Explain the first residual by age", text:"Cells with the same age light up together. Their loan-weighted residual becomes the AGE effect.", formula:"AGEₐ = weighted mean(residual₀ | age = a)", columns:["cohort","age","rd3m","q","y_logit","mu","residual_after_mean","age_effect"], added:"age_effect", highlight:"age"},
-      {id:"r1", step:"11 · Residual after AGE", title:"Carry forward what AGE did not explain", text:"Subtract AGE from the previous residual. Nothing else changes in the sheet.", formula:"residual₁ = residual₀ − AGE", columns:["cohort","age","rd3m","q","y_logit","mu","residual_after_mean","age_effect","residual_after_age"], added:"residual_after_age"},
-      {id:"cohort", step:"12 · COHORT", title:"Now group by origination cohort", text:"Cells from the same origination month light up. Their weighted residual becomes the COHORT effect.", formula:"COHORT꜀ = weighted mean(residual₁ | cohort = c)", columns:["cohort","age","rd3m","q","y_logit","mu","residual_after_mean","age_effect","residual_after_age","cohort_effect"], added:"cohort_effect", highlight:"cohort"},
-      {id:"r2", step:"13 · Residual after COHORT", title:"Carry forward what COHORT did not explain", text:"Subtract the cohort effect and keep the remainder for the final grouping.", formula:"residual₂ = residual₁ − COHORT", columns:["cohort","age","rd3m","q","y_logit","mu","residual_after_mean","age_effect","residual_after_age","cohort_effect","residual_after_cohort"], added:"residual_after_cohort"},
-      {id:"period", step:"14 · PERIOD", title:"The last grouping is calendar time", text:"Equal periods form diagonals in the vintage geometry. Their weighted residual becomes PERIOD.", formula:"PERIODₚ = weighted mean(residual₂ | period = p)", columns:["cohort","age","rd3m","q","y_logit","mu","residual_after_mean","age_effect","residual_after_age","cohort_effect","residual_after_cohort","period_effect"], added:"period_effect", highlight:"period"},
-      {id:"r3", step:"15 · Final residual", title:"What remains is cell-specific", text:"After AGE, COHORT and PERIOD, the final residual is the part left unexplained for that cohort-age-period cell.", formula:"residual₃ = residual₂ − PERIOD", columns:["cohort","age","rd3m","q","y_logit","mu","residual_after_mean","age_effect","residual_after_age","cohort_effect","residual_after_cohort","period_effect","residual_after_period"], added:"residual_after_period"}
-    ];
+    let active = 0;
+    let runToken = 0;
 
     const scenes = [
-      {id:"portfolio",step:"1 · Portfolio risk",title:"Measure risk over the next three months",text:"Portfolio risk can be measured at different forward horizons: RD1M, RD2M, RD3M, and so on. Here we use RD3M.",formula:"RD3Mₜ = defaults during t, t+1, t+2 / loans alive at t",mode:"line"},
-      {id:"focus",step:"2 · One point",title:"Freeze the line at April 2020",text:"Pick one month in the middle of the series. The line fades and we keep only this portfolio RD3M value.",formula:`${monthLabel(focalPeriod)} · portfolio RD3M`,mode:"focus"},
-      {id:"ratio",step:"3 · Numerator and denominator",title:"Where does this percentage come from?",text:"The denominator is every observable loan alive in April 2020. Move those loans forward three months: the defaults become the numerator.",formula:"RD3M = defaults in the next 3 months / loans alive today",mode:"ratio"},
-      {id:"mix",step:"4 · The mixture inside",title:"Those loans are not all alike",text:"Each point is a loan. In the same calendar month, loans have different ages and belong to different origination cohorts. Grouping them gives the cohort × age cells used by the decomposition.",formula:"same period · different cohort · different age",mode:"mix"},
-      ...sheetSteps
+      {id:"portfolio", kicker:"1 · Portfolio risk", title:"Risk depends on the horizon", text:"A portfolio can be measured with RD1M, RD2M, RD3M, or another forward horizon. Here we use RD3M: among loans alive today, how many default during the next three months?", formula:"\\[RD3M_t=\\frac{D_{t:t+2}}{N_t}\\]", mode:"line"},
+      {id:"focus", kicker:"2 · One period", title:"Pick one point in time", text:`Now focus on ${monthLabel(focalPeriod)}. The portfolio RD3M at this point is one number, but that number is built from many loans.`, formula:"\\[RD3M_{Apr\,2020}=1.64\\%\\]", mode:"focus"},
+      {id:"ratio", kicker:"3 · Numerator and denominator", title:"What does 1.64% actually mean?", text:"The denominator is every loan at risk at the start of the month. Three months later, the numerator is the subset that defaulted. The red marks are not a sample: they represent the default count in the numerator.", formula:"", mode:"dots"},
+      {id:"ages", kicker:"4 · Inside the denominator", title:"Those loans are not all alike", text:"Each point is one loan. Keep the same population and sweep through age groups: age 1, then age 2, and so on. The highlighted group changes, while the portfolio point stays the same.", formula:"\\[period=cohort+age\\]", mode:"ageDots"},
+      {id:"base", kicker:"5 · Aggregate the loans", title:"Collapse the points into cohort × age cells", text:"Each highlighted group becomes one row. Now the base sheet has cohort, age, loans at risk, defaults in the next three months, and the cell RD3M. This sheet stays fixed from here on.", formula:"\\[RD3M_{c,a}=\\frac{D^{3M}_{c,a}}{N_{c,a}}\\]", mode:"sheet", step:"base"},
+      {id:"q", kicker:"6 · Adjust zero cells", title:"Add the adjusted probability", text:"A small add-half correction keeps zero-default cells finite. Only one new column appears on the right.", formula:"\\[q_i=\\frac{D_i+0.5}{N_i+1}\\]", mode:"sheet", step:"q", deps:["defaults_3m","loans_at_risk"]},
+      {id:"logit", kicker:"7 · Change scale", title:"Move to log-odds", text:"RD3M is bounded between zero and one. The logit moves the adjusted probability onto an additive scale.", formula:"\\[y_i=\\operatorname{logit}(q_i)=\\log\\!\\left(\\frac{q_i}{1-q_i}\\right)\\]", mode:"sheet", step:"logit", deps:["q"]},
+      {id:"mu", kicker:"8 · Global baseline", title:"Start from one weighted level", text:"All visible logit values contribute to the baseline, weighted by loans at risk. Everything else fades while the inputs to μ stay visible.", formula:"\\[\\mu=\\frac{\\sum_i N_i y_i}{\\sum_i N_i}\\]", mode:"sheet", step:"mu", deps:["loans_at_risk","y_logit"]},
+      {id:"r0", kicker:"9 · First residual", title:"What is left after the baseline?", text:"For each row, subtract μ from logit(q). Keep logit(q) and μ bright; the rest of the sheet recedes. The new residual column fills from top to bottom.", formula:"\\[r_i^{(0)}=y_i-\\mu\\]", mode:"sheet", step:"r0", deps:["y_logit","mu"]},
+      {id:"age", kicker:"10 · AGE", title:"Fill AGE one group at a time", text:"AGE uses the first residual and loans at risk. The animation cycles through age 1, age 2, …, highlighting only the rows used in each weighted mean before writing the corresponding AGE value.", formula:"\\[A_a=\\frac{\\sum_{i:age_i=a}N_i r_i^{(0)}}{\\sum_{i:age_i=a}N_i}\\]", mode:"sheet", step:"age", deps:["age","loans_at_risk","residual_after_mean"], cycle:"age"},
+      {id:"r1", kicker:"11 · Residual after AGE", title:"Subtract the AGE contribution", text:"Now only residual₀ and AGE remain prominent. Their difference creates the next residual column.", formula:"\\[r_i^{(1)}=r_i^{(0)}-A_{age_i}\\]", mode:"sheet", step:"r1", deps:["residual_after_mean","age_effect"]},
+      {id:"cohort", kicker:"12 · COHORT", title:"Fill COHORT one origination month at a time", text:"COHORT works on what AGE left behind. Rows from the same origination cohort light up together, then the column fills for that group.", formula:"\\[C_c=\\frac{\\sum_{i:cohort_i=c}N_i r_i^{(1)}}{\\sum_{i:cohort_i=c}N_i}\\]", mode:"sheet", step:"cohort", deps:["cohort","loans_at_risk","residual_after_age"], cycle:"cohort"},
+      {id:"r2", kicker:"13 · Residual after COHORT", title:"Subtract the COHORT contribution", text:"The next residual is what remains after both AGE and COHORT have been removed.", formula:"\\[r_i^{(2)}=r_i^{(1)}-C_{cohort_i}\\]", mode:"sheet", step:"r2", deps:["residual_after_age","cohort_effect"]},
+      {id:"period", kicker:"14 · PERIOD", title:"Finish with calendar time", text:"Rows sharing the same period now light up together. In cohort-age geometry they form diagonals. PERIOD explains the common movement left after AGE and COHORT.", formula:"\\[P_p=\\frac{\\sum_{i:period_i=p}N_i r_i^{(2)}}{\\sum_{i:period_i=p}N_i}\\]", mode:"sheet", step:"period", deps:["period","loans_at_risk","residual_after_cohort"], cycle:"period"},
+      {id:"r3", kicker:"15 · Final residual", title:"What remains is cell-level residual", text:"Subtract PERIOD and the sequential decomposition is complete. Every new column came from columns already visible to its left.", formula:"\\[r_i^{(3)}=r_i^{(2)}-P_{period_i}\\]", mode:"sheet", step:"r3", deps:["residual_after_cohort","period_effect"]}
     ];
 
-    let active = 0;
     root.innerHTML = `
       <div class="story-shell">
-        <header class="story-header"><a href="https://jkunst.com">jkunst.com</a><span>RD3M · Estonia</span></header>
+        <header class="story-header"><a href="https://jkunst.com">jkunst.com</a><span>Three-month credit risk · Estonia</span></header>
         <section class="story-copy"><p class="story-step"></p><h1></h1><p class="story-text"></p><div class="story-formula"></div></section>
         <section class="story-graphic" aria-live="polite"></section>
-        <footer class="story-nav"><button class="prev">←</button><div class="dots"></div><span class="counter"></span><button class="next">→</button></footer>
+        <footer class="story-nav"><button class="prev" aria-label="Previous">←</button><div class="dots"></div><span class="counter"></span><button class="next" aria-label="Next">→</button></footer>
       </div>`;
 
     const ui = {
@@ -65,10 +66,10 @@
     };
 
     scenes.forEach((scene, i) => {
-      const b = document.createElement("button");
-      b.setAttribute("aria-label", `Scene ${i + 1}: ${scene.title}`);
-      b.onclick = () => render(i);
-      ui.dots.appendChild(b);
+      const button = document.createElement("button");
+      button.setAttribute("aria-label", `Scene ${i + 1}: ${scene.title}`);
+      button.onclick = () => render(i);
+      ui.dots.appendChild(button);
     });
     ui.prev.onclick = () => render(Math.max(0, active - 1));
     ui.next.onclick = () => render(Math.min(scenes.length - 1, active + 1));
@@ -79,98 +80,131 @@
 
     function render(index) {
       active = index;
+      runToken += 1;
+      const token = runToken;
       const scene = scenes[index];
-      ui.step.textContent = scene.step; ui.title.textContent = scene.title; ui.text.textContent = scene.text; ui.formula.textContent = scene.formula;
+      ui.step.textContent = scene.kicker;
+      ui.title.textContent = scene.title;
+      ui.text.textContent = scene.text;
+      ui.formula.innerHTML = scene.formula || "";
+      typeset(ui.formula);
       ui.counter.textContent = `${index + 1} / ${scenes.length}`;
-      [...ui.dots.children].forEach((d,i)=>d.classList.toggle("active",i===index));
-      ui.prev.disabled = index === 0; ui.next.disabled = index === scenes.length - 1;
-      if (scene.mode === "line") renderLine(false);
-      else if (scene.mode === "focus") renderLine(true);
-      else if (scene.mode === "ratio") renderRatio();
-      else if (scene.mode === "mix") renderMix();
-      else renderSheet(scene);
+      [...ui.dots.children].forEach((dot, i) => dot.classList.toggle("active", i === index));
+      ui.prev.disabled = index === 0;
+      ui.next.disabled = index === scenes.length - 1;
+
+      if (scene.mode === "line") renderLine(false, token);
+      if (scene.mode === "focus") renderLine(true, token);
+      if (scene.mode === "dots") renderDots(token, false);
+      if (scene.mode === "ageDots") renderDots(token, true);
+      if (scene.mode === "sheet") renderSheet(scene, token);
     }
 
-    function renderLine(focus) {
-      const width=980,height=470,m={t:28,r:28,b:62,l:68},w=width-m.l-m.r,h=height-m.t-m.b;
-      const values=portfolio.map(r=>Number(r.observed_rd3m));
-      const maxY=Math.max(...values)*1.12;
-      const x=i=>m.l+i*w/(portfolio.length-1), y=v=>m.t+h-v/maxY*h;
-      const focalIndex=portfolio.findIndex(r=>r.period===focalPeriod);
-      const svg=svgNode("svg",{viewBox:`0 0 ${width} ${height}`,class:"risk-line"});
-      [0,.25,.5,.75,1].forEach(frac=>{
-        const yy=y(maxY*frac); svg.appendChild(svgNode("line",{x1:m.l,x2:width-m.r,y1:yy,y2:yy,class:"grid"}));
-        const t=svgNode("text",{x:m.l-10,y:yy+4,class:"tick-label","text-anchor":"end"});t.textContent=`${(100*maxY*frac).toFixed(1)}%`;svg.appendChild(t);
+    function renderLine(focus, token) {
+      const width = 1020, height = 470, m = {t:26,r:22,b:54,l:66};
+      const w = width-m.l-m.r, h = height-m.t-m.b;
+      const vals = portfolio.map(d => +d.observed_rd3m);
+      const maxY = Math.max(...vals) * 1.12;
+      const x = i => m.l + i*w/(portfolio.length-1);
+      const y = v => m.t+h-(v/maxY)*h;
+      const focalIndex = portfolio.findIndex(d => d.period === focalPeriod);
+      const svg = svgNode("svg", {viewBox:`0 0 ${width} ${height}`,class:"risk-line"});
+      [0,.25,.5,.75,1].forEach(fr => {
+        const yy=y(maxY*fr); svg.appendChild(svgNode("line",{x1:m.l,x2:width-m.r,y1:yy,y2:yy,class:"grid"}));
+        const t=svgNode("text",{x:m.l-9,y:yy+4,class:"tick-label","text-anchor":"end"}); t.textContent=`${(100*maxY*fr).toFixed(1)}%`; svg.appendChild(t);
       });
-      const path=portfolio.map((r,i)=>`${i?"L":"M"}${x(i)},${y(Number(r.observed_rd3m))}`).join(" ");
-      const line=svgNode("path",{d:path,class:focus?"portfolio-line muted":"portfolio-line animated-line"});svg.appendChild(line);
-      [0,Math.floor(portfolio.length/4),Math.floor(portfolio.length/2),Math.floor(3*portfolio.length/4),portfolio.length-1].forEach(i=>{
-        const t=svgNode("text",{x:x(i),y:height-22,class:"tick-label","text-anchor":"middle"});t.textContent=monthLabel(portfolio[i].period,true);svg.appendChild(t);
-      });
-      const yt=svgNode("text",{x:18,y:m.t+h/2,class:"axis-title",transform:`rotate(-90 18 ${m.t+h/2})`,"text-anchor":"middle"});yt.textContent="Portfolio RD3M";svg.appendChild(yt);
+      svg.appendChild(svgNode("line",{x1:m.l,x2:m.l,y1:m.t,y2:m.t+h,class:"axis"}));
+      svg.appendChild(svgNode("line",{x1:m.l,x2:width-m.r,y1:m.t+h,y2:m.t+h,class:"axis"}));
+      const path = portfolio.map((d,i)=>`${i?"L":"M"}${x(i)},${y(+d.observed_rd3m)}`).join(" ");
+      const line = svgNode("path",{d:path,class:focus?"portfolio-line muted":"portfolio-line draw-line"}); svg.appendChild(line);
+      [0,Math.floor(portfolio.length/4),Math.floor(portfolio.length/2),Math.floor(3*portfolio.length/4),portfolio.length-1].forEach(i=>{const t=svgNode("text",{x:x(i),y:height-18,class:"tick-label","text-anchor":"middle"});t.textContent=monthLabel(portfolio[i].period,true);svg.appendChild(t);});
       if (focus && focalIndex>=0) {
-        const row=portfolio[focalIndex],xx=x(focalIndex),yy=y(Number(row.observed_rd3m));
-        const guide=svgNode("line",{x1:xx,x2:xx,y1:m.t+h,y2:yy,class:"focus-guide animated-guide"});svg.appendChild(guide);
-        const c=svgNode("circle",{cx:xx,cy:yy,r:7,class:"focus-dot pop"});svg.appendChild(c);
-        const t=svgNode("text",{x:xx+14,y:yy-13,class:"focus-value pop"});t.textContent=`${monthLabel(row.period)} · ${(100*Number(row.observed_rd3m)).toFixed(2)}%`;svg.appendChild(t);
+        const d=portfolio[focalIndex], xx=x(focalIndex), yy=y(+d.observed_rd3m);
+        const g=svgNode("g",{class:"focus-group"});
+        g.appendChild(svgNode("line",{x1:xx,x2:xx,y1:yy+8,y2:m.t+h,class:"focus-guide"}));
+        g.appendChild(svgNode("circle",{cx:xx,cy:yy,r:7,class:"focus-dot"}));
+        const t=svgNode("text",{x:xx+14,y:yy-14,class:"focus-value"});t.textContent=`${monthLabel(d.period)} · ${(100*+d.observed_rd3m).toFixed(2)}%`;g.appendChild(t);svg.appendChild(g);
       }
       ui.graphic.replaceChildren(svg);
-    }
-
-    function renderRatio() {
-      const row=focal.portfolio[0];
-      const total=Number(row.loans_at_risk), defaults=Number(row.defaults_3m), rate=Number(row.observed_rd3m);
-      const maxDots=520, shown=Math.min(maxDots,total), red=Math.max(1,Math.round(shown*defaults/total));
-      const scale=total/shown;
-      const wrap=document.createElement("div");wrap.className="ratio-stage";
-      wrap.innerHTML=`<div class="ratio-number"><strong>${(100*rate).toFixed(2)}%</strong><span>= ${defaults.toLocaleString("en")} / ${total.toLocaleString("en")}</span></div>`;
-      const clouds=document.createElement("div");clouds.className="dot-clouds";
-      clouds.append(makeCloud(shown,0,"Loans alive in Apr 2020"),makeArrow(),makeCloud(shown,red,"After 3 months"));
-      wrap.appendChild(clouds);
-      const note=document.createElement("p");note.className="dot-note";note.textContent=scale>1.05?`1 dot ≈ ${Math.round(scale).toLocaleString("en")} loans; red dots preserve the exact RD3M proportion.`:"Each dot is one loan.";wrap.appendChild(note);
-      ui.graphic.replaceChildren(wrap);
-    }
-
-    function makeCloud(count, redCount, label) {
-      const box=document.createElement("div");box.className="cloud-block";
-      const lab=document.createElement("strong");lab.textContent=label;box.appendChild(lab);
-      const cloud=document.createElement("div");cloud.className="dot-cloud";
-      for(let i=0;i<count;i++){const d=document.createElement("i");d.className=i<redCount?"loan-dot default":"loan-dot";d.style.animationDelay=`${Math.min(i,90)*5}ms`;cloud.appendChild(d);} box.appendChild(cloud);return box;
-    }
-    function makeArrow(){const a=document.createElement("div");a.className="cloud-arrow";a.textContent="→";return a;}
-
-    function renderMix() {
-      const wrap=document.createElement("div");wrap.className="mix-stage";
-      const ages=[...new Set(focal.cells.map(r=>Number(r.age)))];
-      focal.cells.forEach((cell,i)=>{
-        const g=document.createElement("div");g.className="mix-group";
-        g.innerHTML=`<span>${monthLabel(cell.cohort)}</span><strong>age ${cell.age}</strong><b>${(100*Number(cell.rd3m)).toFixed(2)}%</b>`;
-        const dots=document.createElement("div");dots.className="mini-cloud";
-        const n=Math.min(64,Math.max(12,Math.round(Number(cell.loans_at_risk)/Math.max(...focal.cells.map(r=>Number(r.loans_at_risk)))*64)));
-        for(let j=0;j<n;j++){const d=document.createElement("i");d.className="loan-dot";dots.appendChild(d);}g.appendChild(dots);g.style.animationDelay=`${i*70}ms`;wrap.appendChild(g);
+      requestAnimationFrame(()=>{
+        if(token!==runToken)return;
+        const length=line.getTotalLength();line.style.strokeDasharray=`${length}`;line.style.strokeDashoffset=`${length}`;
+        requestAnimationFrame(()=>{line.style.transition="stroke-dashoffset 2.4s cubic-bezier(.2,.7,.2,1),opacity 1s";line.style.strokeDashoffset="0";});
       });
-      ui.graphic.replaceChildren(wrap);
     }
 
-    function renderSheet(scene) {
+    function renderDots(token, groupAges) {
+      const summary = focal.portfolio[0];
+      const total = +summary.loans_at_risk;
+      const defaults = +summary.defaults_3m;
+      ui.formula.innerHTML = `\\[RD3M_{${monthLabel(focalPeriod).replace(" ","\\,")}}=\\frac{${defaults.toLocaleString("en")}}{${total.toLocaleString("en")}}=${(100*defaults/total).toFixed(2)}\\%\\]`;
+      typeset(ui.formula);
+      const wrap=document.createElement("div");wrap.className="dot-stage";
+      const canvas=document.createElement("canvas");canvas.width=1050;canvas.height=500;canvas.className="loan-canvas";wrap.appendChild(canvas);
+      const caption=document.createElement("div");caption.className="dot-caption";caption.innerHTML=`<span><i class="white-key"></i>${total.toLocaleString("en")} loans at risk</span><span><i class="red-key"></i>${defaults.toLocaleString("en")} default in 3 months</span>`;wrap.appendChild(caption);
+      ui.graphic.replaceChildren(wrap);
+      const ctx=canvas.getContext("2d");
+      const cols=Math.ceil(Math.sqrt(total*canvas.width/canvas.height));
+      const rowsCount=Math.ceil(total/cols); const sx=(canvas.width-36)/cols, sy=(canvas.height-48)/rowsCount;
+      const pts=Array.from({length:total},(_,i)=>({x:18+(i%cols)*sx,y:20+Math.floor(i/cols)*sy}));
+      function draw(redCount=0, ageIndex=-1) {
+        ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#dce7ef";ctx.globalAlpha=.78;
+        pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,Math.max(0.65,Math.min(1.45,sx*.29)),0,Math.PI*2);ctx.fill();});
+        ctx.globalAlpha=1;
+        if(ageIndex>=0){
+          const groups=focal.cells.slice(0,6);let start=0;groups.forEach((g,j)=>{const count=Math.min(+g.loans_at_risk,total-start);if(j===ageIndex){ctx.fillStyle="#8fc8ff";for(let k=start;k<start+count;k++){const p=pts[k];if(!p)break;ctx.beginPath();ctx.arc(p.x,p.y,Math.max(1,Math.min(2,sx*.4)),0,Math.PI*2);ctx.fill();}}start+=count;});
+        }
+        ctx.fillStyle="#e56f68";for(let i=0;i<Math.min(redCount,total);i++){const p=pts[i];ctx.beginPath();ctx.arc(p.x,p.y,Math.max(.9,Math.min(1.8,sx*.36)),0,Math.PI*2);ctx.fill();}
+      }
+      if(!groupAges){
+        draw(0);const start=performance.now();const duration=2200;
+        const tick=now=>{if(token!==runToken)return;const f=Math.min(1,(now-start)/duration);draw(Math.floor(defaults*f));if(f<1)requestAnimationFrame(tick);};requestAnimationFrame(tick);
+      } else {
+        draw(defaults,-1);const groups=Math.min(5,focal.cells.length);let i=0;
+        const cycle=()=>{if(token!==runToken)return;draw(defaults,i);caption.querySelector("span:first-child").innerHTML=`<i class="blue-key"></i>highlighting age ${focal.cells[i].age}`;i=(i+1)%groups;setTimeout(cycle,1350);};setTimeout(cycle,700);
+      }
+    }
+
+    const sheetSteps = {
+      base:["cohort","age","loans_at_risk","defaults_3m","rd3m"],
+      q:["cohort","age","loans_at_risk","defaults_3m","rd3m","q"],
+      logit:["cohort","age","loans_at_risk","defaults_3m","rd3m","q","y_logit"],
+      mu:["cohort","age","loans_at_risk","defaults_3m","rd3m","q","y_logit","mu"],
+      r0:["cohort","age","loans_at_risk","defaults_3m","rd3m","q","y_logit","mu","residual_after_mean"],
+      age:["cohort","age","loans_at_risk","defaults_3m","rd3m","q","y_logit","mu","residual_after_mean","age_effect"],
+      r1:["cohort","age","loans_at_risk","defaults_3m","rd3m","q","y_logit","mu","residual_after_mean","age_effect","residual_after_age"],
+      cohort:["cohort","age","loans_at_risk","defaults_3m","rd3m","q","y_logit","mu","residual_after_mean","age_effect","residual_after_age","cohort_effect"],
+      r2:["cohort","age","loans_at_risk","defaults_3m","rd3m","q","y_logit","mu","residual_after_mean","age_effect","residual_after_age","cohort_effect","residual_after_cohort"],
+      period:["cohort","age","loans_at_risk","defaults_3m","rd3m","q","y_logit","mu","residual_after_mean","age_effect","residual_after_age","cohort_effect","residual_after_cohort","period_effect"],
+      r3:["cohort","age","loans_at_risk","defaults_3m","rd3m","q","y_logit","mu","residual_after_mean","age_effect","residual_after_age","cohort_effect","residual_after_cohort","period_effect","residual_after_period"]
+    };
+
+    const labels={cohort:"Cohort",age:"Age",loans_at_risk:"Loans",defaults_3m:"Defaults",rd3m:"RD3M",q:"q",y_logit:"logit(q)",mu:"μ",residual_after_mean:"residual₀",age_effect:"AGE",residual_after_age:"residual₁",cohort_effect:"COHORT",residual_after_cohort:"residual₂",period_effect:"PERIOD",residual_after_period:"residual₃"};
+
+    function renderSheet(scene, token) {
+      const columns=sheetSteps[scene.step];
       const stage=document.createElement("div");stage.className="sheet-stage";
-      const table=document.createElement("div");table.className="sheet-grid";
-      table.style.setProperty("--cols",scene.columns.length);
-      scene.columns.forEach((key)=>{const h=document.createElement("div");h.className=`sheet-cell head col-${key}${key===scene.added?" added":""}`;h.textContent=labelFor(key);table.appendChild(h);});
-      rows.forEach((row,rowIndex)=>{
-        scene.columns.forEach((key)=>{const c=document.createElement("div");c.className=`sheet-cell col-${key}${key===scene.added?" added":""}`;c.textContent=formatCell(key,row);
-          if(scene.highlight==="all") c.classList.add("lit");
-          else if(scene.highlight && String(row[scene.highlight])===String(rows[0][scene.highlight])) c.classList.add("lit");
-          c.style.animationDelay=`${rowIndex*18}ms`;table.appendChild(c);});
-      });
-      stage.appendChild(table); ui.graphic.replaceChildren(stage);
-      if(scene.added){requestAnimationFrame(()=>stage.querySelectorAll(".added").forEach(el=>el.classList.add("reveal")));}
+      const sheet=document.createElement("div");sheet.className="calc-sheet";sheet.style.setProperty("--cols",columns.length);
+      const header=document.createElement("div");header.className="sheet-row sheet-header";columns.forEach(c=>header.appendChild(cell(labels[c],c,true)));sheet.appendChild(header);
+      rows.forEach((row,ri)=>{const r=document.createElement("div");r.className="sheet-row";r.dataset.row=ri;r.dataset.age=row.age;r.dataset.cohort=row.cohort;r.dataset.period=row.period;columns.forEach(c=>{const node=cell(formatValue(c,row[c]),c,false);if(scene.deps && !scene.deps.includes(c) && c!==columns[columns.length-1] && !["cohort","age"].includes(c))node.classList.add("dim");if(c===columns[columns.length-1] && scene.step!=="base")node.classList.add("new-col");r.appendChild(node);});sheet.appendChild(r);});
+      stage.appendChild(sheet);ui.graphic.replaceChildren(stage);
+      if(scene.step!=="base") revealLastColumn(sheet, token);
+      if(scene.cycle) cycleGroups(sheet, scene.cycle, columns[columns.length-1], token);
+      else if(scene.deps) accentDependencies(sheet,scene.deps);
     }
 
-    function labelFor(key){return {cohort:"Cohort",age:"Age",rd3m:"RD3M",q:"q",y_logit:"logit(q)",mu:"μ",residual_after_mean:"Residual 0",age_effect:"AGE",residual_after_age:"Residual 1",cohort_effect:"COHORT",residual_after_cohort:"Residual 2",period_effect:"PERIOD",residual_after_period:"Residual 3"}[key]||key;}
-    function formatCell(key,row){if(key==="cohort")return monthLabel(row.cohort);if(key==="age")return row.age;const v=Number(row[key]);if(!Number.isFinite(v))return"—";if(key==="rd3m"||key==="q")return`${(100*v).toFixed(2)}%`;return v.toFixed(3);}
-    function monthLabel(value,yearOnly=false){const d=new Date(`${value}T00:00:00`);return yearOnly?String(d.getFullYear()):d.toLocaleDateString("en",{month:"short",year:"numeric"});}
+    function revealLastColumn(sheet, token){const cells=[...sheet.querySelectorAll(".sheet-row:not(.sheet-header) .new-col")];cells.forEach(c=>c.style.opacity="0");cells.forEach((c,i)=>setTimeout(()=>{if(token===runToken)c.style.opacity="1";},500+i*38));}
+    function accentDependencies(sheet,deps){[...sheet.querySelectorAll(".sheet-cell")].forEach(c=>{if(!deps.includes(c.dataset.col) && !c.classList.contains("new-col") && !["cohort","age"].includes(c.dataset.col))c.classList.add("soft");});}
+    function cycleGroups(sheet,key,outCol,token){
+      const groupValues=[...new Set(rows.map(r=>String(r[key])))];let i=0;
+      const cycle=()=>{if(token!==runToken)return;const value=groupValues[i];[...sheet.querySelectorAll(".sheet-row:not(.sheet-header)")].forEach(r=>{const on=r.dataset[key]===value;r.classList.toggle("active-group",on);const out=r.querySelector(`[data-col='${outCol}']`);if(out && on)out.classList.add("filled-now");});i+=1;if(i<groupValues.length)setTimeout(cycle,1150);else setTimeout(()=>{[...sheet.querySelectorAll(".sheet-row")].forEach(r=>r.classList.remove("active-group"));},900);};setTimeout(cycle,700);
+    }
+
+    function cell(text,col,head){const n=document.createElement("div");n.className=`sheet-cell col-${col}${head?" head":""}`;n.dataset.col=col;n.textContent=text;return n;}
+    function formatValue(key,value){if(key==="cohort"||key==="period")return monthLabel(value);if(key==="age"||key==="loans_at_risk"||key==="defaults_3m")return Number(value).toLocaleString("en");const v=+value;if(!Number.isFinite(v))return "—";if(["rd3m","q"].includes(key))return `${(100*v).toFixed(2)}%`;return v.toFixed(3);}
+    function typeset(node){if(window.MathJax?.typesetPromise)window.MathJax.typesetPromise([node]).catch(()=>{});}
     function svgNode(tag,attrs={}){const n=document.createElementNS("http://www.w3.org/2000/svg",tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));return n;}
+    function monthLabel(value,short=false){const d=new Date(`${value}T00:00:00`);return d.toLocaleDateString("en",short?{month:"short",year:"2-digit"}:{month:"short",year:"numeric"});}
 
     render(0);
   }
