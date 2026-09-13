@@ -42,8 +42,11 @@ max_age <- 36L
 horizon_months <- 3L
 max_start_age <- max_age - horizon_months + 1L
 
-example_cohorts <- as.Date(c("2020-01-01", "2020-02-01", "2020-03-01"))
-example_ages <- 1:5
+focal_period <- as.Date("2020-04-01")
+story_periods <- seq.Date(as.Date("2020-02-01"), as.Date("2020-06-01"), by = "month")
+story_ages <- 1:5
+focal_ages <- 1:6
+loans_per_focal_cell <- 3L
 
 # helpers -----------------------------------------------------------------
 
@@ -103,20 +106,15 @@ fit_sequential_apc <- function(cells) {
     )
 }
 
-serialize_cells <- function(x) {
-  x |>
-    dplyr::mutate(
-      cohort = format(cohort, "%Y-%m-%d"),
-      period = format(period, "%Y-%m-%d"),
-      window_end_period = format(window_end_period, "%Y-%m-%d")
-    )
-}
-
-serialize_effects <- function(x, date_columns = character()) {
-  for (column in date_columns) {
+serialize_dates <- function(x, columns) {
+  for (column in columns) {
     x[[column]] <- format(x[[column]], "%Y-%m-%d")
   }
   x
+}
+
+serialize_cells <- function(x) {
+  serialize_dates(x, c("cohort", "period", "window_end_period"))
 }
 
 check_close <- function(x, tolerance = 1e-12, label = "check") {
@@ -199,7 +197,8 @@ portfolio_observed <- rd3m_cells |>
     defaults_3m = sum(defaults_3m),
     .by = period
   ) |>
-  dplyr::mutate(observed_rd3m = defaults_3m / loans_at_risk)
+  dplyr::mutate(observed_rd3m = defaults_3m / loans_at_risk) |>
+  dplyr::arrange(period)
 
 portfolio_apc <- apc_full |>
   dplyr::summarise(
@@ -217,44 +216,49 @@ portfolio_apc <- apc_full |>
   dplyr::left_join(portfolio_observed, by = "period") |>
   dplyr::arrange(period)
 
-age_effects <- apc_full |>
-  dplyr::distinct(age, age_effect) |>
+# story: open one portfolio point -----------------------------------------
+
+focal_loans <- loan_windows |>
+  dplyr::filter(period == focal_period, age %in% focal_ages) |>
+  dplyr::arrange(age, dplyr::desc(default_3m), loan_id) |>
+  dplyr::group_by(age) |>
+  dplyr::slice_head(n = loans_per_focal_cell) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(
+    outcome = dplyr::if_else(default_3m == 1L, "default", "no default")
+  ) |>
+  dplyr::select(loan_id, cohort, age, period, window_end_period, default_3m, outcome)
+
+focal_cells <- rd3m_cells |>
+  dplyr::filter(period == focal_period, age %in% focal_ages) |>
   dplyr::arrange(age)
 
-cohort_effects <- apc_full |>
-  dplyr::distinct(cohort, cohort_effect) |>
-  dplyr::arrange(cohort)
+focal_portfolio <- portfolio_observed |>
+  dplyr::filter(period == focal_period)
 
-period_effects <- apc_full |>
-  dplyr::distinct(period, period_effect) |>
-  dplyr::arrange(period)
+# story: extend the point into consecutive periods ------------------------
 
-# didactic 3-cohort example -----------------------------------------------
+story_cells_raw <- rd3m_cells |>
+  dplyr::filter(period %in% story_periods, age %in% story_ages) |>
+  dplyr::arrange(period, age)
 
-example_cells_raw <- rd3m_cells |>
-  dplyr::filter(
-    cohort %in% example_cohorts,
-    age %in% example_ages
-  ) |>
-  dplyr::arrange(cohort, age)
-
-expected_example_rows <- length(example_cohorts) * length(example_ages)
-if (nrow(example_cells_raw) != expected_example_rows) {
+expected_story_rows <- length(story_periods) * length(story_ages)
+if (nrow(story_cells_raw) != expected_story_rows) {
   stop(
-    "Expected ", expected_example_rows, " example cells but found ", nrow(example_cells_raw),
+    "Expected ", expected_story_rows, " story cells but found ", nrow(story_cells_raw),
     call. = FALSE
   )
 }
 
-example_apc <- fit_sequential_apc(example_cells_raw)
+story_apc <- fit_sequential_apc(story_cells_raw)
 
-example_mean <- list(
-  weighted_sum = sum(example_apc$y_logit * example_apc$loans_at_risk),
-  weight = sum(example_apc$loans_at_risk),
-  mu = dplyr::first(example_apc$mu)
+story_mean <- list(
+  weighted_sum = sum(story_apc$y_logit * story_apc$loans_at_risk),
+  weight = sum(story_apc$loans_at_risk),
+  mu = dplyr::first(story_apc$mu)
 )
 
-example_age <- example_apc |>
+story_age <- story_apc |>
   dplyr::summarise(
     weighted_sum = sum(residual_after_mean * loans_at_risk),
     weight = sum(loans_at_risk),
@@ -263,7 +267,7 @@ example_age <- example_apc |>
   ) |>
   dplyr::arrange(age)
 
-example_cohort <- example_apc |>
+story_cohort <- story_apc |>
   dplyr::summarise(
     weighted_sum = sum(residual_after_age * loans_at_risk),
     weight = sum(loans_at_risk),
@@ -272,7 +276,7 @@ example_cohort <- example_apc |>
   ) |>
   dplyr::arrange(cohort)
 
-example_period <- example_apc |>
+story_period <- story_apc |>
   dplyr::summarise(
     weighted_sum = sum(residual_after_cohort * loans_at_risk),
     weight = sum(loans_at_risk),
@@ -283,46 +287,36 @@ example_period <- example_apc |>
 
 # checks ------------------------------------------------------------------
 
-check_close(
-  apc_full$q - apc_full$reconstructed_q,
-  label = "Full APC logit reconstruction"
-)
-check_close(
-  apc_full$rd3m - apc_full$reconstructed_rd3m,
-  label = "Full APC RD3M reconstruction"
-)
+check_close(apc_full$q - apc_full$reconstructed_q, label = "Full APC logit reconstruction")
+check_close(apc_full$rd3m - apc_full$reconstructed_rd3m, label = "Full APC RD3M reconstruction")
 check_close(
   portfolio_apc$observed_rd3m - portfolio_apc$reconstructed_rd3m,
   label = "Portfolio RD3M reconstruction"
 )
-check_close(
-  example_apc$q - example_apc$reconstructed_q,
-  label = "Example APC logit reconstruction"
-)
+check_close(story_apc$q - story_apc$reconstructed_q, label = "Story APC logit reconstruction")
+check_close(story_apc$rd3m - story_apc$reconstructed_rd3m, label = "Story APC RD3M reconstruction")
 
 if (!all(rd3m_cells$period == rd3m_cells$cohort + lubridate::period(month = rd3m_cells$age))) {
   stop("APC date identity failed: period != cohort + age", call. = FALSE)
 }
 
+focal_from_cells <- weighted.mean(focal_cells$rd3m, focal_cells$loans_at_risk)
+focal_full <- focal_portfolio$observed_rd3m
+if (!isTRUE(all.equal(focal_from_cells, focal_full, tolerance = 1e-12))) {
+  message(
+    "Note: focal story cells show ages ", min(focal_ages), "-", max(focal_ages),
+    "; their weighted RD3M is ", signif(focal_from_cells, 4),
+    " versus full portfolio ", signif(focal_full, 4), "."
+  )
+}
+
 # exports -----------------------------------------------------------------
 
 cells_export <- serialize_cells(apc_full)
-portfolio_export <- portfolio_apc |>
-  dplyr::mutate(period = format(period, "%Y-%m-%d"))
+portfolio_export <- serialize_dates(portfolio_apc, "period")
 
-utils::write.csv(
-  cells_export,
-  file.path(data_dir, "rd3m-cells.csv"),
-  row.names = FALSE,
-  na = ""
-)
-
-utils::write.csv(
-  portfolio_export,
-  file.path(data_dir, "rd3m-portfolio.csv"),
-  row.names = FALSE,
-  na = ""
-)
+utils::write.csv(cells_export, file.path(data_dir, "rd3m-cells.csv"), row.names = FALSE, na = "")
+utils::write.csv(portfolio_export, file.path(data_dir, "rd3m-portfolio.csv"), row.names = FALSE, na = "")
 
 payload <- list(
   metadata = list(
@@ -332,6 +326,9 @@ payload <- list(
     max_age = max_age,
     horizon_months = horizon_months,
     max_start_age = max_start_age,
+    focal_period = format(focal_period, "%Y-%m-%d"),
+    story_periods = format(story_periods, "%Y-%m-%d"),
+    story_ages = story_ages,
     rate_definition = paste0(
       "Defaults during months a through a+", horizon_months - 1L,
       " divided by loans alive at the start of age a with an observable outcome window"
@@ -344,21 +341,22 @@ payload <- list(
     source_data = "https://goandgrow.eu/en/public-statistics/",
     source_snapshot = source_url
   ),
-  example = list(
-    cohorts = format(example_cohorts, "%Y-%m-%d"),
-    ages = example_ages,
-    rows = serialize_cells(example_apc),
-    mean = example_mean,
-    age = example_age,
-    cohort = serialize_effects(example_cohort, "cohort"),
-    period = serialize_effects(example_period, "period")
+  portfolio = portfolio_export,
+  focal = list(
+    period = format(focal_period, "%Y-%m-%d"),
+    portfolio = serialize_dates(focal_portfolio, "period"),
+    loans = serialize_dates(focal_loans, c("cohort", "period", "window_end_period")),
+    cells = serialize_cells(focal_cells)
   ),
-  effects = list(
-    age = age_effects,
-    cohort = serialize_effects(cohort_effects, "cohort"),
-    period = serialize_effects(period_effects, "period")
-  ),
-  portfolio = portfolio_export
+  story = list(
+    periods = format(story_periods, "%Y-%m-%d"),
+    ages = story_ages,
+    rows = serialize_cells(story_apc),
+    mean = story_mean,
+    age = story_age,
+    cohort = serialize_dates(story_cohort, "cohort"),
+    period = serialize_dates(story_period, "period")
+  )
 )
 
 jsonlite::write_json(
@@ -375,4 +373,4 @@ message("Wrote:")
 message("  ", file.path(data_dir, "rd3m-data.json"))
 message("  ", file.path(data_dir, "rd3m-cells.csv"))
 message("  ", file.path(data_dir, "rd3m-portfolio.csv"))
-message("Checks passed: APC and portfolio reconstructions close exactly within tolerance.")
+message("Checks passed: full and story APC reconstructions close exactly within tolerance.")
