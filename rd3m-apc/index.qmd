@@ -1,12 +1,14 @@
 ---
 title: "Decomposing three-month credit risk"
-description: "Visual explanation of three-month default risk and its age, cohort and period contributions using public Bondora loan data."
-date: 2026-09-12
+description: "Interactive visual explanation of three-month default risk and its age, cohort and period contributions using public Bondora loan data."
+image-alt: "Interactive decomposition of three-month credit risk into age, cohort and period effects"
+date: 2026-09-13
 lang: en
 navbar: false
 page-layout: full
 toc: false
 title-block-banner: false
+body-classes: story-page
 resources:
   - data
 format:
@@ -14,16 +16,23 @@ format:
     theme: none
     minimal: true
     code-tools: false
+    css: rd3m-story.css
+    include-after-body: rd3m-story.js
 ---
 
 # Decomposing three-month credit risk
 
-This visual story starts with three-month forward default risk in a credit vintage, then follows the same observations through a sequential age-cohort-period decomposition and back to portfolio RD3M.
+This visual story uses public Bondora loans from Estonia to follow three-month forward default risk from a small vintage table through a sequential age-cohort-period decomposition, then scales the same calculation up to portfolio RD3M.
 
-The data preparation is separate from the visualization. `prepare-data.R` creates static checked outputs under `data/`; the interactive renderer will only explain those precomputed results.
+The calculations are prepared and checked in R before rendering. The browser only presents the precomputed cells, effects and portfolio reconstruction.
 
 ```{=html}
-<main id="rd3m-story" data-source="data/rd3m-data.json">
-  <p>Interactive story renderer coming next.</p>
+<main
+  id="rd3m-story"
+  data-rd3m-story
+  data-source="data/rd3m-data.json"
+  aria-label="Visual explanation of three-month credit risk and its age, cohort and period decomposition"
+>
+  <p class="story-loading" role="status">Preparing the credit-risk story…</p>
 </main>
 ```
