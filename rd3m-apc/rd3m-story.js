@@ -37,12 +37,12 @@
 
     const scenes = [
       {id:"portfolio", kicker:"1 · Portfolio risk", title:"Risk depends on the horizon", text:"RD3M is the share of loans that are alive at the start of a month and default during that month or either of the next two months. A portfolio could also be measured with RD1M, RD2M, or another forward horizon; here we use three months.", formula:"\\[RD3M_t=\\frac{D_{t:t+2}}{N_t}\\]", mode:"line"},
-      {id:"focus", kicker:"2 · One period", title:"Pick one point in time", text:`Now focus on ${monthLabel(focalPeriod)}. The portfolio RD3M at this point is one number, but that number is built from many loans.`, formula:"\\[RD3M_{Apr\,2020}=1.64\\%\\]", mode:"focus"},
+      {id:"focus", kicker:"2 · One period", title:"Pick one point in time", text:`Now focus on ${monthLabel(focalPeriod)}. The portfolio RD3M at this point is one number, but that number is built from many loans.`, formula:"\\[RD3M_{Apr\\,2020}=1.64\\%\\]", mode:"focus"},
       {id:"ratio", kicker:"3 · Numerator and denominator", title:"What does 1.64% actually mean?", text:"The denominator is every loan at risk at the start of April. Three months later, the numerator is the subset that defaulted. The loan field expands from the selected portfolio point; the red marks are the numerator, not a sample.", formula:"", mode:"dots"},
       {id:"ages", kicker:"4 · Inside the denominator", title:"Those loans are not all alike", text:"Keep the same loan population and sweep through age groups. Each highlighted set is a different loan age, and red defaults remain part of the group they belong to.", formula:"\\[period=cohort+age\\]", mode:"ageDots"},
       {id:"base", kicker:"5 · Aggregate the loans", title:"Collapse the points into cohort × age cells", text:"Fade from individual loans into grouped rows. Each row is one cohort-age cell and initially contains only cohort, age, loans at risk, and defaults in the next three months. The sheet stays fixed from here on.", formula:"\\[c=\\text{cohort},\\qquad a=\\text{age}\\]", mode:"sheet", step:"base"},
-      {id:"rd3m", kicker:"6 · Cell RD3M", title:"Compute risk inside each cohort-age cell", text:"For every cohort \\(c\\) and age \\(a\\), divide defaults by loans at risk. Loans and Defaults are the inputs; \\(RD3M_{c,a}\\) is the new result. The subscripts \\(c,a\\) mean that the risk is calculated separately for each cohort-age cell.", formula:"\\[RD3M_{c,a}=\\frac{D^{3M}_{c,a}}{N_{c,a}}\\]", mode:"sheet", step:"rd3m", deps:["loans_at_risk","defaults_3m"]},
-      {id:"q", kicker:"7 · Adjust zero cells", title:"Add the adjusted probability", text:"A small add-half correction keeps zero-default cells finite. Loans and Defaults remain the inputs; \\(q_i\\) is the new output.", formula:"\\[q_i=\\frac{D_i+0.5}{N_i+1}\\]", mode:"sheet", step:"q", deps:["defaults_3m","loans_at_risk"]},
+      {id:"rd3m", kicker:"6 · Cell RD3M", title:"Compute risk inside each cohort-age cell", text:"For every cohort \\(c\\) and age \\(a\\), divide defaults by loans at risk. Loans and Defaults are the inputs; \\(RD3M_{c,a}\\) is the new result. If we kept every age in a calendar period and weighted these cell rates by Loans, we would reconstruct the portfolio RD3M — including the 1.64% April point. The sheet uses only a five-age × five-period teaching window so the calculation stays readable.", formula:"\\[RD3M_{c,a}=\\frac{D^{3M}_{c,a}}{N_{c,a}}\\]", mode:"sheet", step:"rd3m", deps:["loans_at_risk","defaults_3m"]},
+      {id:"q", kicker:"7 · Adjust zero cells", title:"Add the adjusted probability", text:"Some cohort-age cells have zero defaults, so their raw rate is zero and \\(\\operatorname{logit}(0)=-\\infty\\). We add 0.5 to defaults and 0.5 to non-defaults: the numerator gains 0.5 and the denominator gains 1. This keeps \\(q_i\\) finite while barely changing large cells.", formula:"\\[q_i=\\frac{D_i+0.5}{N_i+1}\\]", mode:"sheet", step:"q", deps:["defaults_3m","loans_at_risk"]},
       {id:"logit", kicker:"8 · Change scale", title:"Move to log-odds", text:"RD3M is bounded between zero and one. The logit moves the adjusted probability onto an additive scale. Only \\(q_i\\) is used to create \\(y_i=\\operatorname{logit}(q_i)\\).", formula:"\\[y_i=\\operatorname{logit}(q_i)=\\log\\!\\left(\\frac{q_i}{1-q_i}\\right)\\]", mode:"sheet", step:"logit", deps:["q"]},
       {id:"mu", kicker:"9 · Global baseline", title:"Start from one weighted level", text:"All visible logit values contribute to the baseline \\(\\mu\\), weighted by loans at risk. Loans and \\(y_i\\) stay blue while every unused column fades back.", formula:"\\[\\mu=\\frac{\\sum_i N_i y_i}{\\sum_i N_i}\\]", mode:"sheet", step:"mu", deps:["loans_at_risk","y_logit"]},
       {id:"r0", kicker:"10 · First residual", title:"What is left after the baseline?", text:"For each row, subtract \\(\\mu\\) from \\(y_i=\\operatorname{logit}(q_i)\\). Only those two inputs remain blue; the new \\(r_i^{(0)}\\) column is written in the warm output color.", formula:"\\[r_i^{(0)}=y_i-\\mu\\]", mode:"sheet", step:"r0", deps:["y_logit","mu"]},
@@ -157,8 +157,10 @@
       const summary = focal.portfolio[0];
       const total = +summary.loans_at_risk;
       const defaults = +summary.defaults_3m;
-      ui.formula.innerHTML = `\\[RD3M_{${monthLabel(focalPeriod).replace(" ","\\,")}}=\\frac{${defaults.toLocaleString("en")}}{${total.toLocaleString("en")}}=${(100*defaults/total).toFixed(2)}\\%\\]`;
-      typeset(ui.formula);
+      if(!groupAges){
+        ui.formula.innerHTML = `\\[RD3M_{${monthLabel(focalPeriod).replace(" ","\\,")}}=\\frac{${defaults.toLocaleString("en")}}{${total.toLocaleString("en")}}=${(100*defaults/total).toFixed(2)}\\%\\]`;
+        typeset(ui.formula);
+      }
 
       const wrap=document.createElement("div");wrap.className="dot-stage";
       const caption=document.createElement("div");caption.className="dot-caption";
@@ -178,7 +180,7 @@
       groups.forEach(g=>{groupStarts.push(cursor);cursor+=Math.min(+g.loans_at_risk,total-cursor);});
 
       function pointRadius(scale=1){return Math.max(.7,Math.min(1.55,sx*.3))*scale;}
-      function draw(expand=1, redCount=defaults, ageIndex=-1) {
+      function drawBase(expand=1){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.globalAlpha=.72;
         ctx.fillStyle="#dce7ef";
@@ -188,21 +190,29 @@
           ctx.beginPath();ctx.arc(x,y,pointRadius(),0,Math.PI*2);ctx.fill();
         });
         ctx.globalAlpha=1;
-
+      }
+      function paintAgeGroup(ageIndex,alpha=1){
+        if(ageIndex<0 || ageIndex>=groups.length || alpha<=0)return;
+        const start=groupStarts[ageIndex];
+        const count=Math.min(+groups[ageIndex].loans_at_risk,total-start);
+        ctx.globalAlpha=alpha;
+        ctx.fillStyle="#8fc8ff";
+        for(let k=start;k<start+count;k++){
+          const p=pts[k];if(!p)break;
+          ctx.beginPath();ctx.arc(p.x,p.y,pointRadius(1.35),0,Math.PI*2);ctx.fill();
+        }
+        const dcount=Math.min(+groups[ageIndex].defaults_3m,count);
+        ctx.fillStyle="#e56f68";
+        for(let k=start;k<start+dcount;k++){
+          const p=pts[k];if(!p)break;
+          ctx.beginPath();ctx.arc(p.x,p.y,pointRadius(1.55),0,Math.PI*2);ctx.fill();
+        }
+        ctx.globalAlpha=1;
+      }
+      function draw(expand=1, redCount=defaults, ageIndex=-1) {
+        drawBase(expand);
         if(ageIndex>=0){
-          const start=groupStarts[ageIndex];
-          const count=Math.min(+groups[ageIndex].loans_at_risk,total-start);
-          ctx.fillStyle="#8fc8ff";
-          for(let k=start;k<start+count;k++){
-            const p=pts[k];if(!p)break;
-            ctx.beginPath();ctx.arc(p.x,p.y,pointRadius(1.35),0,Math.PI*2);ctx.fill();
-          }
-          const dcount=Math.min(+groups[ageIndex].defaults_3m,count);
-          ctx.fillStyle="#e56f68";
-          for(let k=start;k<start+dcount;k++){
-            const p=pts[k];if(!p)break;
-            ctx.beginPath();ctx.arc(p.x,p.y,pointRadius(1.55),0,Math.PI*2);ctx.fill();
-          }
+          paintAgeGroup(ageIndex,1);
         } else {
           ctx.fillStyle="#e56f68";
           for(let i=0;i<Math.min(redCount,total);i++){
@@ -238,18 +248,25 @@
       } else {
         caption.innerHTML=`<span class="active-age"><i class="blue-key"></i>Loans with age ${groups[0].age}</span><span><i class="red-key"></i>defaults remain inside the age group</span>`;
         draw(1,defaults,0);
-        let i=0;
+        let current=0;
         const cycle=()=>{
           if(token!==runToken)return;
-          canvas.classList.add("canvas-fade");
-          setTimeout(()=>{
+          const next=(current+1)%groups.length;
+          caption.querySelector(".active-age").innerHTML=`<i class="blue-key"></i>Loans with age ${groups[next].age}`;
+          const start=performance.now();
+          const duration=650;
+          const tick=now=>{
             if(token!==runToken)return;
-            draw(1,defaults,i);
-            caption.querySelector(".active-age").innerHTML=`<i class="blue-key"></i>Loans with age ${groups[i].age}`;
-            canvas.classList.remove("canvas-fade");
-            i=(i+1)%groups.length;
-            setTimeout(cycle,1500);
-          },350);
+            const t=Math.min(1,(now-start)/duration);
+            const eased=t*t*(3-2*t);
+            drawBase(1);
+            paintAgeGroup(current,1-eased);
+            paintAgeGroup(next,eased);
+            if(t<1){requestAnimationFrame(tick);return;}
+            current=next;
+            setTimeout(cycle,1250);
+          };
+          requestAnimationFrame(tick);
         };
         setTimeout(cycle,1550);
       }
@@ -370,9 +387,15 @@
       const numerator=weighted.reduce((a,b)=>a+b,0);
       const denominator=groupRows.reduce((a,r)=>a+(+r.loans_at_risk),0);
       const result=numerator/denominator;
-      const terms=groupRows.slice(0,3).map(r=>`${(+r.loans_at_risk).toLocaleString("en")}\\cdot${formatMath(+r[spec.residual])}`);
-      const more=groupRows.length>3?"+\\cdots":"";
-      return `\\[${spec.symbol}_{${spec.sub}}=\\frac{${terms.join("+")}${more}}{${groupRows.slice(0,3).map(r=>(+r.loans_at_risk).toLocaleString("en")).join("+")}${groupRows.length>3?"+\\cdots":""}}=\\frac{${formatMath(numerator)}}{${denominator.toLocaleString("en")}}=${formatMath(result)}\\]`;
+      const compactTerms=(items,format)=>{
+        if(items.length===0)return "";
+        if(items.length===1)return format(items[0]);
+        if(items.length===2)return `${format(items[0])}+${format(items[1])}`;
+        return `${format(items[0])}+\\cdots+${format(items[items.length-1])}`;
+      };
+      const numeratorTerms=compactTerms(groupRows,r=>`${(+r.loans_at_risk).toLocaleString("en")}\\cdot${formatMath(+r[spec.residual])}`);
+      const denominatorTerms=compactTerms(groupRows,r=>(+r.loans_at_risk).toLocaleString("en"));
+      return `\\[${spec.symbol}_{${spec.sub}}=\\frac{${numeratorTerms}}{${denominatorTerms}}=\\frac{${formatMath(numerator)}}{${denominator.toLocaleString("en")}}=${formatMath(result)}\\]`;
     }
 
     function formatMath(value){return Number(value).toFixed(3);}
