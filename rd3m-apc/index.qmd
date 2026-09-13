@@ -17,7 +17,9 @@ format:
     minimal: true
     code-tools: false
     html-math-method: mathjax
-    css: rd3m-story.css
+    css:
+      - rd3m-story.css
+      - rd3m-polish.css
     include-after-body:
       - rd3m-story.js
       - rd3m-polish.js
