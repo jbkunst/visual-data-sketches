@@ -63,6 +63,17 @@ Examples:
 ## Formulas and notation
 
 - Use MathJax / LaTeX for formulas; do not use monospace pseudo-formulas.
+- Mathematical notation inside narrative/body text must also use inline LaTeX, for example `\\(r_i^{(0)}\\)` instead of Unicode approximations such as `residual₀`.
 - Keep the existing blue formula callout treatment.
 - Explain subscripts when first introduced. In particular, state that `c` denotes cohort and `a` denotes age in `RD3M_{c,a}`.
 - Keep formulas consistent with `prepare-data.R` and the methodological source post.
+
+### AGE / COHORT / PERIOD calculation scenes
+
+- Start each scene with the general group formula.
+- For each group, replace the formula with the concrete calculation being executed, e.g. `A_1 = ...`, `A_2 = ...`, or the relevant cohort / period label.
+- Show the actual values being used. When the group has many rows, show a few representative terms plus `\\cdots`, then show the full weighted numerator, denominator, and resulting value.
+- Keep the relevant input rows / columns highlighted while that concrete formula is visible.
+- Fill the output cells for that group only after / while its concrete calculation is shown.
+- Slow these scenes down relative to simple row-wise residual scenes.
+- After the final group is filled, return to the general formula before the user advances.
