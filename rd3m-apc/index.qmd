@@ -34,7 +34,7 @@ $RD3M_t$
   id="rd3m-story"
   data-rd3m-story
   data-source="data/rd3m-data.json"
-  data-data-version="4"
+  data-data-version="5"
   aria-label="Visual explanation of three-month credit risk and its age, cohort and period decomposition"
 >
   <p class="story-loading" role="status">Preparing the credit-risk story…</p>
