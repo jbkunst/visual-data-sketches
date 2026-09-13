@@ -1,0 +1,6 @@
+Title: Decomposing three-month credit risk
+Description: Visual explanation of how three-month default risk is separated into age, cohort and period contributions using public Bondora loan data.
+Categories: credit risk
+Runtime: html
+Date: 2026-09-12
+Status: draft
