@@ -16,16 +16,21 @@ format:
     theme: none
     minimal: true
     code-tools: false
+    html-math-method: mathjax
     css: rd3m-story.css
     include-after-body: rd3m-story.js
 ---
+
+::: {.story-math-loader}
+$RD3M_t$
+:::
 
 ```{=html}
 <main
   id="rd3m-story"
   data-rd3m-story
   data-source="data/rd3m-data.json"
-  data-data-version="3"
+  data-data-version="4"
   aria-label="Visual explanation of three-month credit risk and its age, cohort and period decomposition"
 >
   <p class="story-loading" role="status">Preparing the credit-risk story…</p>
