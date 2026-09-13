@@ -5,15 +5,33 @@
   const root = document.querySelector("[data-rd3m-story]");
   if (!root) return;
 
-  fetch(root.dataset.source)
+  const sourceUrl = new URL(root.dataset.source, window.location.href);
+  sourceUrl.searchParams.set("v", root.dataset.dataVersion || "2");
+
+  fetch(sourceUrl, {cache: "no-store"})
     .then((response) => {
       if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
       return response.json();
     })
-    .then(startStory)
+    .then((data) => {
+      validatePayload(data);
+      startStory(data);
+    })
     .catch((error) => {
       root.innerHTML = `<p class="story-error">Could not load the story: ${error.message}</p>`;
     });
+
+  function validatePayload(data) {
+    if (!Array.isArray(data?.portfolio)) {
+      throw new Error("rd3m-data.json is missing portfolio data");
+    }
+    if (!data?.focal || !Array.isArray(data.focal.loans) || !Array.isArray(data.focal.cells)) {
+      throw new Error("rd3m-data.json is from the previous version. Run Rscript rd3m-apc/prepare-data.R and reload.");
+    }
+    if (!data?.story || !Array.isArray(data.story.rows)) {
+      throw new Error("rd3m-data.json is from the previous version. Run Rscript rd3m-apc/prepare-data.R and reload.");
+    }
+  }
 
   function startStory(data) {
     const portfolio = data.portfolio;
@@ -202,9 +220,10 @@
       const focalIndex = portfolio.findIndex((row) => row.period === focalPeriod);
 
       const svg = svgNode("svg", {viewBox: `0 0 ${width} ${height}`, class: "risk-line"});
-      const axisY = svgNode("line", {x1: margin.left, x2: margin.left, y1: margin.top, y2: margin.top + h, class: "axis"});
-      const axisX = svgNode("line", {x1: margin.left, x2: width - margin.right, y1: margin.top + h, y2: margin.top + h, class: "axis"});
-      svg.append(axisY, axisX);
+      svg.append(
+        svgNode("line", {x1: margin.left, x2: margin.left, y1: margin.top, y2: margin.top + h, class: "axis"}),
+        svgNode("line", {x1: margin.left, x2: width - margin.right, y1: margin.top + h, y2: margin.top + h, class: "axis"})
+      );
 
       [0, .25, .5, .75, 1].forEach((fraction) => {
         const value = maxY * fraction;
@@ -220,19 +239,17 @@
 
       portfolio.forEach((row, i) => {
         const isFocus = i === focalIndex;
-        const circle = svgNode("circle", {
+        svg.appendChild(svgNode("circle", {
           cx: x(i), cy: y(Number(row.observed_rd3m)), r: isFocus && focus ? 7 : 2.6,
           class: isFocus && focus ? "portfolio-point focus" : "portfolio-point"
-        });
-        svg.appendChild(circle);
+        }));
       });
 
-      [0, Math.floor(portfolio.length / 4), Math.floor(portfolio.length / 2), Math.floor(3 * portfolio.length / 4), portfolio.length - 1]
-        .forEach((i) => {
-          const label = svgNode("text", {x: x(i), y: height - 20, class: "tick-label", "text-anchor": "middle"});
-          label.textContent = monthLabel(portfolio[i].period, true);
-          svg.appendChild(label);
-        });
+      [0, Math.floor(portfolio.length / 4), Math.floor(portfolio.length / 2), Math.floor(3 * portfolio.length / 4), portfolio.length - 1].forEach((i) => {
+        const label = svgNode("text", {x: x(i), y: height - 20, class: "tick-label", "text-anchor": "middle"});
+        label.textContent = monthLabel(portfolio[i].period, true);
+        svg.appendChild(label);
+      });
 
       const yTitle = svgNode("text", {x: 18, y: margin.top + h / 2, class: "axis-title", transform: `rotate(-90 18 ${margin.top + h / 2})`, "text-anchor": "middle"});
       yTitle.textContent = "Portfolio RD3M";
@@ -290,9 +307,9 @@
     }
 
     function renderMatrix() {
+      const periods = data.story.periods;
+      const ages = data.story.ages;
       const cohorts = [...new Set(storyRows.map((row) => row.cohort))].sort();
-      const ages = [...new Set(storyRows.map((row) => Number(row.age)))].sort((a, b) => a - b);
-      const map = new Map(storyRows.map((row) => [`${row.cohort}|${row.age}`, row]));
       const table = document.createElement("table");
       table.className = "vintage-matrix";
       table.innerHTML = `<thead><tr><th>Cohort</th>${ages.map((age) => `<th>M${age}</th>`).join("")}</tr></thead>`;
@@ -301,14 +318,12 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `<th>${monthLabel(cohort)}</th>`;
         ages.forEach((age) => {
-          const row = map.get(`${cohort}|${age}`);
+          const row = storyRows.find((candidate) => candidate.cohort === cohort && Number(candidate.age) === Number(age));
           const td = document.createElement("td");
           if (row) {
-            td.className = "matrix-cell";
-            td.dataset.period = row.period;
-            td.innerHTML = `<b>${(100 * Number(row.rd3m)).toFixed(2)}%</b><span>${monthLabel(row.period, false, true)}</span>`;
-          } else {
-            td.className = "matrix-empty";
+            td.innerHTML = `<b>${(100 * Number(row.rd3m)).toFixed(2)}%</b><span>${monthLabel(row.period)}</span>`;
+            const periodIndex = periods.indexOf(row.period);
+            td.dataset.periodIndex = periodIndex;
           }
           tr.appendChild(td);
         });
@@ -316,88 +331,62 @@
       });
       table.appendChild(body);
       const legend = document.createElement("div");
-      legend.className = "matrix-periods";
-      data.story.periods.forEach((period, index) => {
-        legend.innerHTML += `<span style="--period-index:${index}"><i></i>${monthLabel(period)}</span>`;
-      });
+      legend.className = "period-legend";
+      periods.forEach((period, index) => legend.innerHTML += `<span data-period-index="${index}">${monthLabel(period)}</span>`);
       const wrap = document.createElement("div");
       wrap.className = "matrix-stage";
       wrap.append(table, legend);
-      [...wrap.querySelectorAll("[data-period]")].forEach((cell) => {
-        const index = data.story.periods.indexOf(cell.dataset.period);
-        cell.style.setProperty("--period-index", Math.max(0, index));
-      });
       ui.graphic.replaceChildren(wrap);
     }
 
     function renderApc(scene) {
       const table = document.createElement("table");
-      table.className = "apc-table progressive";
-      const labels = {
-        cohort: "Cohort", age: "Age", period: "Period", loans_at_risk: "At risk", defaults_3m: "Defaults", rd3m: "RD3M",
-        q: "Adjusted q", y_logit: "logit(q)", mu: "μ", residual_after_mean: "Residual after μ", age_effect: "AGE", residual_after_age: "Residual after AGE",
-        cohort_effect: "COHORT", residual_after_cohort: "Residual after COHORT", period_effect: "PERIOD", residual_after_period: "Final residual",
-        risk_base: "Base", contribution_age: "AGE", contribution_cohort: "COHORT", contribution_period: "PERIOD", contribution_residual: "Residual"
-      };
-      table.innerHTML = `<thead><tr>${scene.columns.map((key) => `<th>${labels[key]}</th>`).join("")}</tr></thead>`;
+      table.className = "apc-table";
+      table.innerHTML = `<thead><tr>${scene.columns.map((column) => `<th>${columnLabel(column)}</th>`).join("")}</tr></thead>`;
       const body = document.createElement("tbody");
       storyRows.forEach((row) => {
         const tr = document.createElement("tr");
         if (scene.highlight && scene.highlight !== "all") tr.dataset.group = String(row[scene.highlight]);
-        scene.columns.forEach((key) => {
+        scene.columns.forEach((column) => {
           const td = document.createElement("td");
-          td.className = `col-${key}`;
-          td.textContent = formatCell(key, row);
+          td.className = `col-${column}`;
+          td.textContent = formatValue(column, row[column]);
           tr.appendChild(td);
         });
         body.appendChild(tr);
       });
       table.appendChild(body);
-
       const wrap = document.createElement("div");
       wrap.className = `apc-stage highlight-${scene.highlight || "none"}`;
       wrap.appendChild(table);
-
-      if (scene.highlight === "all") {
-        const badge = document.createElement("div");
-        badge.className = "calculation-badge";
-        badge.innerHTML = `<span>weighted across all visible cells</span><strong>μ = ${Number(data.story.mean.mu).toFixed(3)}</strong>`;
-        wrap.prepend(badge);
-      }
-      if (scene.highlight && scene.highlight !== "all") {
-        const unique = [...new Set(storyRows.map((row) => String(row[scene.highlight])))];
-        [...body.children].forEach((tr) => {
-          tr.style.setProperty("--group-index", unique.indexOf(tr.dataset.group) % 5);
-        });
-      }
       ui.graphic.replaceChildren(wrap);
     }
 
-    function formatCell(key, row) {
-      if (["cohort", "period"].includes(key)) return monthLabel(row[key]);
-      if (["age", "loans_at_risk", "defaults_3m"].includes(key)) return Number(row[key]).toLocaleString("en");
-      const value = Number(row[key]);
-      if (!Number.isFinite(value)) return "—";
-      if (["rd3m", "q", "risk_base", "contribution_age", "contribution_cohort", "contribution_period", "contribution_residual"].includes(key)) {
-        return `${(100 * value).toFixed(Math.abs(value) < 0.001 ? 3 : 2)}%`;
-      }
-      return value.toFixed(3);
+    function columnLabel(key) {
+      return ({cohort:"Cohort",age:"Age",period:"Period",loans_at_risk:"At risk",defaults_3m:"Defaults",rd3m:"RD3M",q:"Adjusted q",y_logit:"logit(q)",mu:"μ",residual_after_mean:"Residual",age_effect:"AGE",residual_after_age:"After AGE",cohort_effect:"COHORT",residual_after_cohort:"After COHORT",period_effect:"PERIOD",residual_after_period:"Final residual",risk_base:"Base",contribution_age:"AGE",contribution_cohort:"COHORT",contribution_period:"PERIOD",contribution_residual:"Residual"})[key] || key;
+    }
+
+    function formatValue(key, value) {
+      if (key === "cohort" || key === "period") return monthLabel(value);
+      if (key === "age" || key === "loans_at_risk" || key === "defaults_3m") return Number(value).toLocaleString("en");
+      const number = Number(value);
+      if (!Number.isFinite(number)) return "—";
+      if (["rd3m","q","risk_base","contribution_age","contribution_cohort","contribution_period","contribution_residual"].includes(key)) return `${(100 * number).toFixed(Math.abs(number) < .001 ? 3 : 2)}%`;
+      return number.toFixed(3);
+    }
+
+    function monthLabel(value, yearOnly = false) {
+      const date = new Date(`${value}T00:00:00`);
+      return date.toLocaleDateString("en", yearOnly ? {year:"numeric"} : {month:"short", year:"numeric"});
+    }
+
+    function svgNode(tag, attrs) {
+      const node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+      Object.entries(attrs || {}).forEach(([key, value]) => node.setAttribute(key, value));
+      return node;
     }
 
     render(0);
-  }
-
-  function monthLabel(value, yearOnly = false, monthOnly = false) {
-    const date = new Date(`${value}T00:00:00`);
-    if (yearOnly) return String(date.getFullYear());
-    if (monthOnly) return date.toLocaleDateString("en", {month: "short"});
-    return date.toLocaleDateString("en", {month: "short", year: "numeric"});
-  }
-
-  function svgNode(tag, attrs = {}) {
-    const node = document.createElementNS("http://www.w3.org/2000/svg", tag);
-    Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
-    return node;
   }
 })();
 </script>
