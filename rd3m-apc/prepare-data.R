@@ -197,9 +197,9 @@ portfolio_observed <- rd3m_cells |>
   dplyr::summarise(
     loans_at_risk = sum(loans_at_risk),
     defaults_3m = sum(defaults_3m),
-    observed_rd3m = weighted.mean(rd3m, loans_at_risk),
     .by = period
-  )
+  ) |>
+  dplyr::mutate(observed_rd3m = defaults_3m / loans_at_risk)
 
 portfolio_apc <- apc_full |>
   dplyr::summarise(
