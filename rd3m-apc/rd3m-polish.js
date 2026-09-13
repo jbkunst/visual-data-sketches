@@ -4,8 +4,12 @@
 
   function setup() {
     const copy = document.querySelector(".story-copy");
-    const counter = document.querySelector(".counter");
-    if (!copy || !counter) {
+    const sceneCopy = [
+      document.querySelector(".story-step"),
+      document.querySelector(".story-copy h1"),
+      document.querySelector(".story-text")
+    ];
+    if (!copy || sceneCopy.some((node) => !node)) {
       window.requestAnimationFrame(setup);
       return;
     }
@@ -21,10 +25,12 @@
       });
     });
 
-    observer.observe(copy, {
-      childList: true,
-      subtree: true,
-      characterData: true
+    sceneCopy.forEach((node) => {
+      observer.observe(node, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
     });
 
     copy.classList.add("copy-fade-in");
