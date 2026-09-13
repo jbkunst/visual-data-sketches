@@ -37,15 +37,16 @@
 }
 
 .dot-caption {
-  margin-top: 4px;
-  gap: 30px;
-  font-size: 13px;
-  color: #aab8c3;
+  margin: 0 0 10px;
+  gap: 34px;
+  font-size: 15px;
+  color: #b4c0ca;
+  font-weight: 600;
 }
 
 .dot-caption i {
-  width: 11px;
-  height: 11px;
+  width: 12px;
+  height: 12px;
 }
 
 @keyframes copyFade {
