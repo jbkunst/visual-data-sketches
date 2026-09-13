@@ -6,7 +6,7 @@
   if (!root) return;
 
   const sourceUrl = new URL(root.dataset.source, window.location.href);
-  sourceUrl.searchParams.set("v", root.dataset.dataVersion || "5");
+  sourceUrl.searchParams.set("v", root.dataset.dataVersion || "6");
 
   fetch(sourceUrl, {cache: "no-store"})
     .then((response) => {
@@ -41,17 +41,17 @@
       {id:"ratio", kicker:"3 · Numerator and denominator", title:"What does 1.64% actually mean?", text:"The denominator is every loan at risk at the start of April. Three months later, the numerator is the subset that defaulted. The loan field expands from the selected portfolio point; the red marks are the numerator, not a sample.", formula:"", mode:"dots"},
       {id:"ages", kicker:"4 · Inside the denominator", title:"Those loans are not all alike", text:"Keep the same loan population and sweep through age groups. Each highlighted set is a different loan age, and red defaults remain part of the group they belong to.", formula:"\\[period=cohort+age\\]", mode:"ageDots"},
       {id:"base", kicker:"5 · Aggregate the loans", title:"Collapse the points into cohort × age cells", text:"Fade from individual loans into grouped rows. Each row is one cohort-age cell and initially contains only cohort, age, loans at risk, and defaults in the next three months. The sheet stays fixed from here on.", formula:"\\[c=\\text{cohort},\\qquad a=\\text{age}\\]", mode:"sheet", step:"base"},
-      {id:"rd3m", kicker:"6 · Cell RD3M", title:"Compute risk inside each cohort-age cell", text:"For every cohort c and age a, divide defaults by loans at risk. Loans and Defaults are the inputs; RD3M is the new result. The subscripts c,a mean that this risk is calculated separately for each cohort-age cell.", formula:"\\[RD3M_{c,a}=\\frac{D^{3M}_{c,a}}{N_{c,a}}\\]", mode:"sheet", step:"rd3m", deps:["loans_at_risk","defaults_3m"]},
-      {id:"q", kicker:"7 · Adjust zero cells", title:"Add the adjusted probability", text:"A small add-half correction keeps zero-default cells finite. Loans and Defaults remain the only inputs used here; q is the new output.", formula:"\\[q_i=\\frac{D_i+0.5}{N_i+1}\\]", mode:"sheet", step:"q", deps:["defaults_3m","loans_at_risk"]},
-      {id:"logit", kicker:"8 · Change scale", title:"Move to log-odds", text:"RD3M is bounded between zero and one. The logit moves the adjusted probability onto an additive scale. Only q is used to create logit(q).", formula:"\\[y_i=\\operatorname{logit}(q_i)=\\log\\!\\left(\\frac{q_i}{1-q_i}\\right)\\]", mode:"sheet", step:"logit", deps:["q"]},
-      {id:"mu", kicker:"9 · Global baseline", title:"Start from one weighted level", text:"All visible logit values contribute to the baseline, weighted by loans at risk. Loans and logit(q) stay blue while every unused column fades back.", formula:"\\[\\mu=\\frac{\\sum_i N_i y_i}{\\sum_i N_i}\\]", mode:"sheet", step:"mu", deps:["loans_at_risk","y_logit"]},
-      {id:"r0", kicker:"10 · First residual", title:"What is left after the baseline?", text:"For each row, subtract μ from logit(q). Only logit(q) and μ remain blue; residual₀ is written in the warm output color.", formula:"\\[r_i^{(0)}=y_i-\\mu\\]", mode:"sheet", step:"r0", deps:["y_logit","mu"]},
-      {id:"age", kicker:"11 · AGE", title:"Fill AGE one group at a time", text:"AGE uses age, loans at risk, and residual₀. The animation cycles through age groups, highlights only the rows used in each weighted mean, and then writes the AGE value for that group.", formula:"\\[A_a=\\frac{\\sum_{i:age_i=a}N_i r_i^{(0)}}{\\sum_{i:age_i=a}N_i}\\]", mode:"sheet", step:"age", deps:["age","loans_at_risk","residual_after_mean"], cycle:"age"},
-      {id:"r1", kicker:"12 · Residual after AGE", title:"Subtract the AGE contribution", text:"Now only residual₀ and AGE remain prominent. Their difference creates residual₁.", formula:"\\[r_i^{(1)}=r_i^{(0)}-A_{age_i}\\]", mode:"sheet", step:"r1", deps:["residual_after_mean","age_effect"]},
-      {id:"cohort", kicker:"13 · COHORT", title:"Fill COHORT one origination month at a time", text:"COHORT works on what AGE left behind. Cohort, loans at risk, and residual₁ are the inputs. Rows from the same origination cohort light up together before the result is written.", formula:"\\[C_c=\\frac{\\sum_{i:cohort_i=c}N_i r_i^{(1)}}{\\sum_{i:cohort_i=c}N_i}\\]", mode:"sheet", step:"cohort", deps:["cohort","loans_at_risk","residual_after_age"], cycle:"cohort"},
-      {id:"r2", kicker:"14 · Residual after COHORT", title:"Subtract the COHORT contribution", text:"The next residual is what remains after both AGE and COHORT have been removed. Only residual₁ and COHORT are used.", formula:"\\[r_i^{(2)}=r_i^{(1)}-C_{cohort_i}\\]", mode:"sheet", step:"r2", deps:["residual_after_age","cohort_effect"]},
-      {id:"period", kicker:"15 · PERIOD", title:"Finish with calendar time", text:"Rows sharing the same period now light up together. In cohort-age geometry they form diagonals. PERIOD uses loans at risk and residual₂ within each calendar period.", formula:"\\[P_p=\\frac{\\sum_{i:period_i=p}N_i r_i^{(2)}}{\\sum_{i:period_i=p}N_i}\\]", mode:"sheet", step:"period", deps:["loans_at_risk","residual_after_cohort"], cycle:"period"},
-      {id:"r3", kicker:"16 · Final residual", title:"What remains is cell-level residual", text:"Subtract PERIOD from residual₂ and the sequential decomposition is complete. Every new column came from columns already visible to its left.", formula:"\\[r_i^{(3)}=r_i^{(2)}-P_{period_i}\\]", mode:"sheet", step:"r3", deps:["residual_after_cohort","period_effect"]}
+      {id:"rd3m", kicker:"6 · Cell RD3M", title:"Compute risk inside each cohort-age cell", text:"For every cohort \\(c\\) and age \\(a\\), divide defaults by loans at risk. Loans and Defaults are the inputs; \\(RD3M_{c,a}\\) is the new result. The subscripts \\(c,a\\) mean that the risk is calculated separately for each cohort-age cell.", formula:"\\[RD3M_{c,a}=\\frac{D^{3M}_{c,a}}{N_{c,a}}\\]", mode:"sheet", step:"rd3m", deps:["loans_at_risk","defaults_3m"]},
+      {id:"q", kicker:"7 · Adjust zero cells", title:"Add the adjusted probability", text:"A small add-half correction keeps zero-default cells finite. Loans and Defaults remain the inputs; \\(q_i\\) is the new output.", formula:"\\[q_i=\\frac{D_i+0.5}{N_i+1}\\]", mode:"sheet", step:"q", deps:["defaults_3m","loans_at_risk"]},
+      {id:"logit", kicker:"8 · Change scale", title:"Move to log-odds", text:"RD3M is bounded between zero and one. The logit moves the adjusted probability onto an additive scale. Only \\(q_i\\) is used to create \\(y_i=\\operatorname{logit}(q_i)\\).", formula:"\\[y_i=\\operatorname{logit}(q_i)=\\log\\!\\left(\\frac{q_i}{1-q_i}\\right)\\]", mode:"sheet", step:"logit", deps:["q"]},
+      {id:"mu", kicker:"9 · Global baseline", title:"Start from one weighted level", text:"All visible logit values contribute to the baseline \\(\\mu\\), weighted by loans at risk. Loans and \\(y_i\\) stay blue while every unused column fades back.", formula:"\\[\\mu=\\frac{\\sum_i N_i y_i}{\\sum_i N_i}\\]", mode:"sheet", step:"mu", deps:["loans_at_risk","y_logit"]},
+      {id:"r0", kicker:"10 · First residual", title:"What is left after the baseline?", text:"For each row, subtract \\(\\mu\\) from \\(y_i=\\operatorname{logit}(q_i)\\). Only those two inputs remain blue; the new \\(r_i^{(0)}\\) column is written in the warm output color.", formula:"\\[r_i^{(0)}=y_i-\\mu\\]", mode:"sheet", step:"r0", deps:["y_logit","mu"]},
+      {id:"age", kicker:"11 · AGE", title:"Fill AGE one group at a time", text:"AGE uses age, loans at risk, and \\(r_i^{(0)}\\). The formula below changes with each age group, shows the values being used, writes \\(A_a\\), and then returns to the general definition.", formula:"\\[A_a=\\frac{\\sum_{i:age_i=a}N_i r_i^{(0)}}{\\sum_{i:age_i=a}N_i}\\]", mode:"sheet", step:"age", deps:["age","loans_at_risk","residual_after_mean"], cycle:"age"},
+      {id:"r1", kicker:"12 · Residual after AGE", title:"Subtract the AGE contribution", text:"Now only \\(r_i^{(0)}\\) and \\(A_{age_i}\\) remain prominent. Their difference creates \\(r_i^{(1)}\\).", formula:"\\[r_i^{(1)}=r_i^{(0)}-A_{age_i}\\]", mode:"sheet", step:"r1", deps:["residual_after_mean","age_effect"]},
+      {id:"cohort", kicker:"13 · COHORT", title:"Fill COHORT one origination month at a time", text:"COHORT works on what AGE left behind. Cohort, loans at risk, and \\(r_i^{(1)}\\) are the inputs. The formula changes for each origination month before writing \\(C_c\\).", formula:"\\[C_c=\\frac{\\sum_{i:cohort_i=c}N_i r_i^{(1)}}{\\sum_{i:cohort_i=c}N_i}\\]", mode:"sheet", step:"cohort", deps:["cohort","loans_at_risk","residual_after_age"], cycle:"cohort"},
+      {id:"r2", kicker:"14 · Residual after COHORT", title:"Subtract the COHORT contribution", text:"The next residual is what remains after both AGE and COHORT have been removed. Only \\(r_i^{(1)}\\) and \\(C_{cohort_i}\\) are used to create \\(r_i^{(2)}\\).", formula:"\\[r_i^{(2)}=r_i^{(1)}-C_{cohort_i}\\]", mode:"sheet", step:"r2", deps:["residual_after_age","cohort_effect"]},
+      {id:"period", kicker:"15 · PERIOD", title:"Finish with calendar time", text:"Rows sharing the same period now light up together. PERIOD uses loans at risk and \\(r_i^{(2)}\\) within each calendar period, then writes \\(P_p\\).", formula:"\\[P_p=\\frac{\\sum_{i:period_i=p}N_i r_i^{(2)}}{\\sum_{i:period_i=p}N_i}\\]", mode:"sheet", step:"period", deps:["loans_at_risk","residual_after_cohort"], cycle:"period"},
+      {id:"r3", kicker:"16 · Final residual", title:"What remains is cell-level residual", text:"Subtract \\(P_{period_i}\\) from \\(r_i^{(2)}\\) and the sequential decomposition is complete. The result is the final cell-level residual \\(r_i^{(3)}\\).", formula:"\\[r_i^{(3)}=r_i^{(2)}-P_{period_i}\\]", mode:"sheet", step:"r3", deps:["residual_after_cohort","period_effect"]}
     ];
 
     root.innerHTML = `
@@ -87,8 +87,9 @@
       const scene = scenes[index];
       ui.step.textContent = scene.kicker;
       ui.title.textContent = scene.title;
-      ui.text.textContent = scene.text;
+      ui.text.innerHTML = scene.text;
       ui.formula.innerHTML = scene.formula || "";
+      typeset(ui.text);
       typeset(ui.formula);
       ui.counter.textContent = `${index + 1} / ${scenes.length}`;
       [...ui.dots.children].forEach((dot, i) => dot.classList.toggle("active", i === index));
@@ -270,7 +271,7 @@
     };
 
     const fullColumns=sheetSteps.r3;
-    const labels={cohort:"Cohort",age:"Age",loans_at_risk:"Loans",defaults_3m:"Defaults",rd3m:"RD3M",q:"q",y_logit:"logit(q)",mu:"μ",residual_after_mean:"residual₀",age_effect:"AGE",residual_after_age:"residual₁",cohort_effect:"COHORT",residual_after_cohort:"residual₂",period_effect:"PERIOD",residual_after_period:"residual₃"};
+    const labels={cohort:"Cohort",age:"Age",loans_at_risk:"Loans",defaults_3m:"Defaults",rd3m:"RD3M",q:"q",y_logit:"logit(q)",mu:"μ",residual_after_mean:"r⁽⁰⁾",age_effect:"AGE",residual_after_age:"r⁽¹⁾",cohort_effect:"COHORT",residual_after_cohort:"r⁽²⁾",period_effect:"PERIOD",residual_after_period:"r⁽³⁾"};
 
     function renderSheet(scene, token) {
       const visible=sheetSteps[scene.step];
@@ -303,7 +304,7 @@
 
       stage.appendChild(sheet);ui.graphic.replaceChildren(stage);
       if(scene.step!=="base" && !scene.cycle)revealLastColumn(sheet, token);
-      if(scene.cycle)cycleGroups(sheet, scene.cycle, output, token);
+      if(scene.cycle)cycleGroups(sheet, scene, output, token);
     }
 
     function revealLastColumn(sheet, token){
@@ -312,27 +313,70 @@
       cells.forEach((c,i)=>setTimeout(()=>{if(token===runToken)c.style.opacity="1";},550+i*42));
     }
 
-    function cycleGroups(sheet,key,outCol,token){
+    function cycleGroups(sheet, scene, outCol, token){
+      const key=scene.cycle;
       const groupValues=[...new Set(rows.map(r=>String(r[key])))];
       const outputs=[...sheet.querySelectorAll(`.sheet-row:not(.sheet-header) [data-col='${outCol}']`)];
       outputs.forEach(c=>{c.style.opacity="0";});
+      const generalFormula=scene.formula;
       let i=0;
+
       const cycle=()=>{
         if(token!==runToken)return;
         const value=groupValues[i];
+        const groupRows=rows.filter(r=>String(r[key])===value);
         [...sheet.querySelectorAll(".sheet-row:not(.sheet-header)")].forEach(r=>{
           const on=r.dataset[key]===value;
           r.classList.toggle("active-group",on);
           const out=r.querySelector(`[data-col='${outCol}']`);
           if(out && on){out.style.opacity="1";out.classList.add("filled-now");}
         });
+
+        ui.formula.classList.add("formula-fade");
+        setTimeout(()=>{
+          if(token!==runToken)return;
+          ui.formula.innerHTML=groupFormula(scene.step,value,groupRows);
+          typeset(ui.formula);
+          ui.formula.classList.remove("formula-fade");
+        },220);
+
         i+=1;
-        if(i<groupValues.length)setTimeout(cycle,1350);
-        else setTimeout(()=>{[...sheet.querySelectorAll(".sheet-row")].forEach(r=>r.classList.remove("active-group"));},950);
+        if(i<groupValues.length){
+          setTimeout(cycle,2050);
+        } else {
+          setTimeout(()=>{
+            if(token!==runToken)return;
+            [...sheet.querySelectorAll(".sheet-row")].forEach(r=>r.classList.remove("active-group"));
+            ui.formula.classList.add("formula-fade");
+            setTimeout(()=>{
+              if(token!==runToken)return;
+              ui.formula.innerHTML=generalFormula;
+              typeset(ui.formula);
+              ui.formula.classList.remove("formula-fade");
+            },220);
+          },2050);
+        }
       };
-      setTimeout(cycle,750);
+      setTimeout(cycle,900);
     }
 
+    function groupFormula(step,value,groupRows){
+      const spec={
+        age:{symbol:"A",sub:String(value),residual:"residual_after_mean",power:"0"},
+        cohort:{symbol:"C",sub:monthMath(value),residual:"residual_after_age",power:"1"},
+        period:{symbol:"P",sub:monthMath(value),residual:"residual_after_cohort",power:"2"}
+      }[step];
+      const weighted=groupRows.map(r=>(+r.loans_at_risk)*(+r[spec.residual]));
+      const numerator=weighted.reduce((a,b)=>a+b,0);
+      const denominator=groupRows.reduce((a,r)=>a+(+r.loans_at_risk),0);
+      const result=numerator/denominator;
+      const terms=groupRows.slice(0,3).map(r=>`${(+r.loans_at_risk).toLocaleString("en")}\\cdot${formatMath(+r[spec.residual])}`);
+      const more=groupRows.length>3?"+\\cdots":"";
+      return `\\[${spec.symbol}_{${spec.sub}}=\\frac{${terms.join("+")}${more}}{${groupRows.slice(0,3).map(r=>(+r.loans_at_risk).toLocaleString("en")).join("+")}${groupRows.length>3?"+\\cdots":""}}=\\frac{${formatMath(numerator)}}{${denominator.toLocaleString("en")}}=${formatMath(result)}\\]`;
+    }
+
+    function formatMath(value){return Number(value).toFixed(3);}
+    function monthMath(value){const d=new Date(`${value}T00:00:00`);return `${d.toLocaleDateString("en",{month:"short"})}\\,${d.getFullYear()}`;}
     function cell(text,col,head){const n=document.createElement("div");n.className=`sheet-cell col-${col}${head?" head":""}`;n.dataset.col=col;n.textContent=text;return n;}
     function formatValue(key,value){if(key==="cohort"||key==="period")return monthLabel(value);if(key==="age"||key==="loans_at_risk"||key==="defaults_3m")return Number(value).toLocaleString("en");const v=+value;if(!Number.isFinite(v))return "—";if(["rd3m","q"].includes(key))return `${(100*v).toFixed(2)}%`;return v.toFixed(3);}
     function typeset(node){if(window.MathJax?.typesetPromise)window.MathJax.typesetPromise([node]).catch(()=>{});}
