@@ -163,8 +163,8 @@ loans <- loans_raw |>
 loan_windows <- loans |>
   tidyr::uncount(last_start_age, .id = "age") |>
   dplyr::mutate(
-    period = cohort + lubridate::months(age),
-    window_end_period = period + lubridate::months(horizon_months - 1L),
+    period = cohort + lubridate::period(month = age),
+    window_end_period = period + lubridate::period(month = horizon_months - 1L),
     default_3m = as.integer(
       !is.na(default_age) &
         default_age >= age &
@@ -300,7 +300,7 @@ check_close(
   label = "Example APC logit reconstruction"
 )
 
-if (!all(rd3m_cells$period == rd3m_cells$cohort + lubridate::months(rd3m_cells$age))) {
+if (!all(rd3m_cells$period == rd3m_cells$cohort + lubridate::period(month = rd3m_cells$age))) {
   stop("APC date identity failed: period != cohort + age", call. = FALSE)
 }
 
