@@ -1,3 +1,12 @@
+# Prepare the static data used by the RD3M APC story.
+#
+# Run from the repository root with:
+#   Rscript --vanilla rd3m-apc/prepare-data.R
+#
+# The script downloads one pinned source snapshot (cached in .cache/) and writes
+# the story payload plus two inspection CSVs to data/. The browser only renders
+# these outputs; all RD3M and APC calculations belong here.
+
 # setup -------------------------------------------------------------------
 
 required_packages <- c("dplyr", "jsonlite", "lubridate", "tidyr")
@@ -31,6 +40,10 @@ if (!file.exists(source_file)) {
 }
 
 bondora_data <- readRDS(source_file)
+if (!is.list(bondora_data) || is.null(bondora_data$loans)) {
+  stop("The pinned source snapshot does not contain a loans table.", call. = FALSE)
+}
+
 loans_raw <- bondora_data$loans
 
 # parameters --------------------------------------------------------------
@@ -55,6 +68,24 @@ to_loan_date <- function(x) {
   if (inherits(x, "POSIXt")) return(as.Date(x))
   as.Date(x, origin = "1899-12-30")
 }
+
+check_columns <- function(data, columns, label) {
+  missing_columns <- setdiff(columns, names(data))
+
+  if (length(missing_columns) > 0) {
+    stop(
+      label, " is missing required columns: ",
+      paste(missing_columns, collapse = ", "),
+      call. = FALSE
+    )
+  }
+}
+
+check_columns(
+  loans_raw,
+  c("loan_id", "country", "loan_issued_at", "months_on_book", "is_default"),
+  "The loans table"
+)
 
 fit_sequential_apc <- function(cells) {
   cells <- cells |>
@@ -248,6 +279,11 @@ if (nrow(story_cells_raw) != expected_story_rows) {
     "Expected ", expected_story_rows, " story cells but found ", nrow(story_cells_raw),
     call. = FALSE
   )
+}
+
+if (!all(sort(unique(story_cells_raw$period)) == story_periods) ||
+    !all(sort(unique(story_cells_raw$age)) == story_ages)) {
+  stop("Story cells do not cover every requested period and age.", call. = FALSE)
 }
 
 story_apc <- fit_sequential_apc(story_cells_raw)

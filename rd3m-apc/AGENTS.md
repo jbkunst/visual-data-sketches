@@ -2,6 +2,13 @@
 
 These instructions apply to every change under `rd3m-apc/`.
 
+## Data and validation boundaries
+
+- `prepare-data.R` is the single source of the RD3M and sequential APC calculations. The browser renders its static outputs; it must not recreate the construction.
+- Keep the pinned source snapshot unless a source update is explicitly part of the work. Preserve the input, reconstruction, and story-coverage checks when changing the data pipeline.
+- After changing `prepare-data.R`, run `Rscript --vanilla rd3m-apc/prepare-data.R` from the repository root and inspect its checks before reviewing generated data. Do not overwrite unrelated local data changes.
+- Read `data/README.md` and the relevant story code before changing the payload shape, calculation order, or terminology. Keep the script, payload, story, and methodological source post consistent.
+
 ## Narrative
 
 The story must teach the calculation by executing it visually. Do not present a completed APC table and explain it afterwards.
