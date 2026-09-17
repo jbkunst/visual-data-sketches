@@ -23,11 +23,73 @@
 .story-formula {
   min-height: 66px;
   margin-top: 18px;
-  transition: opacity .22s ease;
+  transition: opacity .35s ease;
 }
 
 .story-formula.formula-fade {
   opacity: 0;
+}
+
+.story-formula.formula-hidden {
+  display: none;
+}
+
+.story-language {
+  display: flex;
+  gap: 4px;
+}
+
+.story-language button {
+  border: 0;
+  padding: 2px 5px;
+  background: transparent;
+  color: #71808d;
+  font: inherit;
+  cursor: pointer;
+}
+
+.story-language button.active {
+  color: #8fc8ff;
+}
+
+.story-shell {
+  position: relative;
+}
+
+.story-header {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.story-brand {
+  margin: 0;
+  color: #a9c9e8;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.story-site-link {
+  position: absolute;
+  right: 3vw;
+  bottom: 22px;
+  z-index: 2;
+  color: #8fc8ff;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.story-site-link:hover,
+.story-site-link:focus-visible {
+  color: #f2f5f7;
+}
+
+.focus-value {
+  font-weight: 400;
 }
 
 .story-copy.copy-fade-in > * {
@@ -54,6 +116,334 @@
   height: 12px;
 }
 
+/* Keep the legend directly above the loan field instead of at the top of its grid. */
+.dot-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.loan-canvas {
+  flex: 0 1 auto;
+}
+
+/* Keep the fixed sheet geometry while improving small-text legibility. */
+.sheet-cell {
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.sheet-cell.head {
+  font-weight: 600;
+}
+
+.sheet-cell.input-col,
+.sheet-cell.new-col {
+  font-weight: 400;
+}
+
+.sheet-cell.head {
+  font-weight: 600;
+}
+
+/* E18–E19 re-express existing columns; they are identities, not new outputs. */
+.sheet-cell.identity-col {
+  opacity: 1;
+  color: #dbe8f2 !important;
+  font-weight: 650;
+  background: rgba(219, 232, 242, .05);
+  border-left: 1px solid rgba(219, 232, 242, .22);
+}
+
+/* Table columns start from their previous visual role, then ease to the next one. */
+.sheet-cell.column-transition-from-output {
+  opacity: 1 !important;
+  color: #f2a65a !important;
+  background: rgba(242, 166, 90, .09) !important;
+  border-left-color: rgba(242, 166, 90, .48) !important;
+}
+
+.sheet-cell.column-transition-from-input {
+  opacity: 1 !important;
+  color: #8fc8ff !important;
+  background: rgba(143, 200, 255, .06) !important;
+}
+
+.sheet-cell.column-transition-from-dim {
+  opacity: .14 !important;
+  color: #cbd6df !important;
+  background: transparent !important;
+}
+
+.sheet-cell.column-transition-from-active {
+  opacity: 1 !important;
+  color: #cbd6df !important;
+  background: transparent !important;
+}
+
+/* Headers preserve their quieter starting treatment; otherwise they flash bright
+   before a column fades or becomes an input. */
+.sheet-cell.head.column-transition-from-active,
+.sheet-cell.head.column-transition-from-dim {
+  color: #8295a4 !important;
+  background: #15212c !important;
+}
+
+/* One derived Period column fits without changing the sheet's visual footprint. */
+.calc-sheet {
+  width: 988px;
+}
+
+.sheet-row {
+  grid-template-columns: 84px 42px 78px repeat(14, 56px);
+  width: 988px;
+  min-width: 988px;
+}
+
+.calc-sheet.compact-risk-sheet,
+.calc-sheet.compact-risk-sheet .sheet-row {
+  width: 596px;
+  min-width: 596px;
+}
+
+.calc-sheet.compact-risk-sheet .sheet-row {
+  grid-template-columns: 84px 42px 78px repeat(6, 56px);
+}
+
+.calc-sheet.risk-scale-sheet,
+.calc-sheet.risk-scale-sheet .sheet-row {
+  width: 932px;
+  min-width: 932px;
+}
+
+.calc-sheet.risk-scale-sheet .sheet-row {
+  grid-template-columns: 84px 42px 78px repeat(13, 56px);
+}
+
+.sheet-cell.risk-risk_base { color: #b9cad5 !important; background: rgba(185, 202, 213, .08); font-weight: 400; }
+.sheet-cell.risk-contribution_age { color: #56b4e9 !important; background: rgba(86, 180, 233, .09); font-weight: 400; }
+.sheet-cell.risk-contribution_cohort { color: #009e73 !important; background: rgba(0, 158, 115, .1); font-weight: 400; }
+.sheet-cell.risk-contribution_period { color: #f2c66d !important; background: rgba(242, 198, 109, .1); font-weight: 400; }
+.sheet-cell.risk-contribution_residual { color: #a5b1b9 !important; background: rgba(165, 177, 185, .06); font-weight: 400; }
+
+.period-risk-table { width: min(850px, 100%); margin: auto; overflow: hidden; border: 1px solid #283b4b; border-radius: 7px; background: #0f1922; }
+.period-risk-row { display: grid; grid-template-columns: 90px 80px repeat(6, 1fr); min-height: 45px; align-items: center; border-bottom: 1px solid #1f303d; opacity: 0; transform: translateY(7px); transition: opacity .4s ease, transform .4s ease; }
+.period-risk-row.is-visible { opacity: 1; transform: none; }
+.period-risk-row span { padding: 0 9px; color: #c8d4dd; font-size: 12px; font-variant-numeric: tabular-nums; text-align: right; }
+.period-risk-row span:first-child { text-align: left; }
+.period-risk-header { opacity: 1; transform: none; background: #172530; }
+.period-risk-header span { color: #8fa2b1; font-size: 11px; font-weight: 700; }
+.period-risk-ellipsis { opacity: 1; transform: none; min-height: 25px; border-bottom-color: #1a2934; }
+.period-risk-ellipsis span { grid-column: 1 / -1; color: #708492; font-size: 18px; line-height: 1; text-align: center; }
+.period-risk-row .risk-risk_base { color: #b9cad5; }
+.period-risk-row .risk-contribution_age { color: #56b4e9; }
+.period-risk-row .risk-contribution_cohort { color: #009e73; }
+.period-risk-row .risk-contribution_period { color: #f2c66d; }
+.period-risk-row .risk-contribution_residual { color: #a5b1b9; }
+
+.portfolio-stack,
+.effect-facets {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 68vh;
+}
+
+.portfolio-stack {
+  max-height: none;
+}
+
+.portfolio-stack.axis-extend {
+  animation: axisExtend 1.65s cubic-bezier(.22, .8, .25, 1) both;
+}
+
+.stack-segment {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: stackReveal .42s ease both;
+}
+
+.stack-segment.stack-static {
+  animation: none;
+}
+
+.stack-segment.stack-final-fade {
+  transition: fill-opacity 1.55s ease;
+}
+
+.stack-marker { animation: fadeIn .45s ease both; }
+.reconstructed-line { stroke-linecap: round; stroke-linejoin: round; animation: fadeIn .65s ease both; }
+.reconstructed-line.reconstructed-final { opacity: 0; animation: fadeIn .9s ease 1.9s both; }
+.stack-legend-label { fill: #b4c0ca; font-size: 13px; font-weight: 600; }
+.facet-title { font-size: 12px; font-weight: 700; letter-spacing: .07em; }
+.facet-line { stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: drawFacet 1.45s ease forwards; }
+.facet-line.facet-static { stroke-dashoffset: 0; animation: none; }
+
+/* The last six scenes leave the sheet through one April cell, then aggregate it. */
+.risk-ladder,
+.ingredient-panel,
+.period-cells,
+.contribution-chart {
+  width: min(860px, 100%);
+  margin: auto;
+}
+
+.risk-ladder {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+
+.risk-ladder.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.ingredient-panel {
+  padding: 18px;
+  border: 1px solid #273a4a;
+  border-radius: 7px;
+  background: #0f1922;
+}
+
+.ingredient-meta {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+
+.ingredient-meta span,
+.ingredient-meta small,
+.ingredient-field small {
+  color: #8295a4;
+  font-size: 11px;
+}
+
+.ingredient-meta span { text-transform: uppercase; letter-spacing: .09em; }
+.ingredient-meta strong { color: #dbe8f2; font-size: 16px; }
+.ingredient-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+.ingredient-field { display: grid; gap: 5px; padding: 13px 11px; border-left: 2px solid #56b4e9; background: #14212c; opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; }
+.ingredient-field.is-visible { opacity: 1; transform: none; }
+.ingredient-field span { color: #8fc8ff; font-weight: 700; }
+.ingredient-field strong { color: #e5edf3; font-size: 16px; font-variant-numeric: tabular-nums; }
+
+.risk-source {
+  display: grid;
+  grid-template-columns: minmax(190px, 1fr) minmax(280px, 1.3fr);
+  gap: 18px;
+  align-items: baseline;
+  margin-bottom: 26px;
+  padding: 13px 16px;
+  border: 1px solid #273a4a;
+  border-radius: 6px;
+  background: #101a24;
+}
+
+.risk-source-meta span,
+.risk-source-meta small,
+.risk-raw span,
+.risk-raw small {
+  color: #8295a4;
+  font-size: 11px;
+}
+
+.risk-source-meta { display: grid; gap: 4px; }
+.risk-source-meta span { text-transform: uppercase; letter-spacing: .09em; }
+.risk-source-meta strong { color: #dbe8f2; font-size: 15px; }
+.risk-source-components { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.risk-source-components span { color: #91a9bb; font-size: 13px; }
+.risk-source-components b { color: #dbe8f2; font-size: 13px; font-variant-numeric: tabular-nums; }
+.risk-source-components sub { font-size: 9px; }
+
+.risk-step {
+  display: grid;
+  grid-template-columns: 92px 1fr 68px;
+  gap: 14px;
+  align-items: center;
+  min-height: 48px;
+  opacity: .18;
+  transition: opacity .45s ease;
+}
+
+.risk-step.active { opacity: 1; }
+.risk-step-label { color: #b5c3ce; font-size: 12px; font-weight: 650; }
+.risk-step-track { height: 9px; background: #182631; border-radius: 8px; overflow: hidden; }
+.risk-step-track i { display: block; height: 100%; border-radius: inherit; background: var(--step-color); transition: width .7s ease; }
+.risk-step strong { color: #e4edf3; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
+
+.risk-raw {
+  display: grid;
+  grid-template-columns: 92px 68px 1fr;
+  gap: 14px;
+  align-items: baseline;
+  margin-top: 20px;
+  padding-top: 13px;
+  border-top: 1px solid #273a4a;
+}
+
+.risk-raw strong { color: #f1f5f8; font-size: 14px; }
+
+.period-cells-heading,
+.period-summary {
+  display: flex;
+  justify-content: space-between;
+  color: #9fb0bd;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.period-cell {
+  display: grid;
+  grid-template-columns: 54px 112px 100px 1fr;
+  gap: 12px;
+  align-items: center;
+  min-height: 54px;
+  padding: 10px 14px;
+  margin: 5px 0;
+  border: 1px solid #203241;
+  border-radius: 5px;
+  background: #0f1922;
+  color: #9fb0bd;
+  font-size: 12px;
+  opacity: 0;
+  transform: translateX(14px);
+  transition: opacity .45s ease, transform .45s ease;
+}
+
+.period-cell.is-visible { opacity: 1; transform: none; }
+.period-cell strong { color: #dbe8f2; }
+.period-cell-contrib { display: flex; align-items: center; gap: 3px; }
+.period-cell-contrib i { display: inline-block; width: max(3px, var(--w)); height: 10px; border-radius: 2px; background: var(--c); }
+.period-summary { margin-top: 16px; padding-top: 14px; border-top: 1px solid #273a4a; }
+.period-summary strong { color: #dbe8f2; font-size: 13px; }
+
+.sheet-row.not-focus-risk-row { opacity: .11; transition: opacity .45s ease; }
+.sheet-row.focus-risk-row { position: relative; z-index: 2; box-shadow: inset 3px 0 0 #8fc8ff, inset 0 0 0 1px rgba(143, 200, 255, .35); background: rgba(143, 200, 255, .08); }
+.sheet-row.focus-risk-row .sheet-cell { opacity: 1 !important; color: #dbe8f2; background: transparent; }
+.sheet-row.focus-risk-row .sheet-cell.head { background: #15212c; }
+
+.contribution-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 14px;
+  margin: 0 0 16px;
+  color: #aabac6;
+  font-size: 11px;
+}
+
+.contribution-legend span { display: inline-flex; gap: 6px; align-items: center; }
+.contribution-legend i { width: 9px; height: 9px; border-radius: 2px; }
+.contribution-row { display: grid; grid-template-columns: 78px 1fr 55px; gap: 12px; align-items: center; min-height: 49px; opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; }
+.contribution-row.is-visible { opacity: 1; transform: none; }
+.contribution-period { color: #aebdca; font-size: 12px; }
+.contribution-body { position: relative; height: 18px; border-bottom: 1px solid #314250; }
+.contribution-segment { position: absolute; top: 4px; height: 10px; min-width: 2px; border-radius: 2px; }
+.raw-marker { position: absolute; top: -1px; width: 3px; height: 20px; background: #eff5f8; box-shadow: 0 0 0 1px #0b1118; }
+.contribution-row > strong { color: #eff5f8; font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+.contribution-note { margin: 16px 0 0; color: #8295a4; font-size: 11px; }
+
 @keyframes copyFade {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -68,4 +458,37 @@
   .story-text {
     min-height: 0;
   }
+  .risk-step,
+  .risk-raw,
+  .period-cell,
+  .contribution-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  .risk-source { grid-template-columns: 1fr; }
+  .risk-source-components { grid-template-columns: repeat(2, 1fr); }
+  .ingredient-grid { grid-template-columns: repeat(2, 1fr); }
+  .calc-sheet.compact-risk-sheet,
+  .calc-sheet.compact-risk-sheet .sheet-row { width: 596px; min-width: 596px; }
+  .calc-sheet.risk-scale-sheet,
+  .calc-sheet.risk-scale-sheet .sheet-row { width: 932px; min-width: 932px; }
+  .period-risk-table { overflow-x: auto; }
+  .period-risk-row { min-width: 720px; }
+  .period-cells-heading,
+  .period-summary { gap: 8px; flex-direction: column; }
+}
+
+@keyframes stackReveal {
+  from { opacity: 0; transform: scaleY(.05); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+
+@keyframes drawFacet {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes axisExtend {
+  from { clip-path: inset(0 0 28% 0); opacity: .72; }
+  55% { opacity: 1; }
+  to { clip-path: inset(0 0 0 0); opacity: 1; }
 }

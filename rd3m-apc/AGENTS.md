@@ -78,6 +78,31 @@ Examples:
 - The transition from the loan-dot grouping scene to the sheet is a fade.
 - Prefer slower, legible transitions over rapid motion.
 
+## Narrative text
+
+- Write scene copy to explain the statistic, calculation, assumptions, and interpretation.
+- Do not describe visual implementation in the narrative: no references to colors, columns becoming bright or dim, fades, reveals, animations, or what is "shown" on screen.
+- Keep visual direction in code, CSS, or these instructions; the reader-facing text must stand on its own if read without the animation.
+- Do not use a symbolic variable, subscript, or indexed expression before the story has introduced and defined it. Use plain-language labels first (for example, `Age 1`), then introduce notation such as \(a\), \(c\), or \(p\) in its dedicated definition scene.
+- Maintain complete English and Spanish versions of every reader-facing string: scene kickers, titles, narrative text, table headers, chart labels, legends, captions, buttons, and accessibility labels. Formulas, data values, and mathematical symbols remain shared unless mathematical language itself requires a change.
+- When changing or adding reader-facing copy, update both languages in the same change. Do not leave one language as a partial translation.
+
+### Calculation-sheet transitions
+
+When moving between calculation-sheet scenes, including the later risk-scale sheet, preserve the table as a continuous object. Do not use a whole-table fade or an instantaneous replacement of emphasis states.
+
+- Keep columns that remain relevant visually stable; do not reanimate them.
+- Fade columns that cease to be used from their current state to the dim state.
+- Preserve the actual prior header treatment during that fade. A header must not brighten briefly before becoming dim.
+- Transition newly relevant input columns from neutral to blue.
+- Reveal a newly calculated output column only after the input transition begins; animate its header and cells with a short, legible top-to-bottom stagger.
+- Keep the grid geometry, column order, cell positions, and row order fixed throughout the transition.
+- Use color, background, and opacity for transitions. Do not change font weight to signal a state change, because that change is abrupt rather than interpolated.
+- Reserve bold white emphasis for an identity or final reconstructed result only; ordinary inputs and outputs rely on color and opacity.
+- Sequence attention as: existing context → inputs → formula/copy → output. Allow a brief pause before the output appears.
+- Cancel pending table timers when the scene changes so rapid forward/back navigation cannot reveal columns in the wrong scene.
+- Prototype a transition on one adjacent scene pair before applying the same pattern broadly; the E5→E6 and E6→E7 transitions are the reference behavior.
+
 ## Loan-dot scenes
 
 - The loan marks represent the full denominator for the focal period, not a sample.
@@ -89,6 +114,8 @@ Examples:
 ## Formulas and notation
 
 - Use MathJax / LaTeX for formulas; do not use monospace pseudo-formulas.
+- Use compact, immediately rendered text for symbolic table headers (for example `A`, `C`, `P`, `r⁽ᵏ⁾`, and `ŷ`); keep descriptive identifiers such as `Cohort`, `Age`, and `Period` as plain text. Do not typeset table headers asynchronously.
+- Prioritize pedagogical clarity and legibility over compact notation when the layout has room. Use `\\,` between symbolic factors in weighted products, and use `\\sum\\limits_{...}` when placing a grouping condition beneath a sum improves readability.
 - Mathematical notation inside narrative/body text must also use inline LaTeX, for example `\\(r_i^{(0)}\\)` instead of Unicode approximations such as `residual₀`.
 - Keep the existing blue formula callout treatment.
 - Explain subscripts when first introduced. In particular, state that `c` denotes cohort and `a` denotes age in `RD3M_{c,a}`.

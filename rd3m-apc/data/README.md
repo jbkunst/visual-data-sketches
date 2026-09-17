@@ -43,16 +43,17 @@ after AGE + COHORT.
 ## Files
 
 - `rd3m-data.json`: compact payload for the interactive story. It contains a
-  didactic 3-cohort x 5-age example, the full AGE/COHORT/PERIOD effects, metadata,
+  didactic 5-period x 5-age example, the full AGE/COHORT/PERIOD effects, metadata,
   and the portfolio reconstruction.
 - `rd3m-cells.csv`: complete cell-level output for inspection and debugging.
 - `rd3m-portfolio.csv`: period-level RD3M and its additive risk-scale components.
 
-The didactic example uses January, February, and March 2020 cohorts at ages 1 to
-5. Its APC decomposition is recomputed only on those 15 visible cells so every
-weighted average shown in the visual explanation can be reproduced exactly from
-what is on screen. The portfolio chart uses the decomposition estimated on the
-full analysis table.
+The didactic example uses five calendar periods from February through June 2020 at
+ages 1 to 5. Its 25 cohort-age cells span the necessary origination cohorts, and
+its APC decomposition is recomputed only on those visible cells so every weighted
+average shown in the visual explanation can be reproduced exactly from what is on
+screen. The portfolio chart uses the decomposition estimated on the full analysis
+table.
 
 `prepare-data.R` checks that the logit reconstruction, cell-level RD3M
 reconstruction, and period-level portfolio reconstruction close to numerical
