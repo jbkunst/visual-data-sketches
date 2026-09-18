@@ -90,7 +90,7 @@
 
   var scenes = [
     {
-      step: "Paso 1 de 18",
+      step: "Paso 1",
       title: "Partimos de un trazo",
       text: "Sea \\(AB\\) un trazo horizontal de largo cualquiera. Lo consideramos nuestra unidad de medición.",
       note: "Este es el único dato libre. Todo lo que sigue se obtiene copiando longitudes, trazando rectas, perpendiculares y circunferencias.",
@@ -100,7 +100,7 @@
       duration: 4300
     },
     {
-      step: "Paso 2 de 18",
+      step: "Paso 2",
       title: "Levantamos la perpendicular y ubicamos P",
       text: "Levantamos la perpendicular a \\(AB\\) en \\(A\\). Luego construimos el punto medio \\(M\\) de \\(AB\\) y llevamos la longitud \\(AM\\) sobre esa perpendicular para marcar \\(P\\).",
       note: "El paso completo termina cuando \\(AP=AB/2\\). La animación muestra primero la perpendicular y después la construcción de la mitad.",
@@ -117,7 +117,7 @@
       duration: 7200
     },
     {
-      step: "Paso 3 de 18",
+      step: "Paso 3",
       title: "Prolongamos AP hasta Q",
       text: "Unimos \\(P\\) con \\(B\\). Sobre la prolongación de \\(AP\\) marcamos \\(Q\\) de modo que la nueva longitud \\(PQ\\) sea exactamente igual a \\(PB\\).",
       note: "Aquí aparece una longitud especial. No la nombramos todavía: al final veremos por qué \\(AQ\\) contiene la razón áurea.",
@@ -128,7 +128,7 @@
       duration: 5200
     },
     {
-      step: "Paso 4 de 18",
+      step: "Paso 4",
       title: "Copiamos AQ sobre la horizontal",
       text: "Sobre la extensión de \\(AB\\) marcamos \\(B'\\) y \\(B''\\) copiando dos veces la longitud \\(AQ\\): primero desde \\(A\\) y luego desde \\(B\\).",
       note: "No aparece una nueva medida: el compás transporta la misma longitud ya construida.",
@@ -139,7 +139,7 @@
       duration: 4600
     },
     {
-      step: "Paso 5 de 18",
+      step: "Paso 5",
       title: "Dos circunferencias determinan R",
       text: "Trazamos la circunferencia de centro \\(A\\) y radio \\(AQ\\), y la circunferencia de centro \\(B'\\) y radio \\(AB\\). Su intersección sobre la recta \\(AB\\) es \\(R\\).",
       note: "El punto \\(R\\) queda fijado por dos distancias construidas previamente.",
@@ -150,7 +150,7 @@
       duration: 4100
     },
     {
-      step: "Paso 6 de 18",
+      step: "Paso 6",
       title: "La recta AR fija C",
       text: "Trazamos \\(AR\\). En \\(B\\) levantamos la perpendicular a \\(AB\\); su intersección con \\(AR\\) define \\(C\\).",
       note: "La altura del campo izquierdo queda determinada por la construcción anterior.",
@@ -160,7 +160,7 @@
       duration: 4000
     },
     {
-      step: "Paso 7 de 18",
+      step: "Paso 7",
       title: "Cerramos el rectángulo ABCD",
       text: "Por \\(C\\) trazamos la perpendicular a \\(BC\\). Su intersección con la recta \\(AQ\\) define \\(D\\).",
       note: "Con \\(A,B,C,D\\) queda construido el rectángulo donde se desarrollará la estrella.",
@@ -170,7 +170,7 @@
       duration: 3500
     },
     {
-      step: "Paso 8 de 18",
+      step: "Paso 8",
       title: "Las diagonales encuentran O",
       text: "Unimos \\(A\\) con \\(C\\) y \\(B\\) con \\(D\\). El punto donde ambas diagonales se cortan es \\(O\\).",
       note: "Este centro será el vértice común de las direcciones que organizan la estrella.",
@@ -180,7 +180,7 @@
       duration: 3800
     },
     {
-      step: "Paso 9 de 18",
+      step: "Paso 9",
       title: "Trazamos la paralela por O",
       text: "Por \\(O\\) trazamos una paralela a \\(AB\\) y \\(CD\\). Llamamos \\(S_1\\) y \\(S_2\\) a sus intersecciones con \\(AD\\) y \\(BC\\).",
       note: "La horizontal central se suma a las dos diagonales ya construidas.",
@@ -190,7 +190,7 @@
       duration: 3700
     },
     {
-      step: "Paso 10 de 18",
+      step: "Paso 10",
       title: "Copiamos dos ángulos",
       text: "Copiamos \\(\\angle AOS_1\\) sobre el lado \\(AO\\) y llamamos \\(T_1\\) al corte del lado libre con \\(AB\\). Repetimos con \\(\\angle BOS_2\\) para obtener \\(T_2\\).",
       note: "En esta construcción esos ángulos valen \\(36^\\circ\\). Este es uno de los pasos geométricos clave.",
@@ -200,7 +200,7 @@
       duration: 6200
     },
     {
-      step: "Paso 11 de 18",
+      step: "Paso 11",
       title: "Prolongamos hasta T₃ y T₄",
       text: "Prolongamos las rectas \\(T_1O\\) y \\(T_2O\\) hasta que corten \\(CD\\). Esos puntos son \\(T_3\\) y \\(T_4\\).",
       note: "Ya tenemos cinco rectas que pasan por \\(O\\), es decir, diez semirrectas consecutivas.",
@@ -210,7 +210,7 @@
       duration: 3600
     },
     {
-      step: "Paso 12 de 18",
+      step: "Paso 12",
       title: "Marcamos Q₁ sobre AC",
       text: "Sobre la diagonal \\(AC\\) marcamos \\(Q_1\\) de modo que \\(AQ_1\\) sea igual a \\(AD\\).",
       note: "Nuevamente usamos el compás para copiar una longitud que ya existe.",
@@ -220,7 +220,7 @@
       duration: 4000
     },
     {
-      step: "Paso 13 de 18",
+      step: "Paso 13",
       title: "Una paralela determina Q₂",
       text: "Unimos \\(B'\\) con \\(Q_1\\). Luego trazamos por \\(B\\) una paralela a \\(B'Q_1\\); donde esta corta a \\(AC\\) obtenemos \\(Q_2\\).",
       note: "La paralela también puede construirse copiando el ángulo correspondiente.",
@@ -230,7 +230,7 @@
       duration: 4600
     },
     {
-      step: "Paso 14 de 18",
+      step: "Paso 14",
       title: "La circunferencia fija diez puntos",
       text: "Marcamos el punto medio \\(Q_3\\) de \\(AQ_2\\). Con centro en \\(O\\) y radio \\(AQ_3\\) trazamos una circunferencia, que corta las diez semirrectas en \\(R_1,\\ldots,R_{10}\\).",
       note: "La estrella ya está completamente determinada; falta escoger cinco de esos diez puntos.",
@@ -240,7 +240,7 @@
       duration: 5900
     },
     {
-      step: "Paso 15 de 18",
+      step: "Paso 15",
       title: "Unimos los cinco vértices de la estrella",
       text: "Unimos \\(R_2\\) con \\(R_6\\), luego \\(R_6\\) con \\(R_{10}\\), después \\(R_{10}\\) con \\(R_4\\), \\(R_4\\) con \\(R_8\\), y finalmente \\(R_8\\) con \\(R_2\\).",
       note: "Los cinco vértices exteriores están separados por \\(72^\\circ\\). Una vez hecho el primer salto, el resto es repetición.",
@@ -250,7 +250,7 @@
       duration: 5000
     },
     {
-      step: "Paso 16 de 18",
+      step: "Paso 16",
       title: "Extendemos DC hasta P₁",
       text: "Prolongamos \\(DC\\) hacia la derecha y marcamos \\(P_1\\) de modo que \\(DP_1=AB''\\).",
       note: "Aquí comenzamos a abrir el encuadre porque la construcción sale del bloque de la estrella.",
@@ -260,7 +260,7 @@
       duration: 3400
     },
     {
-      step: "Paso 17 de 18",
+      step: "Paso 17",
       title: "Prolongamos P₁B'' hasta P₂",
       text: "Unimos \\(P_1\\) con \\(B''\\) y prolongamos el trazo. Sobre esa prolongación marcamos \\(P_2\\) de modo que \\(P_1B''=B''P_2\\).",
       note: "El paño completo ya empieza a hacerse visible.",
@@ -270,7 +270,7 @@
       duration: 3400
     },
     {
-      step: "Paso 18 de 18",
+      step: "Paso 18",
       title: "Cerramos el paño",
       text: "En \\(P_2\\) trazamos la perpendicular a \\(P_1P_2\\) y la intersectamos con la prolongación de \\(DA\\). Así obtenemos \\(P_3\\).",
       note: "Al terminar el paso, retiramos visualmente las ayudas y coloreamos los tres campos y la estrella.",
@@ -302,8 +302,8 @@
         '<p class="step"></p>' +
         '<h1></h1>' +
         '<p class="txt"></p>' +
-        '<p class="note"></p>' +
         '<div class="formula"></div>' +
+        '<p class="note"></p>' +
       '</section>' +
       '<section class="graphic" aria-live="polite"></section>' +
       '<footer class="nav">' +
