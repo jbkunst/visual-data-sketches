@@ -44,6 +44,7 @@ Compass operations should look like a physical compass operation, not like a gen
 - A circumference or arc must be drawn progressively from a visible starting point, as if the compass were rotating around its fixed center.
 - Emphasize the active compass center while the arc is being drawn. Remove that emphasis when the sweep ends.
 - When a sweep creates or reaches a named point, reveal that point at the moment the rotating construction reaches it, not at the beginning of the scene.
+- When a point is defined as the intersection of two lines, arcs, or circles, the constructions must visibly continue past the crossing. Do not make the new point look like the endpoint of either stroke. Reveal the point only after the crossing is legible; the midpoint construction for M is the visual reference.
 - Prefer arcs over full circles when the geometric operation is only transferring a known length from one ray to another.
 - Use full circles when the actual construction depends on circle-circle or circle-line intersections.
 - This grammar is global: apply it to midpoint arcs, transferred lengths, circle intersections, the Q1 construction, and the star circle whenever the compass is the mathematical operation being explained.

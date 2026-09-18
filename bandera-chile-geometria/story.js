@@ -528,15 +528,18 @@
   circle("perpMarkCircle", A, 0.38, "compass", 1, 1);
   point("V", V, 1, 1);
   mathLabel("lV", V, "V", 8, 8, 1, 1);
-  path("perpArcL", screenArc(U, perpRadius, 24, angleDeg(U, X)), "compass", 1, 1);
-  path("perpArcR", screenArc(V, perpRadius, 156, angleDeg(V, X)), "compass", 1, 1);
+  // Let both compass arcs pass beyond X so X is visibly an intersection,
+  // not the endpoint of either construction.
+  var xCrossPadding = 16;
+  path("perpArcL", screenArc(U, perpRadius, 24, angleDeg(U, X) + xCrossPadding), "compass", 1, 1);
+  path("perpArcR", screenArc(V, perpRadius, 156, angleDeg(V, X) - xCrossPadding), "compass", 1, 1);
   point("X", X, 1, 1);
   mathLabel("lX", X, "X", 9, -18, 1, 1);
   line("perpLine", [0, -0.10], [0, 0.80], "guide", 1, 2);
 
   markCompass("perpMarkCircle", A, 0.38, 180, -180, "A");
-  markCompass("perpArcL", U, perpRadius, 24, angleDeg(U, X), "U");
-  markCompass("perpArcR", V, perpRadius, 156, angleDeg(V, X), "V");
+  markCompass("perpArcL", U, perpRadius, 24, angleDeg(U, X) + xCrossPadding, "U");
+  markCompass("perpArcR", V, perpRadius, 156, angleDeg(V, X) - xCrossPadding, "V");
 
   // Paso 2b: midpoint of AB, then transfer AM onto the perpendicular to get P.
   path("midArcA1", screenArc(A, midpointRadius, 24, 70), "compass", 2, 2);
