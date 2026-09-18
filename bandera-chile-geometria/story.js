@@ -30,6 +30,14 @@
   var T4 = [1 / (phi * phi), h];
   var Q1 = [sin36, h * sin36];
 
+  // Auxiliary points used only to show the first constructions explicitly.
+  var U = [-0.38, 0];
+  var V = [0.38, 0];
+  var perpRadius = 0.72;
+  var X = [0, Math.sqrt(perpRadius * perpRadius - 0.38 * 0.38)];
+  var midpointRadius = 0.66;
+  var midpointY = Math.sqrt(midpointRadius * midpointRadius - 0.5 * 0.5);
+
   function lineIntersection(p1, p2, p3, p4) {
     var x1 = p1[0], y1 = p1[1], x2 = p2[0], y2 = p2[1];
     var x3 = p3[0], y3 = p3[1], x4 = p4[0], y4 = p4[1];
@@ -76,57 +84,62 @@
   var scenes = [
     {
       step: "Paso 1 de 18",
-      title: "Partimos de una sola longitud",
-      text: "Sea \\(\\overline{AB}\\) un segmento horizontal cualquiera. Lo tomamos como unidad: toda la construcción se obtendrá a partir de esta única longitud.",
-      note: "No importa cuántos centímetros mida. Importan las relaciones que podremos copiar o construir con regla y compás.",
+      title: "Partimos de un trazo",
+      text: "Trazamos un segmento horizontal \\(\\overline{AB}\\) de longitud cualquiera. Lo tomamos como unidad y no necesitamos fijar centímetros.",
+      note: "Este es el único dato libre de toda la construcción: desde aquí solo copiaremos longitudes, levantaremos perpendiculares y construiremos intersecciones.",
       formula: "\\[AB=1\\]",
       hot: ["AB", "A", "B", "lA", "lB"],
-      duration: 4700
+      duration: 4300
     },
     {
-      step: "Paso 2 de 18 · perpendicular",
-      title: "Levantamos la perpendicular por A",
-      text: "Antes de marcar una altura necesitamos una dirección exactamente perpendicular a \\(AB\\). La obtenemos con dos arcos equidistantes.",
-      note: "Es una construcción de dirección: todavía no hemos introducido ninguna longitud nueva.",
-      formula: "\\[AQ\\perp AB\\]",
-      hot: ["baseExt", "perpC1", "perpC2", "AQguide"],
+      step: "Paso 2 de 18 · perpendicular en A",
+      title: "Lo primero es levantar la perpendicular",
+      text: "Con centro en \\(A\\) marcamos dos puntos auxiliares \\(U\\) y \\(V\\) sobre la recta \\(AB\\), a la misma distancia de \\(A\\). Desde \\(U\\) y \\(V\\) trazamos arcos iguales que se cortan en \\(X\\).",
+      note: "Como \\(AU=AV\\) y \\(XU=XV\\), tanto \\(A\\) como \\(X\\) son equidistantes de \\(U\\) y \\(V\\). Por eso la recta \\(AX\\) es perpendicular a \\(AB\\).",
+      formula: "\\[AU=AV,\\quad XU=XV\\;\\Longrightarrow\\;AX\\perp AB\\]",
+      hot: ["perpMarkCircle", "U", "V", "perpArcL", "perpArcR", "X", "perpLine"],
+      delays: {U:350,V:350,perpArcL:850,perpArcR:1450,X:2050,perpLine:2500},
       duration: 5200
     },
     {
-      step: "Paso 2 de 18 · punto P",
-      title: "Construimos la mitad de AB",
-      text: "Hallamos el punto medio \\(M\\) de \\(AB\\) y copiamos la distancia \\(AM\\) sobre la perpendicular. Así aparece \\(P\\).",
-      note: "No medimos la mitad con una regla graduada: la construimos y luego la transferimos con el compás.",
-      formula: "\\[AP=AM=\\frac{AB}{2}\\]",
-      hot: ["midC1", "midC2", "midGuide", "M", "lM", "halfC", "P", "lP", "AP"],
-      duration: 5600
-    },
-    {
-      step: "Paso 3 de 18",
-      title: "La diagonal PB fija Q",
-      text: "Unimos \\(P\\) con \\(B\\). Después copiamos exactamente la longitud \\(PB\\) sobre la prolongación de \\(AP\\), obteniendo \\(Q\\).",
-      note: "Por ahora nos importa la construcción. El significado especial de esta longitud aparecerá al final.",
-      formula: "\\[PQ=PB,\\qquad AQ=AP+PQ\\]",
-      hot: ["PB", "pqCircle", "Q", "lQ", "AQguide"],
+      step: "Paso 2 de 18 · AP = AB/2",
+      title: "Ahora construimos la mitad",
+      text: "Con arcos de igual radio desde \\(A\\) y \\(B\\) hallamos el punto medio \\(M\\) de \\(AB\\). Abrimos el compás a \\(AM\\) y llevamos esa distancia sobre la perpendicular recién construida: allí queda \\(P\\).",
+      note: "No medimos \\(AB/2\\): el punto medio lo determina la geometría y el compás transfiere exactamente esa longitud.",
+      formula: "\\[AM=MB=AP=\\frac{AB}{2}\\]",
+      hot: ["midArcA1", "midArcB1", "midArcA2", "midArcB2", "midGuide", "M", "lM", "halfC", "AP", "P", "lP"],
+      delays: {midArcB1:450,midArcA2:850,midArcB2:1250,midGuide:1650,M:2050,lM:2050,halfC:2550,AP:3150,P:3850,lP:3850},
       duration: 5900
     },
     {
+      step: "Paso 3 de 18",
+      title: "La diagonal PB determina Q",
+      text: "Unimos \\(P\\) con \\(B\\). Luego prolongamos la perpendicular por \\(P\\) y, con el compás abierto a \\(PB\\), marcamos sobre ella el punto \\(Q\\) de modo que \\(PQ=PB\\).",
+      note: "Este paso es importante: la nueva longitud no es arbitraria. Sale de la diagonal del triángulo rectángulo \\(APB\\). Su significado aparecerá al final.",
+      formula: "\\[PQ=PB,\\qquad AQ=AP+PQ\\]",
+      hot: ["PB", "pqArc", "AQguide", "Q", "lQ"],
+      delays: {pqArc:950,AQguide:1650,Q:2350,lQ:2350},
+      duration: 5400
+    },
+    {
       step: "Paso 4 de 18",
-      title: "Copiamos AQ sobre la base",
-      text: "Sobre la prolongación de \\(AB\\) marcamos \\(B'\\) y \\(B''\\): desde \\(A\\) y desde \\(B\\) copiamos la misma longitud \\(AQ\\).",
-      note: "El compás transporta una longitud ya construida; no aparece una medida arbitraria.",
+      title: "Llevamos AQ a la horizontal",
+      text: "Prolongamos \\(AB\\). Con centro en \\(A\\) y radio \\(AQ\\) marcamos \\(B'\\); después, con el mismo radio pero centro en \\(B\\), marcamos \\(B''\\).",
+      note: "El video hace exactamente dos copias consecutivas de la misma longitud: \\(AB'=AQ\\) y \\(BB''=AQ\\).",
       formula: "\\[AB'=BB''=AQ\\]",
-      hot: ["baseRay", "aqCircleA", "aqCircleB", "Bp", "Bpp", "lBp", "lBpp"],
-      duration: 4500
+      hot: ["baseRay", "aqCircleA", "Bp", "lBp", "aqCircleB", "Bpp", "lBpp"],
+      delays: {aqCircleA:650,Bp:1400,lBp:1400,aqCircleB:2100,Bpp:2850,lBpp:2850},
+      duration: 5000
     },
     {
       step: "Paso 5 de 18",
-      title: "Dos circunferencias determinan R",
-      text: "Trazamos una circunferencia de centro \\(A\\) y radio \\(AQ\\), y otra de centro \\(B'\\) y radio \\(AB\\). Elegimos su intersección superior: \\(R\\).",
-      note: "Una intersección de circunferencias fija un punto sin medir coordenadas ni ángulos.",
+      title: "Las dos circunferencias fijan R",
+      text: "Conservamos la circunferencia de centro \\(A\\) y radio \\(AQ\\). Trazamos otra con centro en \\(B'\\) y radio \\(AB\\). Su intersección superior es \\(R\\).",
+      note: "Otra vez, el punto no se ubica a ojo: queda determinado por dos distancias ya construidas.",
       formula: "\\[AR=AQ,\\qquad B'R=AB\\]",
       hot: ["aqCircleA", "rCircle", "R", "lR"],
-      duration: 5100
+      delays: {rCircle:750,R:1650,lR:1650},
+      duration: 4400
     },
     {
       step: "Paso 6 de 18",
@@ -420,14 +433,22 @@
   mathLabel("lA", A, "A", -20, 9, 0, 20);
   mathLabel("lB", B, "B", 10, 9, 0, 20);
 
-  line("baseExt", [-0.34, 0], [0.35, 0], "guide", 1, 1);
-  circle("perpC1", [-0.24, 0], 0.47, "compass", 1, 1);
-  circle("perpC2", [0.24, 0], 0.47, "compass", 1, 1);
-  line("AQguide", [0, -0.14], [0, phi + 0.12], "guide", 1, 20);
+  // Paso 2a: perpendicular por A. First mark U and V symmetrically,
+  // then intersect two equal-radius arcs and join their intersection with A.
+  circle("perpMarkCircle", A, 0.38, "compass", 1, 1);
+  point("U", U, 1, 1);
+  point("V", V, 1, 1);
+  path("perpArcL", screenArc(U, perpRadius, 30, 86), "compass", 1, 1);
+  path("perpArcR", screenArc(V, perpRadius, 94, 150), "compass", 1, 1);
+  point("X", X, 1, 1);
+  line("perpLine", [0, -0.10], [0, 0.80], "guide", 1, 2);
 
-  circle("midC1", A, 0.62, "compass", 2, 2);
-  circle("midC2", B, 0.62, "compass", 2, 2);
-  line("midGuide", [0.5, -0.38], [0.5, 0.38], "guide", 2, 2);
+  // Paso 2b: midpoint of AB, then transfer AM onto the perpendicular to get P.
+  path("midArcA1", screenArc(A, midpointRadius, 24, 70), "compass", 2, 2);
+  path("midArcB1", screenArc(B, midpointRadius, 110, 156), "compass", 2, 2);
+  path("midArcA2", screenArc(A, midpointRadius, -70, -24), "compass", 2, 2);
+  path("midArcB2", screenArc(B, midpointRadius, 204, 250), "compass", 2, 2);
+  line("midGuide", [0.5, -midpointY - 0.06], [0.5, midpointY + 0.06], "guide", 2, 2);
   point("M", M, 2, 2);
   mathLabel("lM", M, "M", -7, 10, 2, 2);
   circle("halfC", A, 0.5, "compass", 2, 2);
@@ -435,19 +456,23 @@
   point("P", P, 2, 4);
   mathLabel("lP", P, "P", 10, -19, 2, 4);
 
+  // Paso 3: use PB as the radius and extend the perpendicular only now.
   line("PB", P, B, "guide", 3, 3);
-  circle("pqCircle", P, dist(P, B), "compass", 3, 3);
+  path("pqArc", screenArc(P, dist(P, B), 70, 110), "compass", 3, 3);
+  line("AQguide", A, [0, phi + 0.12], "guide", 3, 20);
   point("Q", Q, 3, 20);
   mathLabel("lQ", Q, "Q", 10, -20, 3, 20);
 
+  // Paso 4: copy AQ twice along the horizontal extension.
   line("baseRay", A, [phi * phi + 0.15, 0], "guide", 4, 18);
   circle("aqCircleA", A, phi, "compass", 4, 5);
-  circle("aqCircleB", B, phi, "compass", 4, 4);
   point("Bp", Bp, 4, 13);
   mathLabel("lBp", Bp, "B'", -8, 10, 4, 13);
+  circle("aqCircleB", B, phi, "compass", 4, 4);
   point("Bpp", Bpp, 4, 20);
   mathLabel("lBpp", Bpp, "B''", -9, 10, 4, 20);
 
+  // Paso 5: intersection of the two prescribed circles.
   circle("rCircle", Bp, 1, "compass", 5, 5);
   point("R", R, 5, 6);
   mathLabel("lR", R, "R", 10, -18, 5, 6);
@@ -557,6 +582,7 @@
   var playing = false;
   var timer = null;
   var introduced = {};
+  var runToken = 0;
 
   function alive(i, item) {
     return i >= item.from && (item.to == null || i <= item.to);
@@ -604,18 +630,41 @@
     ui.formula.innerHTML = scene.formula;
     typeset(ui.formula);
 
+    var token = ++runToken;
+    var delays = scene.delays || {};
+
     Object.keys(items).forEach(function (id) {
       var item = items[id];
       var node = item.node;
       var on = alive(index, item);
 
-      node.classList.toggle("off", !on);
-      node.classList.toggle("on", on);
-      node.classList.toggle("hot", on && !!hot[id]);
+      function showItem() {
+        if (token !== runToken) return;
+        node.classList.remove("off");
+        node.classList.add("on");
+        node.classList.toggle("hot", !!hot[id]);
 
-      if (on && !introduced[id]) {
-        introduced[id] = true;
-        if (node.classList.contains("geo")) animateStroke(node);
+        if (!introduced[id]) {
+          introduced[id] = true;
+          if (node.classList.contains("geo")) animateStroke(node);
+        }
+      }
+
+      if (!on) {
+        node.classList.add("off");
+        node.classList.remove("on");
+        node.classList.remove("hot");
+        return;
+      }
+
+      var delay = Number(delays[id] || 0);
+      if (delay > 0 && !introduced[id]) {
+        node.classList.add("off");
+        node.classList.remove("on");
+        node.classList.remove("hot");
+        setTimeout(showItem, delay);
+      } else {
+        showItem();
       }
     });
 
