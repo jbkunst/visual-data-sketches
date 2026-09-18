@@ -107,18 +107,19 @@
       text: "Levante la perpendicular a \\(AB\\) en \\(A\\) y sobre esta marque \\(P\\), de modo que \\(AP=AB/2\\).",
       note: "\\(U\\) y \\(V\\) son puntos auxiliares para construir \\(X\\) y levantar la perpendicular por \\(A\\). Luego, como \\(M\\) es el punto medio de \\(AB\\), la longitud \\(AM\\) se transfiere sobre esa perpendicular para encontrar \\(P\\).",
       formula: "\\[AP=AM=\\frac{AB}{2}\\]",
-      hot: ["perpMarkCircle", "U", "lU", "V", "lV", "perpArcL", "perpArcR", "X", "lX", "perpLine", "midArcA1", "midArcB1", "midArcA2", "midArcB2", "midGuide", "M", "lM", "AM", "halfC", "AP", "P", "lP"],
+      hot: ["AU", "U", "lU", "perpMarkCircle", "V", "lV", "perpArcL", "perpArcR", "X", "lX", "perpLine", "midArcA1", "midArcB1", "midArcA2", "midArcB2", "midGuide", "M", "lM", "AM", "halfC", "AP", "P", "lP"],
       delays: {
-        U: 300, lU: 300, V: 300, lV: 300,
-        perpArcL: 700, perpArcR: 1200, X: 1700, lX: 1700, perpLine: 2050,
-        midArcA1: 2650, midArcB1: 3050, midArcA2: 3450, midArcB2: 3850,
-        midGuide: 4250, M: 4550, lM: 4550, AM: 4550,
-        halfC: 5000, AP: 5450, P: 6000, lP: 6000
+        AU: 300, U: 1080, lU: 1080,
+        perpMarkCircle: 1250, V: 1700, lV: 1700,
+        perpArcL: 2400, perpArcR: 3300, X: 4200, lX: 4200, perpLine: 4550,
+        midArcA1: 5200, midArcB1: 5550, midArcA2: 5900, midArcB2: 6250,
+        midGuide: 6650, M: 6950, lM: 6950, AM: 6950,
+        halfC: 7350, AP: 7850, P: 8350, lP: 8350
       },
       identity: ["AB", "A", "B", "lA", "lB", "AM", "M", "lM", "AP", "P", "lP"],
-      settleDelay: 6350,
+      settleDelay: 8700,
       camera: "core",
-      duration: 7200
+      duration: 9300
     },
     {
       step: "Paso 3",
@@ -353,9 +354,11 @@
 
   var fillLayer = svgEl("g", {});
   var geoLayer = svgEl("g", {});
+  var effectLayer = svgEl("g", { "class": "compass-effects" });
   var labelLayer = svgEl("g", {});
   svg.appendChild(fillLayer);
   svg.appendChild(geoLayer);
+  svg.appendChild(effectLayer);
   svg.appendChild(labelLayer);
   ui.graphic.appendChild(svg);
 
@@ -473,6 +476,44 @@
       " A " + rr + " " + rr + " 0 " + large + " " + sweep + " " + p2[0] + " " + p2[1];
   }
 
+  function angleDeg(center, pointValue) {
+    return Math.atan2(
+      pointValue[1] - center[1],
+      pointValue[0] - center[0]
+    ) * 180 / Math.PI;
+  }
+
+  function markCompass(id, center, radius, startAngle, endAngle, centerItem) {
+    if (!items[id]) return;
+    items[id].compass = {
+      center: center,
+      radius: radius,
+      startAngle: startAngle,
+      endAngle: endAngle,
+      centerItem: centerItem || null
+    };
+  }
+
+  function compassTracePath(meta, progress) {
+    var sweep = meta.endAngle - meta.startAngle;
+    var steps = Math.max(2, Math.ceil(Math.abs(sweep) / 4 * Math.max(progress, 0.04)));
+    var end = meta.startAngle + sweep * progress;
+    var points = [];
+
+    for (var i = 0; i <= steps; i++) {
+      var f = i / steps;
+      var angle = (meta.startAngle + (end - meta.startAngle) * f) * Math.PI / 180;
+      points.push(screen([
+        meta.center[0] + meta.radius * Math.cos(angle),
+        meta.center[1] + meta.radius * Math.sin(angle)
+      ]));
+    }
+
+    return points.map(function (pointValue, i) {
+      return (i ? "L " : "M ") + pointValue[0].toFixed(2) + " " + pointValue[1].toFixed(2);
+    }).join(" ");
+  }
+
   line("AB", A, B, "main", 0, 20);
   point("A", A, 0, 20);
   point("B", B, 0, 20);
@@ -481,34 +522,45 @@
 
   // Paso 2a: perpendicular por A. First mark U and V symmetrically,
   // then intersect two equal-radius arcs and join their intersection with A.
-  circle("perpMarkCircle", A, 0.38, "compass", 1, 1);
+  line("AU", A, U, "guide compass-radius", 1, 1);
   point("U", U, 1, 1);
   mathLabel("lU", U, "U", -18, 8, 1, 1);
+  circle("perpMarkCircle", A, 0.38, "compass", 1, 1);
   point("V", V, 1, 1);
   mathLabel("lV", V, "V", 8, 8, 1, 1);
-  path("perpArcL", screenArc(U, perpRadius, 30, 86), "compass", 1, 1);
-  path("perpArcR", screenArc(V, perpRadius, 94, 150), "compass", 1, 1);
+  path("perpArcL", screenArc(U, perpRadius, 24, angleDeg(U, X)), "compass", 1, 1);
+  path("perpArcR", screenArc(V, perpRadius, 156, angleDeg(V, X)), "compass", 1, 1);
   point("X", X, 1, 1);
   mathLabel("lX", X, "X", 9, -18, 1, 1);
   line("perpLine", [0, -0.10], [0, 0.80], "guide", 1, 2);
 
+  markCompass("perpMarkCircle", A, 0.38, 180, -180, "A");
+  markCompass("perpArcL", U, perpRadius, 24, angleDeg(U, X), "U");
+  markCompass("perpArcR", V, perpRadius, 156, angleDeg(V, X), "V");
+
   // Paso 2b: midpoint of AB, then transfer AM onto the perpendicular to get P.
   path("midArcA1", screenArc(A, midpointRadius, 24, 70), "compass", 2, 2);
-  path("midArcB1", screenArc(B, midpointRadius, 110, 156), "compass", 2, 2);
-  path("midArcA2", screenArc(A, midpointRadius, -70, -24), "compass", 2, 2);
+  path("midArcB1", screenArc(B, midpointRadius, 156, 110), "compass", 2, 2);
+  path("midArcA2", screenArc(A, midpointRadius, -24, -70), "compass", 2, 2);
   path("midArcB2", screenArc(B, midpointRadius, 204, 250), "compass", 2, 2);
+  markCompass("midArcA1", A, midpointRadius, 24, 70, "A");
+  markCompass("midArcB1", B, midpointRadius, 156, 110, "B");
+  markCompass("midArcA2", A, midpointRadius, -24, -70, "A");
+  markCompass("midArcB2", B, midpointRadius, 204, 250, "B");
   line("midGuide", [0.5, -midpointY - 0.06], [0.5, midpointY + 0.06], "guide", 2, 2);
   point("M", M, 2, 2);
   mathLabel("lM", M, "M", -7, 10, 2, 2);
   line("AM", A, M, "main identity-line", 2, 2);
-  circle("halfC", A, 0.5, "compass", 2, 2);
+  path("halfC", screenArc(A, 0.5, angleDeg(A, M), angleDeg(A, P)), "compass", 2, 2);
+  markCompass("halfC", A, 0.5, angleDeg(A, M), angleDeg(A, P), "A");
   line("AP", A, P, "main", 2, 4);
   point("P", P, 2, 4);
   mathLabel("lP", P, "P", 10, -19, 2, 4);
 
   // Paso 3: use PB as the radius and extend the perpendicular only now.
   line("PB", P, B, "guide", 3, 3);
-  path("pqArc", screenArc(P, dist(P, B), 70, 110), "compass", 3, 3);
+  path("pqArc", screenArc(P, dist(P, B), angleDeg(P, B), angleDeg(P, Q)), "compass", 3, 3);
+  markCompass("pqArc", P, dist(P, B), angleDeg(P, B), angleDeg(P, Q), "P");
   line("AQguide", A, [0, phi + 0.12], "guide", 3, 20);
   point("Q", Q, 3, 20);
   mathLabel("lQ", Q, "Q", 10, -20, 3, 20);
@@ -516,14 +568,17 @@
   // Paso 4: copy AQ twice along the horizontal extension.
   line("baseRay", A, [phi * phi + 0.15, 0], "guide", 4, 18);
   circle("aqCircleA", A, phi, "compass", 4, 5);
+  markCompass("aqCircleA", A, phi, 90, -270, "A");
   point("Bp", Bp, 4, 13);
   mathLabel("lBp", Bp, "B'", -8, 10, 4, 13);
   circle("aqCircleB", B, phi, "compass", 4, 4);
+  markCompass("aqCircleB", B, phi, 0, -360, "B");
   point("Bpp", Bpp, 4, 20);
   mathLabel("lBpp", Bpp, "B''", -9, 10, 4, 20);
 
   // Paso 5: intersection of the two prescribed circles.
   circle("rCircle", Bp, 1, "compass", 5, 5);
+  markCompass("rCircle", Bp, 1, 90, -270, "Bp");
   point("R", R, 5, 6);
   mathLabel("lR", R, "R", 10, -18, 5, 6);
 
@@ -566,7 +621,8 @@
   mathLabel("lT3", T3, "T_3", 8, -18, 11, 14);
   mathLabel("lT4", T4, "T_4", -30, -18, 11, 14);
 
-  circle("adCircle", A, h, "compass", 12, 12);
+  path("adCircle", screenArc(A, h, angleDeg(A, D), angleDeg(A, Q1)), "compass", 12, 12);
+  markCompass("adCircle", A, h, angleDeg(A, D), angleDeg(A, Q1), "A");
   line("AQ1", A, Q1, "main", 12, 12);
   point("Q1", Q1, 12, 14);
   mathLabel("lQ1", Q1, "Q_1", 10, -18, 12, 14);
@@ -579,6 +635,7 @@
   point("Q3", Q3, 14, 14);
   mathLabel("lQ3", Q3, "Q_3", -36, 8, 14, 14);
   circle("starCircle", O, starR, "compass", 14, 20);
+  markCompass("starCircle", O, starR, 0, -360, "O");
 
   Rpts.forEach(function (p, i) {
     point("R" + (i + 1), p, 14, 15);
@@ -688,7 +745,84 @@
     ]);
   }
 
-  function animateStroke(node, token) {
+  function animateCompass(item, node, token) {
+    var meta = item.compass;
+    var center = screen(meta.center);
+    var startAngle = meta.startAngle * Math.PI / 180;
+    var startPoint = screen([
+      meta.center[0] + meta.radius * Math.cos(startAngle),
+      meta.center[1] + meta.radius * Math.sin(startAngle)
+    ]);
+
+    var trace = svgEl("path", {
+      d: compassTracePath(meta, 0.001),
+      "class": "geo compass hot compass-trace"
+    });
+    var radius = svgEl("line", {
+      x1: center[0],
+      y1: center[1],
+      x2: startPoint[0],
+      y2: startPoint[1],
+      "class": "compass-radius-live"
+    });
+
+    effectLayer.appendChild(trace);
+    effectLayer.appendChild(radius);
+
+    var centerNode = meta.centerItem && items[meta.centerItem]
+      ? items[meta.centerItem].node
+      : null;
+
+    if (centerNode) centerNode.classList.add("compass-center");
+
+    node.style.opacity = "0";
+    var started = performance.now();
+
+    function cleanup() {
+      if (trace.parentNode) trace.remove();
+      if (radius.parentNode) radius.remove();
+      if (centerNode) centerNode.classList.remove("compass-center");
+      node.style.opacity = "";
+    }
+
+    function tick(now) {
+      if (token !== runToken) {
+        cleanup();
+        return;
+      }
+
+      var t = Math.min(1, (now - started) / DRAW_MS);
+      var eased = t * t * (3 - 2 * t);
+      var angle = (
+        meta.startAngle +
+        (meta.endAngle - meta.startAngle) * eased
+      ) * Math.PI / 180;
+
+      var tip = screen([
+        meta.center[0] + meta.radius * Math.cos(angle),
+        meta.center[1] + meta.radius * Math.sin(angle)
+      ]);
+
+      trace.setAttribute("d", compassTracePath(meta, eased));
+      radius.setAttribute("x2", tip[0]);
+      radius.setAttribute("y2", tip[1]);
+
+      if (t < 1) {
+        requestAnimationFrame(tick);
+        return;
+      }
+
+      cleanup();
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  function animateStroke(item, node, token) {
+    if (item.compass) {
+      animateCompass(item, node, token);
+      return;
+    }
     var tag = node.tagName.toLowerCase();
     var easing = "cubic-bezier(.2,.75,.25,1)";
 
@@ -765,7 +899,9 @@
     setSceneCopy(scene);
 
     svg.classList.remove("final-clean");
+    effectLayer.replaceChildren();
     Object.keys(items).forEach(function (id) {
+      items[id].node.classList.remove("compass-center");
       items[id].node.classList.remove("settled-dim");
       items[id].node.classList.remove("identity-hot");
     });
@@ -846,7 +982,7 @@
         node.classList.toggle("hot", replay);
 
         if (replay && node.classList.contains("geo")) {
-          animateStroke(node, token);
+          animateStroke(item, node, token);
         }
       }
 

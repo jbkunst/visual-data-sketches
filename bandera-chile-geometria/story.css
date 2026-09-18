@@ -467,3 +467,32 @@ body,
 .identity-line {
   stroke-width: 2.2;
 }
+
+
+.compass-radius {
+  stroke-dasharray: 4 5;
+}
+
+.compass-radius-live {
+  stroke: var(--accent);
+  stroke-width: 1.35;
+  stroke-dasharray: 4 5;
+  vector-effect: non-scaling-stroke;
+  opacity: .9;
+  pointer-events: none;
+}
+
+.compass-trace {
+  stroke: var(--chalk-dark) !important;
+  stroke-width: 2 !important;
+  opacity: 1 !important;
+  pointer-events: none;
+}
+
+.pt.compass-center {
+  opacity: 1 !important;
+  fill: #fff !important;
+  stroke: var(--accent) !important;
+  stroke-width: 2.6 !important;
+  filter: drop-shadow(0 0 4px rgba(214, 123, 92, .45));
+}
