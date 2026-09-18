@@ -49,3 +49,4 @@ Compass operations should look like a physical compass operation, not like a gen
 - Use full circles when the actual construction depends on circle-circle or circle-line intersections.
 - This grammar is global: apply it to midpoint arcs, transferred lengths, circle intersections, the Q1 construction, and the star circle whenever the compass is the mathematical operation being explained.
 - Step 2 is the primary reference: start with existing AB, grow dotted AU, sweep the A-centered circle from U through V and back to U, then use U and V as highlighted centers for the arcs that determine X.
+- For every scene after Step 2, audit the construction against the same rules before considering it finished: intersection points must read as crossings, compass transfers must show a rotating sweep and active center, midpoint constructions must visibly construct the midpoint, and the scene should settle on the geometry that supports its identity.

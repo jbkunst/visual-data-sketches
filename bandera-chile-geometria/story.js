@@ -127,8 +127,10 @@
       text: "Unimos \\(P\\) con \\(B\\). Sobre la prolongación de \\(AP\\) marcamos \\(Q\\) de modo que la nueva longitud \\(PQ\\) sea exactamente igual a \\(PB\\).",
       note: "Aquí aparece una longitud especial. No la nombramos todavía: al final veremos por qué \\(AQ\\) contiene la razón áurea.",
       formula: "\\[PQ=PB\\]",
-      hot: ["PB", "pqArc", "AQguide", "Q", "lQ"],
-      delays: { pqArc: 900, AQguide: 1500, Q: 2250, lQ: 2250 },
+      hot: ["PB", "pqArc", "AQguide", "PQ", "Q", "lQ"],
+      delays: { PB: 0, pqArc: 900, AQguide: 1500, PQ: 2100, Q: 2450, lQ: 2450 },
+      identity: ["PB", "PQ", "P", "B", "Q", "lQ"],
+      settleDelay: 3900,
       camera: "upper",
       duration: 5200
     },
@@ -140,6 +142,8 @@
       formula: "\\[AB'=BB''=AQ\\]",
       hot: ["baseRay", "aqCircleA", "Bp", "lBp", "aqCircleB", "Bpp", "lBpp"],
       delays: { aqCircleA: 550, Bp: 1250, lBp: 1250, aqCircleB: 1900, Bpp: 2650, lBpp: 2650 },
+      identity: ["baseRay", "A", "B", "Bp", "lBp", "Bpp", "lBpp"],
+      settleDelay: 3600,
       camera: "upper",
       duration: 4600
     },
@@ -151,6 +155,8 @@
       formula: "\\[AR=AQ,\\qquad B'R=AB\\]",
       hot: ["aqCircleA", "rCircle", "R", "lR"],
       delays: { rCircle: 650, R: 1500, lR: 1500 },
+      identity: ["aqCircleA", "rCircle", "R", "lR", "A", "Bp"],
+      settleDelay: 3150,
       camera: "upper",
       duration: 4100
     },
@@ -160,7 +166,10 @@
       text: "Trazamos \\(AR\\). En \\(B\\) levantamos la perpendicular a \\(AB\\); su intersección con \\(AR\\) define \\(C\\).",
       note: "La altura del campo izquierdo queda determinada por la construcción anterior.",
       formula: "\\[C=AR\\cap(B\\perp AB)\\]",
-      hot: ["AR", "BC", "C", "lC"],
+      hot: ["AR", "Bperp", "BC", "C", "lC"],
+      delays: { AR: 0, Bperp: 750, C: 1900, lC: 1900, BC: 2200 },
+      identity: ["AR", "Bperp", "C", "lC"],
+      settleDelay: 3050,
       camera: "upper",
       duration: 4000
     },
@@ -170,7 +179,10 @@
       text: "Por \\(C\\) trazamos la perpendicular a \\(BC\\). Su intersección con la recta \\(AQ\\) define \\(D\\).",
       note: "Con \\(A,B,C,D\\) queda construido el rectángulo donde se desarrollará la estrella.",
       formula: "\\[D=AQ\\cap(C\\perp BC)\\]",
-      hot: ["DC", "D", "lD", "AD"],
+      hot: ["Cperp", "DC", "D", "lD", "AD"],
+      delays: { Cperp: 0, D: 1400, lD: 1400, DC: 1650, AD: 1950 },
+      identity: ["Cperp", "AQguide", "D", "lD"],
+      settleDelay: 2700,
       camera: "upper",
       duration: 3500
     },
@@ -181,6 +193,9 @@
       note: "Este centro será el vértice común de las direcciones que organizan la estrella.",
       formula: "\\[O=AC\\cap BD\\]",
       hot: ["AC", "BD", "O", "lO"],
+      delays: { AC: 0, BD: 450, O: 1600, lO: 1600 },
+      identity: ["AC", "BD", "O", "lO"],
+      settleDelay: 2900,
       camera: "upper",
       duration: 3800
     },
@@ -191,6 +206,9 @@
       note: "La horizontal central se suma a las dos diagonales ya construidas.",
       formula: "\\[S_1O\\parallel AB\\parallel OS_2\\]",
       hot: ["centerH", "S1", "S2", "lS1", "lS2"],
+      delays: { centerH: 0, S1: 1250, lS1: 1250, S2: 1250, lS2: 1250 },
+      identity: ["centerH", "O", "S1", "lS1", "S2", "lS2"],
+      settleDelay: 2850,
       camera: "upper",
       duration: 3700
     },
@@ -201,6 +219,9 @@
       note: "En esta construcción esos ángulos valen \\(36^\\circ\\). Este es uno de los pasos geométricos clave.",
       formula: "\\[\\angle AOS_1=\\angle BOS_2=36^\\circ\\]",
       hot: ["OT1", "OT2", "angL", "angR", "T1", "T2", "lT1", "lT2", "l36a", "l36b"],
+      delays: { angL: 0, OT1: 650, T1: 1650, lT1: 1650, l36a: 1650, angR: 2350, OT2: 3000, T2: 4050, lT2: 4050, l36b: 4050 },
+      identity: ["angL", "angR", "OT1", "OT2", "O", "T1", "lT1", "T2", "lT2"],
+      settleDelay: 5050,
       camera: "upper",
       duration: 6200
     },
@@ -211,6 +232,9 @@
       note: "Ya tenemos cinco rectas que pasan por \\(O\\), es decir, diez semirrectas consecutivas.",
       formula: "\\[T_3,O,T_1\\text{ colineales},\\qquad T_4,O,T_2\\text{ colineales}\\]",
       hot: ["T1T3", "T2T4", "T3", "T4", "lT3", "lT4"],
+      delays: { T1T3: 0, T3: 1250, lT3: 1250, T2T4: 1650, T4: 2900, lT4: 2900 },
+      identity: ["T1T3", "T2T4", "O", "T3", "lT3", "T4", "lT4"],
+      settleDelay: 3150,
       camera: "upper",
       duration: 3600
     },
@@ -221,6 +245,9 @@
       note: "Nuevamente usamos el compás para copiar una longitud que ya existe.",
       formula: "\\[AQ_1=AD\\]",
       hot: ["adCircle", "Q1", "lQ1", "AQ1"],
+      delays: { adCircle: 0, Q1: 1450, lQ1: 1450, AQ1: 1800 },
+      identity: ["AD", "AQ1", "A", "Q1", "lQ1"],
+      settleDelay: 2950,
       camera: "upper",
       duration: 4000
     },
@@ -231,6 +258,9 @@
       note: "La paralela también puede construirse copiando el ángulo correspondiente.",
       formula: "\\[BQ_2\\parallel B'Q_1\\]",
       hot: ["BpQ1", "BQ2", "Q2", "lQ2"],
+      delays: { BpQ1: 0, BQ2: 1100, Q2: 2300, lQ2: 2300 },
+      identity: ["BpQ1", "BQ2", "AC", "Q2", "lQ2"],
+      settleDelay: 3500,
       camera: "upper",
       duration: 4600
     },
@@ -240,7 +270,10 @@
       text: "Marcamos el punto medio \\(Q_3\\) de \\(AQ_2\\). Con centro en \\(O\\) y radio \\(AQ_3\\) trazamos una circunferencia, que corta las diez semirrectas en \\(R_1,\\ldots,R_{10}\\).",
       note: "La estrella ya está completamente determinada; falta escoger cinco de esos diez puntos.",
       formula: "\\[r_\\star=AQ_3=\\frac{AQ_2}{2}\\]",
-      hot: ["Q3", "lQ3", "starCircle", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10", "lR2", "lR4", "lR6", "lR8", "lR10"],
+      hot: ["q3CircleA", "q3CircleQ2", "q3Guide", "Q3", "lQ3", "starCircle", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10", "lR2", "lR4", "lR6", "lR8", "lR10"],
+      delays: { q3CircleA: 0, q3CircleQ2: 850, q3Guide: 1850, Q3: 2450, lQ3: 2450, starCircle: 3050, R1: 4450, R2: 4450, R3: 4450, R4: 4450, R5: 4450, R6: 4450, R7: 4450, R8: 4450, R9: 4450, R10: 4450, lR2: 4450, lR4: 4450, lR6: 4450, lR8: 4450, lR10: 4450 },
+      identity: ["Q3", "lQ3", "starCircle", "O", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10"],
+      settleDelay: 5200,
       camera: "upper",
       duration: 5900
     },
@@ -251,6 +284,8 @@
       note: "Los cinco vértices exteriores están separados por \\(72^\\circ\\). Una vez hecho el primer salto, el resto es repetición.",
       formula: "\\[R_2\\to R_6\\to R_{10}\\to R_4\\to R_8\\to R_2\\]",
       hot: ["star", "l72"],
+      identity: ["star"],
+      settleDelay: 4200,
       camera: "upper",
       duration: 5000
     },
@@ -260,7 +295,10 @@
       text: "Prolongamos \\(DC\\) hacia la derecha y marcamos \\(P_1\\) de modo que \\(DP_1=AB''\\).",
       note: "Aquí comenzamos a abrir el encuadre porque la construcción sale del bloque de la estrella.",
       formula: "\\[DP_1=AB''\\]",
-      hot: ["topExt", "P1", "lP1"],
+      hot: ["topRay", "p1Arc", "topExt", "P1", "lP1"],
+      delays: { topRay: 0, p1Arc: 700, P1: 1850, lP1: 1850, topExt: 2150 },
+      identity: ["topExt", "D", "P1", "lP1"],
+      settleDelay: 2750,
       camera: "full",
       duration: 3400
     },
@@ -270,7 +308,10 @@
       text: "Unimos \\(P_1\\) con \\(B''\\) y prolongamos el trazo. Sobre esa prolongación marcamos \\(P_2\\) de modo que \\(P_1B''=B''P_2\\).",
       note: "El paño completo ya empieza a hacerse visible.",
       formula: "\\[P_1B''=B''P_2\\]",
-      hot: ["rightVert", "P2", "lP2", "Bpp", "lBpp"],
+      hot: ["p2Ray", "p2Arc", "rightVert", "P2", "lP2", "Bpp", "lBpp"],
+      delays: { p2Ray: 0, p2Arc: 650, P2: 1900, lP2: 1900, rightVert: 2200 },
+      identity: ["rightVert", "P1", "Bpp", "lBpp", "P2", "lP2"],
+      settleDelay: 2750,
       camera: "full",
       duration: 3400
     },
@@ -280,9 +321,11 @@
       text: "En \\(P_2\\) trazamos la perpendicular a \\(P_1P_2\\) y la intersectamos con la prolongación de \\(DA\\). Así obtenemos \\(P_3\\).",
       note: "Al terminar el paso, retiramos visualmente las ayudas y coloreamos los tres campos y la estrella.",
       formula: "\\[P_2P_3\\perp P_1P_2\\]",
-      hot: ["bottom", "leftLower", "midExt", "P3", "lP3", "blueFill", "whiteFill", "redFill", "whiteStar"],
+      hot: ["bottomGuide", "leftGuide", "bottom", "leftLower", "midExt", "P3", "lP3", "blueFill", "whiteFill", "redFill", "whiteStar"],
       delays: {
-        blueFill: 3000, whiteFill: 3000, redFill: 3000, whiteStar: 3400
+        leftGuide: 0, bottomGuide: 700, P3: 1850, lP3: 1850,
+        bottom: 2150, leftLower: 2150, midExt: 2450,
+        blueFill: 3300, whiteFill: 3300, redFill: 3300, whiteStar: 3700
       },
       camera: "full",
       final: {
@@ -464,6 +507,32 @@
     return Math.hypot(a[0] - b[0], a[1] - b[1]);
   }
 
+  function extendPast(from, through, extra) {
+    var dx = through[0] - from[0];
+    var dy = through[1] - from[1];
+    var d = Math.hypot(dx, dy) || 1;
+    return [
+      through[0] + dx / d * extra,
+      through[1] + dy / d * extra
+    ];
+  }
+
+  function equalCircleIntersections(a, b, radius) {
+    var mx = (a[0] + b[0]) / 2;
+    var my = (a[1] + b[1]) / 2;
+    var dx = b[0] - a[0];
+    var dy = b[1] - a[1];
+    var d = Math.hypot(dx, dy);
+    var height = Math.sqrt(Math.max(0, radius * radius - d * d / 4));
+    var ux = -dy / d;
+    var uy = dx / d;
+
+    return [
+      [mx + ux * height, my + uy * height],
+      [mx - ux * height, my - uy * height]
+    ];
+  }
+
   function screenArc(center, r, a1, a2) {
     var c = screen(center);
     var rr = r * scale;
@@ -562,9 +631,11 @@
 
   // Paso 3: use PB as the radius and extend the perpendicular only now.
   line("PB", P, B, "guide", 3, 3);
-  path("pqArc", screenArc(P, dist(P, B), angleDeg(P, B), angleDeg(P, Q)), "compass", 3, 3);
-  markCompass("pqArc", P, dist(P, B), angleDeg(P, B), angleDeg(P, Q), "P");
+  var qCrossPadding = 12;
+  path("pqArc", screenArc(P, dist(P, B), angleDeg(P, B), angleDeg(P, Q) + qCrossPadding), "compass", 3, 3);
+  markCompass("pqArc", P, dist(P, B), angleDeg(P, B), angleDeg(P, Q) + qCrossPadding, "P");
   line("AQguide", A, [0, phi + 0.12], "guide", 3, 20);
+  line("PQ", P, Q, "main identity-line", 3, 3);
   point("Q", Q, 3, 20);
   mathLabel("lQ", Q, "Q", 10, -20, 3, 20);
 
@@ -586,10 +657,12 @@
   mathLabel("lR", R, "R", 10, -18, 5, 6);
 
   line("AR", A, R, "guide", 6, 6);
+  line("Bperp", B, extendPast(B, C, 0.18), "guide", 6, 6);
   line("BC", B, C, "main", 6, 20);
   point("C", C, 6, 20);
   mathLabel("lC", C, "C", 10, -18, 6, 20);
 
+  line("Cperp", C, extendPast(C, D, 0.18), "guide", 7, 7);
   line("DC", D, C, "main", 7, 20);
   line("AD", A, D, "main", 7, 20);
   point("D", D, 7, 20);
@@ -600,14 +673,14 @@
   point("O", O, 8, 20);
   mathLabel("lO", O, "O", 9, -17, 8, 20);
 
-  line("centerH", S1, S2, "guide", 9, 20);
+  line("centerH", [-0.16, h / 2], [1.16, h / 2], "guide", 9, 20);
   point("S1", S1, 9, 11);
   point("S2", S2, 9, 11);
   mathLabel("lS1", S1, "S_1", -33, -15, 9, 11);
   mathLabel("lS2", S2, "S_2", 9, -15, 9, 11);
 
-  line("OT1", O, T1, "guide", 10, 10);
-  line("OT2", O, T2, "guide", 10, 10);
+  line("OT1", O, extendPast(O, T1, 0.18), "guide", 10, 10);
+  line("OT2", O, extendPast(O, T2, 0.18), "guide", 10, 10);
   path("angL", screenArc(O, 0.14, 180, 216), "main accent", 10, 10);
   path("angR", screenArc(O, 0.14, -36, 0), "main accent", 10, 10);
   point("T1", T1, 10, 11);
@@ -617,24 +690,32 @@
   mathLabel("l36a", [0.17, h / 2 - 0.015], "36^\\circ", 0, -20, 10, 10, "accent");
   mathLabel("l36b", [0.71, h / 2 - 0.015], "36^\\circ", 0, -20, 10, 10, "accent");
 
-  line("T1T3", T1, T3, "guide", 11, 20);
-  line("T2T4", T2, T4, "guide", 11, 20);
+  line("T1T3", T1, extendPast(T1, T3, 0.18), "guide", 11, 20);
+  line("T2T4", T2, extendPast(T2, T4, 0.18), "guide", 11, 20);
   point("T3", T3, 11, 14);
   point("T4", T4, 11, 14);
   mathLabel("lT3", T3, "T_3", 8, -18, 11, 14);
   mathLabel("lT4", T4, "T_4", -30, -18, 11, 14);
 
-  path("adCircle", screenArc(A, h, angleDeg(A, D), angleDeg(A, Q1)), "compass", 12, 12);
-  markCompass("adCircle", A, h, angleDeg(A, D), angleDeg(A, Q1), "A");
+  var q1CrossPadding = 12;
+  path("adCircle", screenArc(A, h, angleDeg(A, D), angleDeg(A, Q1) - q1CrossPadding), "compass", 12, 12);
+  markCompass("adCircle", A, h, angleDeg(A, D), angleDeg(A, Q1) - q1CrossPadding, "A");
   line("AQ1", A, Q1, "main", 12, 12);
   point("Q1", Q1, 12, 14);
   mathLabel("lQ1", Q1, "Q_1", 10, -18, 12, 14);
 
   line("BpQ1", Bp, Q1, "guide", 13, 13);
-  line("BQ2", B, Q2, "guide", 13, 13);
+  line("BQ2", B, extendPast(B, Q2, 0.18), "guide", 13, 13);
   point("Q2", Q2, 13, 14);
   mathLabel("lQ2", Q2, "Q_2", -34, 9, 13, 14);
 
+  var q3MidRadius = dist(A, Q2) * 0.68;
+  var q3Crossings = equalCircleIntersections(A, Q2, q3MidRadius);
+  circle("q3CircleA", A, q3MidRadius, "compass", 14, 14);
+  markCompass("q3CircleA", A, q3MidRadius, angleDeg(A, q3Crossings[0]), angleDeg(A, q3Crossings[0]) - 360, "A");
+  circle("q3CircleQ2", Q2, q3MidRadius, "compass", 14, 14);
+  markCompass("q3CircleQ2", Q2, q3MidRadius, angleDeg(Q2, q3Crossings[0]), angleDeg(Q2, q3Crossings[0]) + 360, "Q2");
+  line("q3Guide", q3Crossings[0], q3Crossings[1], "guide", 14, 14);
   point("Q3", Q3, 14, 14);
   mathLabel("lQ3", Q3, "Q_3", -36, 8, 14, 14);
   circle("starCircle", O, starR, "compass", 14, 20);
@@ -653,14 +734,22 @@
   polygon("star", [Rpts[1], Rpts[5], Rpts[9], Rpts[3], Rpts[7]], "star-line", 15, 20, geoLayer);
   mathLabel("l72", O, "72^\\circ", 62, -68, 15, 15, "accent");
 
+  line("topRay", D, extendPast(D, P1, 0.18), "guide", 16, 16);
+  path("p1Arc", screenArc(D, dist(D, P1), -55, 12), "compass", 16, 16);
+  markCompass("p1Arc", D, dist(D, P1), -55, 12, "D");
   line("topExt", D, P1, "main", 16, 20);
   point("P1", P1, 16, 20);
   mathLabel("lP1", P1, "P_1", 9, -18, 16, 18);
 
+  line("p2Ray", P1, extendPast(P1, P2, 0.18), "guide", 17, 17);
+  path("p2Arc", screenArc(Bpp, dist(Bpp, P1), 90, -105), "compass", 17, 17);
+  markCompass("p2Arc", Bpp, dist(Bpp, P1), 90, -105, "Bpp");
   line("rightVert", P1, P2, "main", 17, 20);
   point("P2", P2, 17, 20);
   mathLabel("lP2", P2, "P_2", 9, 8, 17, 18);
 
+  line("bottomGuide", P2, extendPast(P2, P3, 0.18), "guide", 18, 18);
+  line("leftGuide", D, extendPast(D, P3, 0.18), "guide", 18, 18);
   line("bottom", P3, P2, "main", 18, 20);
   line("leftLower", A, P3, "main", 18, 20);
   line("midExt", B, Bpp, "main", 18, 20);
