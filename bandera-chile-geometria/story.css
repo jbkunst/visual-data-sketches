@@ -359,3 +359,24 @@ body,
     transition: none !important;
   }
 }
+
+
+.graphic svg.final-clean .guide,
+.graphic svg.final-clean .compass,
+.graphic svg.final-clean .dimension,
+.graphic svg.final-clean .pt,
+.graphic svg.final-clean .m-label {
+  opacity: 0 !important;
+}
+
+.graphic svg.final-clean .main {
+  opacity: .16 !important;
+}
+
+.graphic svg.final-clean .star-line {
+  opacity: 0 !important;
+}
+
+.graphic svg.final-clean .flag-fill.on {
+  opacity: 1;
+}

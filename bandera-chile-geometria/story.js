@@ -81,200 +81,214 @@
     rayPoint(B, starR)
   ];
 
+  var cameras = {
+    core: [58, 150, 310, 250],
+    upper: [48, 2, 602, 395],
+    full: [48, 0, 610, 520],
+    flag: [74, 175, 570, 335]
+  };
+
   var scenes = [
     {
       step: "Paso 1 de 18",
       title: "Partimos de un trazo",
-      text: "Trazamos un segmento horizontal \\(\\overline{AB}\\) de longitud cualquiera. Lo tomamos como unidad y no necesitamos fijar centímetros.",
-      note: "Este es el único dato libre de toda la construcción: desde aquí solo copiaremos longitudes, levantaremos perpendiculares y construiremos intersecciones.",
+      text: "Sea \\(AB\\) un trazo horizontal de largo cualquiera. Lo consideramos nuestra unidad de medición.",
+      note: "Este es el único dato libre. Todo lo que sigue se obtiene copiando longitudes, trazando rectas, perpendiculares y circunferencias.",
       formula: "\\[AB=1\\]",
       hot: ["AB", "A", "B", "lA", "lB"],
+      camera: "core",
       duration: 4300
     },
     {
-      step: "Paso 2 de 18 · perpendicular en A",
-      title: "Lo primero es levantar la perpendicular",
-      text: "Con centro en \\(A\\) marcamos dos puntos auxiliares \\(U\\) y \\(V\\) sobre la recta \\(AB\\), a la misma distancia de \\(A\\). Desde \\(U\\) y \\(V\\) trazamos arcos iguales que se cortan en \\(X\\).",
-      note: "Como \\(AU=AV\\) y \\(XU=XV\\), tanto \\(A\\) como \\(X\\) son equidistantes de \\(U\\) y \\(V\\). Por eso la recta \\(AX\\) es perpendicular a \\(AB\\).",
-      formula: "\\[AU=AV,\\quad XU=XV\\;\\Longrightarrow\\;AX\\perp AB\\]",
-      hot: ["perpMarkCircle", "U", "V", "perpArcL", "perpArcR", "X", "perpLine"],
-      delays: {U:350,V:350,perpArcL:850,perpArcR:1450,X:2050,perpLine:2500},
-      duration: 5200
-    },
-    {
-      step: "Paso 2 de 18 · AP = AB/2",
-      title: "Ahora construimos la mitad",
-      text: "Con arcos de igual radio desde \\(A\\) y \\(B\\) hallamos el punto medio \\(M\\) de \\(AB\\). Abrimos el compás a \\(AM\\) y llevamos esa distancia sobre la perpendicular recién construida: allí queda \\(P\\).",
-      note: "No medimos \\(AB/2\\): el punto medio lo determina la geometría y el compás transfiere exactamente esa longitud.",
-      formula: "\\[AM=MB=AP=\\frac{AB}{2}\\]",
-      hot: ["midArcA1", "midArcB1", "midArcA2", "midArcB2", "midGuide", "M", "lM", "halfC", "AP", "P", "lP"],
-      delays: {midArcB1:450,midArcA2:850,midArcB2:1250,midGuide:1650,M:2050,lM:2050,halfC:2550,AP:3150,P:3850,lP:3850},
-      duration: 5900
+      step: "Paso 2 de 18",
+      title: "Levantamos la perpendicular y ubicamos P",
+      text: "Levantamos la perpendicular a \\(AB\\) en \\(A\\). Luego construimos el punto medio \\(M\\) de \\(AB\\) y llevamos la longitud \\(AM\\) sobre esa perpendicular para marcar \\(P\\).",
+      note: "El paso completo termina cuando \\(AP=AB/2\\). La animación muestra primero la perpendicular y después la construcción de la mitad.",
+      formula: "\\[AP=AM=\\frac{AB}{2}\\]",
+      hot: ["perpMarkCircle", "U", "V", "perpArcL", "perpArcR", "X", "perpLine", "midArcA1", "midArcB1", "midArcA2", "midArcB2", "midGuide", "M", "lM", "halfC", "AP", "P", "lP"],
+      delays: {
+        U: 300, V: 300,
+        perpArcL: 700, perpArcR: 1200, X: 1700, perpLine: 2050,
+        midArcA1: 2650, midArcB1: 3050, midArcA2: 3450, midArcB2: 3850,
+        midGuide: 4250, M: 4550, lM: 4550,
+        halfC: 5000, AP: 5450, P: 6000, lP: 6000
+      },
+      camera: "core",
+      duration: 7200
     },
     {
       step: "Paso 3 de 18",
-      title: "La diagonal PB determina Q",
-      text: "Unimos \\(P\\) con \\(B\\). Luego prolongamos la perpendicular por \\(P\\) y, con el compás abierto a \\(PB\\), marcamos sobre ella el punto \\(Q\\) de modo que \\(PQ=PB\\).",
-      note: "Este paso es importante: la nueva longitud no es arbitraria. Sale de la diagonal del triángulo rectángulo \\(APB\\). Su significado aparecerá al final.",
-      formula: "\\[PQ=PB,\\qquad AQ=AP+PQ\\]",
+      title: "Prolongamos AP hasta Q",
+      text: "Unimos \\(P\\) con \\(B\\). Sobre la prolongación de \\(AP\\) marcamos \\(Q\\) de modo que la nueva longitud \\(PQ\\) sea exactamente igual a \\(PB\\).",
+      note: "Aquí aparece una longitud especial. No la nombramos todavía: al final veremos por qué \\(AQ\\) contiene la razón áurea.",
+      formula: "\\[PQ=PB\\]",
       hot: ["PB", "pqArc", "AQguide", "Q", "lQ"],
-      delays: {pqArc:950,AQguide:1650,Q:2350,lQ:2350},
-      duration: 5400
+      delays: { pqArc: 900, AQguide: 1500, Q: 2250, lQ: 2250 },
+      camera: "upper",
+      duration: 5200
     },
     {
       step: "Paso 4 de 18",
-      title: "Llevamos AQ a la horizontal",
-      text: "Prolongamos \\(AB\\). Con centro en \\(A\\) y radio \\(AQ\\) marcamos \\(B'\\); después, con el mismo radio pero centro en \\(B\\), marcamos \\(B''\\).",
-      note: "El video hace exactamente dos copias consecutivas de la misma longitud: \\(AB'=AQ\\) y \\(BB''=AQ\\).",
+      title: "Copiamos AQ sobre la horizontal",
+      text: "Sobre la extensión de \\(AB\\) marcamos \\(B'\\) y \\(B''\\) copiando dos veces la longitud \\(AQ\\): primero desde \\(A\\) y luego desde \\(B\\).",
+      note: "No aparece una nueva medida: el compás transporta la misma longitud ya construida.",
       formula: "\\[AB'=BB''=AQ\\]",
       hot: ["baseRay", "aqCircleA", "Bp", "lBp", "aqCircleB", "Bpp", "lBpp"],
-      delays: {aqCircleA:650,Bp:1400,lBp:1400,aqCircleB:2100,Bpp:2850,lBpp:2850},
-      duration: 5000
+      delays: { aqCircleA: 550, Bp: 1250, lBp: 1250, aqCircleB: 1900, Bpp: 2650, lBpp: 2650 },
+      camera: "upper",
+      duration: 4600
     },
     {
       step: "Paso 5 de 18",
-      title: "Las dos circunferencias fijan R",
-      text: "Conservamos la circunferencia de centro \\(A\\) y radio \\(AQ\\). Trazamos otra con centro en \\(B'\\) y radio \\(AB\\). Su intersección superior es \\(R\\).",
-      note: "Otra vez, el punto no se ubica a ojo: queda determinado por dos distancias ya construidas.",
+      title: "Dos circunferencias determinan R",
+      text: "Trazamos la circunferencia de centro \\(A\\) y radio \\(AQ\\), y la circunferencia de centro \\(B'\\) y radio \\(AB\\). Su intersección sobre la recta \\(AB\\) es \\(R\\).",
+      note: "El punto \\(R\\) queda fijado por dos distancias construidas previamente.",
       formula: "\\[AR=AQ,\\qquad B'R=AB\\]",
       hot: ["aqCircleA", "rCircle", "R", "lR"],
-      delays: {rCircle:750,R:1650,lR:1650},
-      duration: 4400
+      delays: { rCircle: 650, R: 1500, lR: 1500 },
+      camera: "upper",
+      duration: 4100
     },
     {
       step: "Paso 6 de 18",
-      title: "El rayo AR fija la altura",
-      text: "Trazamos \\(AR\\). Su encuentro con la perpendicular a \\(AB\\) levantada por \\(B\\) define el punto \\(C\\).",
-      note: "La altura del campo izquierdo no se decide a ojo: queda determinada por lo construido antes.",
+      title: "La recta AR fija C",
+      text: "Trazamos \\(AR\\). En \\(B\\) levantamos la perpendicular a \\(AB\\); su intersección con \\(AR\\) define \\(C\\).",
+      note: "La altura del campo izquierdo queda determinada por la construcción anterior.",
       formula: "\\[C=AR\\cap(B\\perp AB)\\]",
       hot: ["AR", "BC", "C", "lC"],
-      duration: 4400
+      camera: "upper",
+      duration: 4000
     },
     {
       step: "Paso 7 de 18",
       title: "Cerramos el rectángulo ABCD",
-      text: "Por \\(C\\) trazamos una perpendicular a \\(BC\\). Esta horizontal corta la recta \\(AQ\\) en \\(D\\).",
-      note: "Ya tenemos el rectángulo que contendrá la estrella.",
-      formula: "\\[AB\\parallel CD,\\qquad AD\\parallel BC\\]",
+      text: "Por \\(C\\) trazamos la perpendicular a \\(BC\\). Su intersección con la recta \\(AQ\\) define \\(D\\).",
+      note: "Con \\(A,B,C,D\\) queda construido el rectángulo donde se desarrollará la estrella.",
+      formula: "\\[D=AQ\\cap(C\\perp BC)\\]",
       hot: ["DC", "D", "lD", "AD"],
+      camera: "upper",
       duration: 3500
     },
     {
       step: "Paso 8 de 18",
-      title: "Las diagonales encuentran el centro",
-      text: "Trazamos \\(AC\\) y \\(BD\\). Su intersección es \\(O\\), el centro del rectángulo.",
-      note: "A partir de este punto organizaremos las direcciones que forman la estrella.",
+      title: "Las diagonales encuentran O",
+      text: "Unimos \\(A\\) con \\(C\\) y \\(B\\) con \\(D\\). El punto donde ambas diagonales se cortan es \\(O\\).",
+      note: "Este centro será el vértice común de las direcciones que organizan la estrella.",
       formula: "\\[O=AC\\cap BD\\]",
       hot: ["AC", "BD", "O", "lO"],
-      duration: 4000
-    },
-    {
-      step: "Paso 9 de 18",
-      title: "Trazamos la horizontal central",
-      text: "Por \\(O\\) trazamos una paralela a \\(AB\\). Sus intersecciones con \\(AD\\) y \\(BC\\) son \\(S_1\\) y \\(S_2\\).",
-      note: "Con las diagonales ya tenemos varias de las direcciones que después cortarán la circunferencia de la estrella.",
-      formula: "\\[S_1O\\parallel AB\\parallel OS_2\\]",
-      hot: ["centerH", "S1", "S2", "lS1", "lS2"],
+      camera: "upper",
       duration: 3800
     },
     {
-      step: "Paso 10 de 18",
-      title: "Copiamos dos ángulos de 36°",
-      text: "Reflejamos \\(\\angle AOS_1\\) sobre el lado \\(AO\\) y repetimos el procedimiento con \\(\\angle BOS_2\\). Los nuevos lados cortan \\(AB\\) en \\(T_1\\) y \\(T_2\\).",
-      note: "Este es un paso clave. El rectángulo fue construido para que esos ángulos sean de \\(36^\\circ\\), y copiarlos con regla y compás evita medirlos con transportador.",
-      formula: "\\[\\angle AOS_1=\\angle BOS_2=36^\\circ\\]",
-      hot: ["OT1", "OT2", "angL", "angR", "T1", "T2", "lT1", "lT2", "l36a", "l36b"],
-      duration: 6500
-    },
-    {
-      step: "Paso 11 de 18",
-      title: "Prolongamos las nuevas direcciones",
-      text: "Extendemos \\(T_1O\\) y \\(T_2O\\) hasta el lado superior \\(CD\\). Allí obtenemos \\(T_3\\) y \\(T_4\\).",
-      note: "El centro queda rodeado por diez semirrectas consecutivas separadas en pasos de \\(36^\\circ\\).",
-      formula: "\\[T_3,O,T_1\\text{ colineales},\\qquad T_4,O,T_2\\text{ colineales}\\]",
-      hot: ["T1T3", "T2T4", "T3", "T4", "lT3", "lT4"],
+      step: "Paso 9 de 18",
+      title: "Trazamos la paralela por O",
+      text: "Por \\(O\\) trazamos una paralela a \\(AB\\) y \\(CD\\). Llamamos \\(S_1\\) y \\(S_2\\) a sus intersecciones con \\(AD\\) y \\(BC\\).",
+      note: "La horizontal central se suma a las dos diagonales ya construidas.",
+      formula: "\\[S_1O\\parallel AB\\parallel OS_2\\]",
+      hot: ["centerH", "S1", "S2", "lS1", "lS2"],
+      camera: "upper",
       duration: 3700
     },
     {
+      step: "Paso 10 de 18",
+      title: "Copiamos dos ángulos",
+      text: "Copiamos \\(\\angle AOS_1\\) sobre el lado \\(AO\\) y llamamos \\(T_1\\) al corte del lado libre con \\(AB\\). Repetimos con \\(\\angle BOS_2\\) para obtener \\(T_2\\).",
+      note: "En esta construcción esos ángulos valen \\(36^\\circ\\). Este es uno de los pasos geométricos clave.",
+      formula: "\\[\\angle AOS_1=\\angle BOS_2=36^\\circ\\]",
+      hot: ["OT1", "OT2", "angL", "angR", "T1", "T2", "lT1", "lT2", "l36a", "l36b"],
+      camera: "upper",
+      duration: 6200
+    },
+    {
+      step: "Paso 11 de 18",
+      title: "Prolongamos hasta T₃ y T₄",
+      text: "Prolongamos las rectas \\(T_1O\\) y \\(T_2O\\) hasta que corten \\(CD\\). Esos puntos son \\(T_3\\) y \\(T_4\\).",
+      note: "Ya tenemos cinco rectas que pasan por \\(O\\), es decir, diez semirrectas consecutivas.",
+      formula: "\\[T_3,O,T_1\\text{ colineales},\\qquad T_4,O,T_2\\text{ colineales}\\]",
+      hot: ["T1T3", "T2T4", "T3", "T4", "lT3", "lT4"],
+      camera: "upper",
+      duration: 3600
+    },
+    {
       step: "Paso 12 de 18",
-      title: "Marcamos Q₁ sobre la diagonal",
-      text: "Sobre \\(AC\\) buscamos \\(Q_1\\) de modo que \\(AQ_1\\) sea igual a la altura \\(AD\\).",
-      note: "Otra vez no medimos: copiamos con el compás una longitud que ya existe.",
+      title: "Marcamos Q₁ sobre AC",
+      text: "Sobre la diagonal \\(AC\\) marcamos \\(Q_1\\) de modo que \\(AQ_1\\) sea igual a \\(AD\\).",
+      note: "Nuevamente usamos el compás para copiar una longitud que ya existe.",
       formula: "\\[AQ_1=AD\\]",
       hot: ["adCircle", "Q1", "lQ1", "AQ1"],
-      duration: 4300
+      camera: "upper",
+      duration: 4000
     },
     {
       step: "Paso 13 de 18",
       title: "Una paralela determina Q₂",
-      text: "Unimos \\(B'\\) con \\(Q_1\\). Por \\(B\\) trazamos una paralela a \\(B'Q_1\\); donde corta a \\(AC\\) aparece \\(Q_2\\).",
-      note: "La paralela también es constructible con regla y compás copiando el ángulo correspondiente.",
+      text: "Unimos \\(B'\\) con \\(Q_1\\). Luego trazamos por \\(B\\) una paralela a \\(B'Q_1\\); donde esta corta a \\(AC\\) obtenemos \\(Q_2\\).",
+      note: "La paralela también puede construirse copiando el ángulo correspondiente.",
       formula: "\\[BQ_2\\parallel B'Q_1\\]",
       hot: ["BpQ1", "BQ2", "Q2", "lQ2"],
-      duration: 5000
+      camera: "upper",
+      duration: 4600
     },
     {
       step: "Paso 14 de 18",
-      title: "Fijamos el tamaño de la estrella",
-      text: "Hallamos el punto medio \\(Q_3\\) de \\(AQ_2\\). Con centro en \\(O\\) y radio de longitud \\(AQ_3\\), trazamos una circunferencia.",
-      note: "Las diez direcciones que pasan por \\(O\\) cortan esta circunferencia en \\(R_1,\\ldots,R_{10}\\).",
+      title: "La circunferencia fija diez puntos",
+      text: "Marcamos el punto medio \\(Q_3\\) de \\(AQ_2\\). Con centro en \\(O\\) y radio \\(AQ_3\\) trazamos una circunferencia, que corta las diez semirrectas en \\(R_1,\\ldots,R_{10}\\).",
+      note: "La estrella ya está completamente determinada; falta escoger cinco de esos diez puntos.",
       formula: "\\[r_\\star=AQ_3=\\frac{AQ_2}{2}\\]",
       hot: ["Q3", "lQ3", "starCircle", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10", "lR2", "lR4", "lR6", "lR8", "lR10"],
-      duration: 6200
+      camera: "upper",
+      duration: 5900
     },
     {
       step: "Paso 15 de 18",
-      title: "Los cinco vértices quedan a 72°",
-      text: "Tomamos \\(R_2,R_4,R_6,R_8,R_{10}\\): son cinco puntos alternados de los diez anteriores, por lo que los vértices consecutivos del pentágono quedan separados por \\(72^\\circ\\).",
-      note: "Una vez entendido ese primer salto angular, el resto es repetición. Para formar el pentagrama unimos \\(R_2\\to R_6\\to R_{10}\\to R_4\\to R_8\\to R_2\\).",
-      formula: "\\[2\\times36^\\circ=72^\\circ\\]",
+      title: "Unimos los cinco vértices de la estrella",
+      text: "Unimos \\(R_2\\) con \\(R_6\\), luego \\(R_6\\) con \\(R_{10}\\), después \\(R_{10}\\) con \\(R_4\\), \\(R_4\\) con \\(R_8\\), y finalmente \\(R_8\\) con \\(R_2\\).",
+      note: "Los cinco vértices exteriores están separados por \\(72^\\circ\\). Una vez hecho el primer salto, el resto es repetición.",
+      formula: "\\[R_2\\to R_6\\to R_{10}\\to R_4\\to R_8\\to R_2\\]",
       hot: ["star", "l72"],
-      duration: 5200
+      camera: "upper",
+      duration: 5000
     },
     {
       step: "Paso 16 de 18",
-      title: "Extendemos el paño superior",
-      text: "Prolongamos \\(DC\\) hacia la derecha y marcamos \\(P_1\\) de modo que \\(DP_1\\) tenga la misma longitud que \\(AB''\\).",
-      note: "La nueva longitud reutiliza exactamente la construcción hecha sobre la base.",
+      title: "Extendemos DC hasta P₁",
+      text: "Prolongamos \\(DC\\) hacia la derecha y marcamos \\(P_1\\) de modo que \\(DP_1=AB''\\).",
+      note: "Aquí comenzamos a abrir el encuadre porque la construcción sale del bloque de la estrella.",
       formula: "\\[DP_1=AB''\\]",
       hot: ["topExt", "P1", "lP1"],
-      duration: 3300
-    },
-    {
-      step: "Paso 17 de 18",
-      title: "Duplicamos la altura hacia abajo",
-      text: "Unimos \\(P_1\\) con \\(B''\\) y prolongamos ese trazo hasta \\(P_2\\), copiando la misma longitud al otro lado de \\(B''\\).",
-      note: "Aquí ya no aparece una idea geométrica nueva: repetimos una longitud sobre una misma recta.",
-      formula: "\\[P_1B''=B''P_2\\]",
-      hot: ["rightVert", "P2", "lP2", "Bpp", "lBpp"],
-      duration: 3100
-    },
-    {
-      step: "Paso 18 de 18",
-      title: "Cerramos el rectángulo inferior",
-      text: "Por \\(P_2\\) trazamos una perpendicular a \\(P_1P_2\\). Su encuentro con la prolongación de \\(DA\\) es \\(P_3\\).",
-      note: "Con esto quedan definidos los tres campos de la bandera.",
-      formula: "\\[P_2P_3\\perp P_1P_2\\]",
-      hot: ["bottom", "leftLower", "midExt", "P3", "lP3"],
+      camera: "full",
       duration: 3400
     },
     {
-      step: "Resultado geométrico",
-      title: "La construcción se convierte en bandera",
-      text: "El rectángulo \\(ABCD\\) forma el campo azul; a su derecha queda el campo blanco y debajo aparece el campo rojo. La estrella blanca usa los cinco vértices alternados construidos alrededor de \\(O\\).",
-      note: "Las líneas auxiliares permanecen apenas visibles para que el resultado conserve memoria de su construcción.",
-      formula: "",
-      hot: ["blueFill", "whiteFill", "redFill", "whiteStar"],
-      duration: 3900
+      step: "Paso 17 de 18",
+      title: "Prolongamos P₁B'' hasta P₂",
+      text: "Unimos \\(P_1\\) con \\(B''\\) y prolongamos el trazo. Sobre esa prolongación marcamos \\(P_2\\) de modo que \\(P_1B''=B''P_2\\).",
+      note: "El paño completo ya empieza a hacerse visible.",
+      formula: "\\[P_1B''=B''P_2\\]",
+      hot: ["rightVert", "P2", "lP2", "Bpp", "lBpp"],
+      camera: "full",
+      duration: 3400
     },
     {
-      step: "Lectura final",
-      title: "Ahora revelamos la razón áurea",
-      text: "La proporción áurea estuvo escondida desde el paso 3. Como \\(AP=AB/2\\) y \\(PQ=PB\\), la longitud \\(AQ\\) resulta ser \\(\\varphi\\,AB\\). Esa misma relación reaparece en el campo blanco y en el diámetro de la estrella.",
-      note: "La gracia es verla después de haber construido todo: \\(\\varphi\\) no se impuso como una medida externa, apareció a partir de las relaciones geométricas.",
-      formula: "\\[\\frac{AQ}{AB}=\\varphi,\\qquad \\frac{BB''}{AB}=\\varphi,\\qquad \\frac{AD}{d_\\star}=\\varphi\\]",
-      hot: ["AB", "AQguide", "Q", "lQ", "blueDim", "whiteDim", "starDiam", "AD", "starCircle"],
-      duration: 6800
+      step: "Paso 18 de 18",
+      title: "Cerramos el paño",
+      text: "En \\(P_2\\) trazamos la perpendicular a \\(P_1P_2\\) y la intersectamos con la prolongación de \\(DA\\). Así obtenemos \\(P_3\\).",
+      note: "Al terminar el paso, retiramos visualmente las ayudas y coloreamos los tres campos y la estrella.",
+      formula: "\\[P_2P_3\\perp P_1P_2\\]",
+      hot: ["bottom", "leftLower", "midExt", "P3", "lP3", "blueFill", "whiteFill", "redFill", "whiteStar"],
+      delays: {
+        blueFill: 3000, whiteFill: 3000, redFill: 3000, whiteStar: 3400
+      },
+      camera: "full",
+      final: {
+        delay: 4100,
+        camera: "flag",
+        title: "Coloreamos la Bandera de la Independencia",
+        text: "Pintamos de rojo el rectángulo \\(AB''P_2P_3\\), de blanco el rectángulo \\(BB''P_1C\\) y la estrella, y de azul el rectángulo \\(ABCD\\) menos la estrella.",
+        note: "Y ahora sí podemos volver al paso 3: como \\(AP=AB/2\\) y \\(PQ=PB\\), la longitud \\(AQ\\) resulta ser \\(\\varphi\\) veces \\(AB\\).",
+        formula: "\\[\\frac{AQ}{AB}=\\frac12+\\sqrt{1+\\frac14}=\\frac{1+\\sqrt5}{2}=\\varphi\\]"
+      },
+      duration: 7600
     }
   ];
 
@@ -328,7 +342,7 @@
   }
 
   var svg = svgEl("svg", {
-    viewBox: "0 0 820 560",
+    viewBox: cameras.core.join(" "),
     role: "img",
     "aria-label": "Construcción geométrica de la Bandera de la Independencia"
   });
@@ -340,6 +354,34 @@
   svg.appendChild(geoLayer);
   svg.appendChild(labelLayer);
   ui.graphic.appendChild(svg);
+
+  var currentView = cameras.core.slice();
+  var cameraToken = 0;
+
+  function setCamera(name, duration) {
+    var target = cameras[name] || cameras.core;
+    var start = currentView.slice();
+    var token = ++cameraToken;
+    var started = performance.now();
+    var ms = duration == null ? 850 : duration;
+
+    function tick(now) {
+      if (token !== cameraToken) return;
+      var t = Math.min(1, (now - started) / ms);
+      var eased = t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+      currentView = start.map(function (value, i) {
+        return value + (target[i] - value) * eased;
+      });
+
+      svg.setAttribute("viewBox", currentView.join(" "));
+      if (t < 1) requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  }
 
   var scale = 195;
   var origin = [105, 350];
@@ -566,6 +608,26 @@
   line("whiteDim", [1, h + 0.12], [phi * phi, h + 0.12], "dimension", 20, 20);
   line("starDiam", [O[0] - starR, O[1]], [O[0] + starR, O[1]], "dimension", 20, 20);
 
+  Object.keys(items).forEach(function (id) {
+    var item = items[id];
+
+    function shiftIndex(value) {
+      if (value == null) return null;
+      if (value === 2) return 1;
+      if (value >= 3 && value <= 18) return value - 1;
+      if (value >= 19) return 17;
+      return value;
+    }
+
+    item.from = shiftIndex(item.from);
+    item.to = shiftIndex(item.to);
+
+    if (id === "blueDim" || id === "whiteDim" || id === "starDiam") {
+      item.from = 99;
+      item.to = 99;
+    }
+  });
+
   var dots = scenes.map(function (scene, i) {
     var b = document.createElement("button");
     b.type = "button";
@@ -630,8 +692,24 @@
     ui.formula.innerHTML = scene.formula;
     typeset(ui.formula);
 
+    svg.classList.remove("final-clean");
+    setCamera(scene.camera || "core", 900);
+
     var token = ++runToken;
     var delays = scene.delays || {};
+
+    if (scene.final) {
+      setTimeout(function () {
+        if (token !== runToken) return;
+        svg.classList.add("final-clean");
+        setCamera(scene.final.camera || "flag", 1150);
+        ui.title.textContent = scene.final.title;
+        ui.text.innerHTML = scene.final.text;
+        ui.note.innerHTML = scene.final.note;
+        ui.formula.innerHTML = scene.final.formula;
+        typeset(ui.formula);
+      }, scene.final.delay);
+    }
 
     Object.keys(items).forEach(function (id) {
       var item = items[id];
