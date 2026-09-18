@@ -7,6 +7,8 @@
 
   var NS = "http://www.w3.org/2000/svg";
   var XNS = "http://www.w3.org/1999/xhtml";
+  var MOTION_SCALE = 1.25;
+  var DRAW_MS = 850 * MOTION_SCALE;
   var phi = (1 + Math.sqrt(5)) / 2;
   var h = Math.tan(Math.PI / 5);
   var sin36 = Math.sin(Math.PI / 5);
@@ -101,24 +103,26 @@
     },
     {
       step: "Paso 2",
-      title: "Levantamos la perpendicular y ubicamos P",
-      text: "Levantamos la perpendicular a \\(AB\\) en \\(A\\). Luego construimos el punto medio \\(M\\) de \\(AB\\) y llevamos la longitud \\(AM\\) sobre esa perpendicular para marcar \\(P\\).",
-      note: "El paso completo termina cuando \\(AP=AB/2\\). La animación muestra primero la perpendicular y después la construcción de la mitad.",
+      title: "Levantamos la perpendicular y ubicamos \\(P\\)",
+      text: "Levante la perpendicular a \\(AB\\) en \\(A\\) y sobre esta marque \\(P\\), de modo que \\(AP=AB/2\\).",
+      note: "\\(U\\) y \\(V\\) son puntos auxiliares para construir \\(X\\) y levantar la perpendicular por \\(A\\). Luego, como \\(M\\) es el punto medio de \\(AB\\), la longitud \\(AM\\) se transfiere sobre esa perpendicular para encontrar \\(P\\).",
       formula: "\\[AP=AM=\\frac{AB}{2}\\]",
-      hot: ["perpMarkCircle", "U", "lU", "V", "lV", "perpArcL", "perpArcR", "X", "lX", "perpLine", "midArcA1", "midArcB1", "midArcA2", "midArcB2", "midGuide", "M", "lM", "halfC", "AP", "P", "lP"],
+      hot: ["perpMarkCircle", "U", "lU", "V", "lV", "perpArcL", "perpArcR", "X", "lX", "perpLine", "midArcA1", "midArcB1", "midArcA2", "midArcB2", "midGuide", "M", "lM", "AM", "halfC", "AP", "P", "lP"],
       delays: {
         U: 300, lU: 300, V: 300, lV: 300,
         perpArcL: 700, perpArcR: 1200, X: 1700, lX: 1700, perpLine: 2050,
         midArcA1: 2650, midArcB1: 3050, midArcA2: 3450, midArcB2: 3850,
-        midGuide: 4250, M: 4550, lM: 4550,
+        midGuide: 4250, M: 4550, lM: 4550, AM: 4550,
         halfC: 5000, AP: 5450, P: 6000, lP: 6000
       },
+      identity: ["AB", "A", "B", "lA", "lB", "AM", "M", "lM", "AP", "P", "lP"],
+      settleDelay: 6350,
       camera: "core",
       duration: 7200
     },
     {
       step: "Paso 3",
-      title: "Prolongamos AP hasta Q",
+      title: "Prolongamos \\(AP\\) hasta \\(Q\\)",
       text: "Unimos \\(P\\) con \\(B\\). Sobre la prolongación de \\(AP\\) marcamos \\(Q\\) de modo que la nueva longitud \\(PQ\\) sea exactamente igual a \\(PB\\).",
       note: "Aquí aparece una longitud especial. No la nombramos todavía: al final veremos por qué \\(AQ\\) contiene la razón áurea.",
       formula: "\\[PQ=PB\\]",
@@ -129,7 +133,7 @@
     },
     {
       step: "Paso 4",
-      title: "Copiamos AQ sobre la horizontal",
+      title: "Copiamos \\(AQ\\) sobre la horizontal",
       text: "Sobre la extensión de \\(AB\\) marcamos \\(B'\\) y \\(B''\\) copiando dos veces la longitud \\(AQ\\): primero desde \\(A\\) y luego desde \\(B\\).",
       note: "No aparece una nueva medida: el compás transporta la misma longitud ya construida.",
       formula: "\\[AB'=BB''=AQ\\]",
@@ -140,7 +144,7 @@
     },
     {
       step: "Paso 5",
-      title: "Dos circunferencias determinan R",
+      title: "Dos circunferencias determinan \\(R\\)",
       text: "Trazamos la circunferencia de centro \\(A\\) y radio \\(AQ\\), y la circunferencia de centro \\(B'\\) y radio \\(AB\\). Su intersección sobre la recta \\(AB\\) es \\(R\\).",
       note: "El punto \\(R\\) queda fijado por dos distancias construidas previamente.",
       formula: "\\[AR=AQ,\\qquad B'R=AB\\]",
@@ -151,7 +155,7 @@
     },
     {
       step: "Paso 6",
-      title: "La recta AR fija C",
+      title: "La recta \\(AR\\) fija \\(C\\)",
       text: "Trazamos \\(AR\\). En \\(B\\) levantamos la perpendicular a \\(AB\\); su intersección con \\(AR\\) define \\(C\\).",
       note: "La altura del campo izquierdo queda determinada por la construcción anterior.",
       formula: "\\[C=AR\\cap(B\\perp AB)\\]",
@@ -161,7 +165,7 @@
     },
     {
       step: "Paso 7",
-      title: "Cerramos el rectángulo ABCD",
+      title: "Cerramos el rectángulo \\(ABCD\\)",
       text: "Por \\(C\\) trazamos la perpendicular a \\(BC\\). Su intersección con la recta \\(AQ\\) define \\(D\\).",
       note: "Con \\(A,B,C,D\\) queda construido el rectángulo donde se desarrollará la estrella.",
       formula: "\\[D=AQ\\cap(C\\perp BC)\\]",
@@ -171,7 +175,7 @@
     },
     {
       step: "Paso 8",
-      title: "Las diagonales encuentran O",
+      title: "Las diagonales encuentran \\(O\\)",
       text: "Unimos \\(A\\) con \\(C\\) y \\(B\\) con \\(D\\). El punto donde ambas diagonales se cortan es \\(O\\).",
       note: "Este centro será el vértice común de las direcciones que organizan la estrella.",
       formula: "\\[O=AC\\cap BD\\]",
@@ -181,7 +185,7 @@
     },
     {
       step: "Paso 9",
-      title: "Trazamos la paralela por O",
+      title: "Trazamos la paralela por \\(O\\)",
       text: "Por \\(O\\) trazamos una paralela a \\(AB\\) y \\(CD\\). Llamamos \\(S_1\\) y \\(S_2\\) a sus intersecciones con \\(AD\\) y \\(BC\\).",
       note: "La horizontal central se suma a las dos diagonales ya construidas.",
       formula: "\\[S_1O\\parallel AB\\parallel OS_2\\]",
@@ -201,7 +205,7 @@
     },
     {
       step: "Paso 11",
-      title: "Prolongamos hasta T₃ y T₄",
+      title: "Prolongamos hasta \\(T_3\\) y \\(T_4\\)",
       text: "Prolongamos las rectas \\(T_1O\\) y \\(T_2O\\) hasta que corten \\(CD\\). Esos puntos son \\(T_3\\) y \\(T_4\\).",
       note: "Ya tenemos cinco rectas que pasan por \\(O\\), es decir, diez semirrectas consecutivas.",
       formula: "\\[T_3,O,T_1\\text{ colineales},\\qquad T_4,O,T_2\\text{ colineales}\\]",
@@ -211,7 +215,7 @@
     },
     {
       step: "Paso 12",
-      title: "Marcamos Q₁ sobre AC",
+      title: "Marcamos \\(Q_1\\) sobre \\(AC\\)",
       text: "Sobre la diagonal \\(AC\\) marcamos \\(Q_1\\) de modo que \\(AQ_1\\) sea igual a \\(AD\\).",
       note: "Nuevamente usamos el compás para copiar una longitud que ya existe.",
       formula: "\\[AQ_1=AD\\]",
@@ -221,7 +225,7 @@
     },
     {
       step: "Paso 13",
-      title: "Una paralela determina Q₂",
+      title: "Una paralela determina \\(Q_2\\)",
       text: "Unimos \\(B'\\) con \\(Q_1\\). Luego trazamos por \\(B\\) una paralela a \\(B'Q_1\\); donde esta corta a \\(AC\\) obtenemos \\(Q_2\\).",
       note: "La paralela también puede construirse copiando el ángulo correspondiente.",
       formula: "\\[BQ_2\\parallel B'Q_1\\]",
@@ -251,7 +255,7 @@
     },
     {
       step: "Paso 16",
-      title: "Extendemos DC hasta P₁",
+      title: "Extendemos \\(DC\\) hasta \\(P_1\\)",
       text: "Prolongamos \\(DC\\) hacia la derecha y marcamos \\(P_1\\) de modo que \\(DP_1=AB''\\).",
       note: "Aquí comenzamos a abrir el encuadre porque la construcción sale del bloque de la estrella.",
       formula: "\\[DP_1=AB''\\]",
@@ -261,7 +265,7 @@
     },
     {
       step: "Paso 17",
-      title: "Prolongamos P₁B'' hasta P₂",
+      title: "Prolongamos \\(P_1B''\\) hasta \\(P_2\\)",
       text: "Unimos \\(P_1\\) con \\(B''\\) y prolongamos el trazo. Sobre esa prolongación marcamos \\(P_2\\) de modo que \\(P_1B''=B''P_2\\).",
       note: "El paño completo ya empieza a hacerse visible.",
       formula: "\\[P_1B''=B''P_2\\]",
@@ -363,7 +367,7 @@
     var start = currentView.slice();
     var token = ++cameraToken;
     var started = performance.now();
-    var ms = duration == null ? 850 : duration;
+    var ms = (duration == null ? 850 : duration) * MOTION_SCALE;
 
     function tick(now) {
       if (token !== cameraToken) return;
@@ -496,6 +500,7 @@
   line("midGuide", [0.5, -midpointY - 0.06], [0.5, midpointY + 0.06], "guide", 2, 2);
   point("M", M, 2, 2);
   mathLabel("lM", M, "M", -7, 10, 2, 2);
+  line("AM", A, M, "main identity-line", 2, 2);
   circle("halfC", A, 0.5, "compass", 2, 2);
   line("AP", A, P, "main", 2, 4);
   point("P", P, 2, 4);
@@ -675,33 +680,79 @@
 
   function setSceneCopy(scene) {
     ui.step.textContent = scene.step;
-    ui.title.textContent = scene.title;
     return Promise.all([
+      setMathHtml(ui.title, scene.title),
       setMathHtml(ui.text, scene.text),
       setMathHtml(ui.note, scene.note),
       setMathHtml(ui.formula, scene.formula)
     ]);
   }
 
-  function animateStroke(node) {
+  function animateStroke(node, token) {
+    var tag = node.tagName.toLowerCase();
+    var easing = "cubic-bezier(.2,.75,.25,1)";
+
+    if (tag === "line") {
+      var x1 = Number(node.getAttribute("x1"));
+      var y1 = Number(node.getAttribute("y1"));
+      var x2 = Number(node.getAttribute("x2"));
+      var y2 = Number(node.getAttribute("y2"));
+
+      node.dataset.finalX2 = x2;
+      node.dataset.finalY2 = y2;
+      node.setAttribute("x2", x1);
+      node.setAttribute("y2", y1);
+
+      var started = performance.now();
+
+      function tick(now) {
+        if (token !== runToken) return;
+        var t = Math.min(1, (now - started) / DRAW_MS);
+        var eased = 1 - Math.pow(1 - t, 3);
+        node.setAttribute("x2", x1 + (x2 - x1) * eased);
+        node.setAttribute("y2", y1 + (y2 - y1) * eased);
+        if (t < 1) requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+      return;
+    }
+
+    var computed = window.getComputedStyle(node);
+    var dash = computed.strokeDasharray;
+    var isDashed = dash && dash !== "none" && dash !== "0px";
+
+    if (isDashed || tag === "circle") {
+      if (node.animate) {
+        node.animate(
+          [{ opacity: 0 }, { opacity: 1 }],
+          { duration: DRAW_MS, easing: easing }
+        );
+      }
+      return;
+    }
+
     if (!node.getTotalLength) return;
+
     try {
       var length = node.getTotalLength();
       if (!Number.isFinite(length) || length <= 0) return;
+
       node.style.strokeDasharray = length + " " + length;
       node.style.strokeDashoffset = length;
-      requestAnimationFrame(function () {
+      node.getBoundingClientRect();
+      node.style.transition = "stroke-dashoffset " + (DRAW_MS / 1000) + "s " + easing;
+      node.style.strokeDashoffset = 0;
+
+      setTimeout(function () {
+        if (token !== runToken) return;
+        node.style.transition = "none";
+        node.style.strokeDasharray = "";
+        node.style.strokeDashoffset = "";
         requestAnimationFrame(function () {
-          node.style.transition =
-            "stroke-dashoffset .85s cubic-bezier(.2,.75,.25,1), opacity .38s ease, stroke .38s ease, stroke-width .38s ease";
-          node.style.strokeDashoffset = 0;
-          setTimeout(function () {
-            node.style.strokeDasharray = "";
-            node.style.strokeDashoffset = "";
-            node.style.transition = "";
-          }, 900);
+          if (token === runToken) node.style.transition = "";
         });
-      });
+      }, DRAW_MS + 40);
     } catch (_) {}
   }
 
@@ -714,23 +765,49 @@
     setSceneCopy(scene);
 
     svg.classList.remove("final-clean");
+    Object.keys(items).forEach(function (id) {
+      items[id].node.classList.remove("settled-dim");
+      items[id].node.classList.remove("identity-hot");
+    });
     setCamera(scene.camera || "core", 900);
 
     var token = ++runToken;
     var delays = scene.delays || {};
+
+    if (scene.identity && scene.settleDelay != null) {
+      setTimeout(function () {
+        if (token !== runToken) return;
+        var identity = {};
+        scene.identity.forEach(function (id) { identity[id] = true; });
+
+        scene.hot.forEach(function (id) {
+          var item = items[id];
+          if (!item || !alive(index, item)) return;
+          item.node.classList.remove("hot");
+          item.node.classList.toggle("identity-hot", !!identity[id]);
+          item.node.classList.toggle("settled-dim", !identity[id]);
+        });
+
+        scene.identity.forEach(function (id) {
+          if (!items[id] || !alive(index, items[id])) return;
+          items[id].node.classList.add("identity-hot");
+          items[id].node.classList.remove("settled-dim");
+        });
+      }, scene.settleDelay * MOTION_SCALE);
+    }
 
     if (scene.final) {
       setTimeout(function () {
         if (token !== runToken) return;
         svg.classList.add("final-clean");
         setCamera(scene.final.camera || "flag", 1150);
-        ui.title.textContent = scene.final.title;
         Promise.all([
+          setMathHtml(ui.title, scene.final.title),
           setMathHtml(ui.text, scene.final.text),
           setMathHtml(ui.note, scene.final.note),
           setMathHtml(ui.formula, scene.final.formula)
         ]);
-      }, scene.final.delay);
+      }, scene.final.delay * MOTION_SCALE);
     }
 
     Object.keys(items).forEach(function (id) {
@@ -738,15 +815,27 @@
       var node = item.node;
       var on = alive(index, item);
       var replay = on && !!hot[id];
-      var delay = Number(delays[id] || 0);
+      var delay = Number(delays[id] || 0) * MOTION_SCALE;
 
       function resetVisualState() {
+        if (node.getAnimations) {
+          node.getAnimations().forEach(function (animation) {
+            animation.cancel();
+          });
+        }
+        if (node.dataset.finalX2 != null) {
+          node.setAttribute("x2", node.dataset.finalX2);
+          node.setAttribute("y2", node.dataset.finalY2);
+        }
+        node.style.opacity = "";
         node.style.transition = "";
         node.style.strokeDasharray = "";
         node.style.strokeDashoffset = "";
         node.classList.add("off");
         node.classList.remove("on");
         node.classList.remove("hot");
+        node.classList.remove("settled-dim");
+        node.classList.remove("identity-hot");
       }
 
       function showItem() {
@@ -757,7 +846,7 @@
         node.classList.toggle("hot", replay);
 
         if (replay && node.classList.contains("geo")) {
-          animateStroke(node);
+          animateStroke(node, token);
         }
       }
 
@@ -809,7 +898,7 @@
 
     timer = setTimeout(function () {
       go(index + 1);
-    }, scenes[index].duration);
+    }, scenes[index].duration * MOTION_SCALE);
   }
 
   function setPlaying(value) {

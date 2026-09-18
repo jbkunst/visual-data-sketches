@@ -431,3 +431,39 @@ body,
 .graphic svg.final-clean .flag-fill.on {
   opacity: 1;
 }
+
+
+.copy h1 mjx-container {
+  margin: 0 !important;
+  font-size: .92em !important;
+}
+
+.geo.settled-dim,
+.pt.settled-dim,
+.m-label.settled-dim {
+  opacity: .08 !important;
+}
+
+.geo.identity-hot {
+  opacity: 1 !important;
+  stroke: var(--chalk-dark) !important;
+  stroke-width: 2.45 !important;
+}
+
+.pt.identity-hot {
+  opacity: 1 !important;
+  fill: var(--chalk);
+  stroke: var(--chalk-dark);
+}
+
+.m-label.identity-hot {
+  opacity: 1 !important;
+}
+
+.m-label.identity-hot > div {
+  color: #1d6f62;
+}
+
+.identity-line {
+  stroke-width: 2.2;
+}
