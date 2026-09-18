@@ -82,7 +82,7 @@
   ];
 
   var cameras = {
-    core: [58, 150, 310, 250],
+    core: [0, 105, 430, 390],
     upper: [48, 2, 602, 395],
     full: [48, 0, 610, 520],
     flag: [74, 175, 570, 335]
@@ -105,10 +105,10 @@
       text: "Levantamos la perpendicular a \\(AB\\) en \\(A\\). Luego construimos el punto medio \\(M\\) de \\(AB\\) y llevamos la longitud \\(AM\\) sobre esa perpendicular para marcar \\(P\\).",
       note: "El paso completo termina cuando \\(AP=AB/2\\). La animación muestra primero la perpendicular y después la construcción de la mitad.",
       formula: "\\[AP=AM=\\frac{AB}{2}\\]",
-      hot: ["perpMarkCircle", "U", "V", "perpArcL", "perpArcR", "X", "perpLine", "midArcA1", "midArcB1", "midArcA2", "midArcB2", "midGuide", "M", "lM", "halfC", "AP", "P", "lP"],
+      hot: ["perpMarkCircle", "U", "lU", "V", "lV", "perpArcL", "perpArcR", "X", "lX", "perpLine", "midArcA1", "midArcB1", "midArcA2", "midArcB2", "midGuide", "M", "lM", "halfC", "AP", "P", "lP"],
       delays: {
-        U: 300, V: 300,
-        perpArcL: 700, perpArcR: 1200, X: 1700, perpLine: 2050,
+        U: 300, lU: 300, V: 300, lV: 300,
+        perpArcL: 700, perpArcR: 1200, X: 1700, lX: 1700, perpLine: 2050,
         midArcA1: 2650, midArcB1: 3050, midArcA2: 3450, midArcB2: 3850,
         midGuide: 4250, M: 4550, lM: 4550,
         halfC: 5000, AP: 5450, P: 6000, lP: 6000
@@ -479,10 +479,13 @@
   // then intersect two equal-radius arcs and join their intersection with A.
   circle("perpMarkCircle", A, 0.38, "compass", 1, 1);
   point("U", U, 1, 1);
+  mathLabel("lU", U, "U", -18, 8, 1, 1);
   point("V", V, 1, 1);
+  mathLabel("lV", V, "V", 8, 8, 1, 1);
   path("perpArcL", screenArc(U, perpRadius, 30, 86), "compass", 1, 1);
   path("perpArcR", screenArc(V, perpRadius, 94, 150), "compass", 1, 1);
   point("X", X, 1, 1);
+  mathLabel("lX", X, "X", 9, -18, 1, 1);
   line("perpLine", [0, -0.10], [0, 0.80], "guide", 1, 2);
 
   // Paso 2b: midpoint of AB, then transfer AM onto the perpendicular to get P.
