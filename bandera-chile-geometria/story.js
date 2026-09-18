@@ -643,7 +643,6 @@
   var index = 0;
   var playing = false;
   var timer = null;
-  var introduced = {};
   var runToken = 0;
 
   function alive(i, item) {
@@ -655,6 +654,30 @@
       return window.MathJax.typesetPromise([node]).catch(function () {});
     }
     return Promise.resolve();
+  }
+
+  function clearMath(node) {
+    if (window.MathJax && window.MathJax.typesetClear) {
+      try {
+        window.MathJax.typesetClear([node]);
+      } catch (_) {}
+    }
+  }
+
+  function setMathHtml(node, html) {
+    clearMath(node);
+    node.innerHTML = html;
+    return typeset(node);
+  }
+
+  function setSceneCopy(scene) {
+    ui.step.textContent = scene.step;
+    ui.title.textContent = scene.title;
+    return Promise.all([
+      setMathHtml(ui.text, scene.text),
+      setMathHtml(ui.note, scene.note),
+      setMathHtml(ui.formula, scene.formula)
+    ]);
   }
 
   function animateStroke(node) {
@@ -685,12 +708,7 @@
     var hot = {};
     scene.hot.forEach(function (id) { hot[id] = true; });
 
-    ui.step.textContent = scene.step;
-    ui.title.textContent = scene.title;
-    ui.text.innerHTML = scene.text;
-    ui.note.innerHTML = scene.note;
-    ui.formula.innerHTML = scene.formula;
-    typeset(ui.formula);
+    setSceneCopy(scene);
 
     svg.classList.remove("final-clean");
     setCamera(scene.camera || "core", 900);
@@ -704,10 +722,11 @@
         svg.classList.add("final-clean");
         setCamera(scene.final.camera || "flag", 1150);
         ui.title.textContent = scene.final.title;
-        ui.text.innerHTML = scene.final.text;
-        ui.note.innerHTML = scene.final.note;
-        ui.formula.innerHTML = scene.final.formula;
-        typeset(ui.formula);
+        Promise.all([
+          setMathHtml(ui.text, scene.final.text),
+          setMathHtml(ui.note, scene.final.note),
+          setMathHtml(ui.formula, scene.final.formula)
+        ]);
       }, scene.final.delay);
     }
 
@@ -715,34 +734,53 @@
       var item = items[id];
       var node = item.node;
       var on = alive(index, item);
+      var replay = on && !!hot[id];
+      var delay = Number(delays[id] || 0);
+
+      function resetVisualState() {
+        node.style.transition = "";
+        node.style.strokeDasharray = "";
+        node.style.strokeDashoffset = "";
+        node.classList.add("off");
+        node.classList.remove("on");
+        node.classList.remove("hot");
+      }
 
       function showItem() {
         if (token !== runToken) return;
+
         node.classList.remove("off");
         node.classList.add("on");
-        node.classList.toggle("hot", !!hot[id]);
+        node.classList.toggle("hot", replay);
 
-        if (!introduced[id]) {
-          introduced[id] = true;
-          if (node.classList.contains("geo")) animateStroke(node);
+        if (replay && node.classList.contains("geo")) {
+          animateStroke(node);
         }
       }
 
       if (!on) {
-        node.classList.add("off");
-        node.classList.remove("on");
-        node.classList.remove("hot");
+        resetVisualState();
         return;
       }
 
-      var delay = Number(delays[id] || 0);
-      if (delay > 0 && !introduced[id]) {
-        node.classList.add("off");
-        node.classList.remove("on");
-        node.classList.remove("hot");
-        setTimeout(showItem, delay);
-      } else {
+      // Elements from previous steps remain visible but muted.
+      // Elements belonging to the active step are reset and replayed every visit.
+      if (!replay) {
         showItem();
+        return;
+      }
+
+      resetVisualState();
+
+      if (delay > 0) {
+        setTimeout(showItem, delay);
+      } else if (node.classList.contains("geo")) {
+        showItem();
+      } else {
+        requestAnimationFrame(function () {
+          if (token !== runToken) return;
+          showItem();
+        });
       }
     });
 
