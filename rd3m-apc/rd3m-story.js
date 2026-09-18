@@ -52,8 +52,8 @@
       {id:"ages", kicker:"4 · Inside the denominator", title:"Those loans are not all alike", text:"Keep the same loan population and separate it into age groups. Each group represents a different loan age, and defaults remain allocated to the age group in which they occur.", formula:"", mode:"ageDots"},
       {id:"base", kicker:"5 · Aggregate the loans", title:"Group loans into cohort × age cells", text:"Group individual loans into cells defined by cohort and age. Each cell contains its cohort, age, loans at risk, and defaults over the following three months. There are many such combinations, so this worked example uses a small teaching window. Later portfolio aggregates use the full available history.", formula:"\\[c:=\\text{cohort},\\qquad a:=\\text{age},\\qquad p_{c,a}:=c+a\\]", mode:"sheet", step:"base"},
       {id:"rd3m", kicker:"6 · Cell RD3M", title:"Compute risk in each cell", text:"For every cohort \\(c\\) and age \\(a\\), divide defaults by loans at risk to obtain \\(RD3M_{c,a}\\). Weighting these cell rates by loans within a calendar period reconstructs that period's portfolio RD3M. A window of five ages and five periods keeps this worked example readable.", formula:"\\[RD3M_{c,a}=\\frac{D^{3M}_{c,a}}{N_{c,a}}\\]", mode:"sheet", step:"rd3m", deps:["loans_at_risk","defaults_3m"]},
-      {id:"q", kicker:"7 · Adjust zero cells", title:"Add the adjusted probability", text:"Some cohort-age cells have zero defaults, so their raw rate is zero and \\(\\operatorname{logit}(0)=-\\infty\\). We add 0.5 to defaults and 0.5 to non-defaults: the numerator gains 0.5 and the denominator gains 1. This keeps \\(q_{c,a}\\) finite while barely changing large cells.", formula:"\\[q_{c,a}=\\frac{D^{3M}_{c,a}+0.5}{N_{c,a}+1}\\]", mode:"sheet", step:"q", deps:["defaults_3m","loans_at_risk"]},
-      {id:"logit", kicker:"8 · Change scale", title:"Move to log-odds", text:"RD3M is bounded between zero and one. The logit moves the adjusted probability onto an additive scale. Only \\(q_{c,a}\\) is used to create \\(y_{c,a}=\\operatorname{logit}(q_{c,a})\\).", formula:"\\[y_{c,a}=\\operatorname{logit}(q_{c,a})=\\log\\!\\left(\\frac{q_{c,a}}{1-q_{c,a}}\\right)\\]", mode:"sheet", step:"logit", deps:["q"]},
+      {id:"q", kicker:"7 · Adjust zero cells", title:"Add the adjusted probability", text:"Some cohort-age cells record no defaults over the three-month window, so their raw rate is zero. Before moving the rates to the logit scale in the next step, apply a small adjustment: add 0.5 to defaults and 0.5 to non-defaults. The numerator gains 0.5 and the denominator gains 1. This avoids boundary values in the later transformation while barely changing large cells.", formula:"\\[q_{c,a}=\\frac{D^{3M}_{c,a}+0.5}{N_{c,a}+1}\\]", mode:"sheet", step:"q", deps:["defaults_3m","loans_at_risk"]},
+      {id:"logit", kicker:"8 · Change scale", title:"Move to log-odds", text:"RD3M is a probability, bounded between zero and one. Its odds compare the chance of default with the chance of no default; taking their logarithm puts that comparison on an unbounded additive scale. There, a common level and the AGE, COHORT, and PERIOD contributions can be added together. Apply the transformation only to the adjusted probability: \\(y_{c,a}=\\operatorname{logit}(q_{c,a})\\).", formula:"\\[y_{c,a}=\\operatorname{logit}(q_{c,a})=\\log\\!\\left(\\frac{q_{c,a}}{1-q_{c,a}}\\right)\\]", mode:"sheet", step:"logit", deps:["q"]},
       {id:"mu", kicker:"9 · Global baseline", title:"Start from one weighted level", text:"The baseline \\(\\mu\\) is the average adjusted log odds across all cells, weighted by loans. It is the common portfolio level before describing how age, cohort, and calendar period differ from it.", formula:"\\[\\mu=\\frac{\\sum\\limits_{c,a}N_{c,a}\\,y_{c,a}}{\\sum\\limits_{c,a}N_{c,a}}\\]", mode:"sheet", step:"mu", deps:["loans_at_risk","y_logit"]},
       {id:"r0", kicker:"10 · First residual", title:"What is left after the baseline?", text:"For each cell, subtract \\(\\mu\\) from \\(y_{c,a}=\\operatorname{logit}(q_{c,a})\\). The residual \\(r_{c,a}^{(0)}\\) is that cell's deviation from the common portfolio level on the log odds scale. It is the starting point for AGE.", formula:"\\[r_{c,a}^{(0)}=y_{c,a}-\\mu\\]", mode:"sheet", step:"r0", deps:["y_logit","mu"]},
       {id:"age", kicker:"11 · AGE", title:"Estimate AGE one group at a time", text:"Starting from \\(r_{c,a}^{(0)}\\), for each age \\(a\\), \\(A_a\\) is its average across all cohorts \\(c\\) at that age, weighted by loans. It is the average log odds deviation associated with that age group, before separating cohort and period.", formula:"\\[A_a=\\frac{\\sum\\limits_{c}N_{c,a}\\,r_{c,a}^{(0)}}{\\sum\\limits_{c}N_{c,a}}\\]", mode:"sheet", step:"age", deps:["age","loans_at_risk","residual_after_mean"], cycle:"age"},
@@ -130,11 +130,15 @@
     ui.language.forEach(button=>button.classList.toggle("active",button.dataset.language===language));
     root.querySelector(".story-language").setAttribute("aria-label",uiText("language","Language"));
     ui.brand.textContent=uiText("brand","Decomposing credit risk by AGE, COHORT and PERIOD");
-   ui.prev.onclick = () => render(Math.max(0, active - 1));
-    ui.next.onclick = () => render(Math.min(scenes.length - 1, active + 1));
+    function moveScene(delta){
+      const target=Math.max(0,Math.min(scenes.length - 1,active + delta));
+      if(target!==active)render(target);
+    }
+   ui.prev.onclick = () => moveScene(-1);
+    ui.next.onclick = () => moveScene(1);
     window.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowRight") render(Math.min(scenes.length - 1, active + 1));
-      if (event.key === "ArrowLeft") render(Math.max(0, active - 1));
+      if (event.key === "ArrowRight") moveScene(1);
+      if (event.key === "ArrowLeft") moveScene(-1);
     });
 
     function render(index) {
@@ -820,7 +824,12 @@
         if(headerNode){
           window.MathJax?.typesetClear?.([headerNode]);
           headerNode.innerHTML=headerMath[output];
-          typeset(headerNode);
+          typeset(headerNode).then(()=>{
+            if(token===runToken){
+              headerNode.classList.remove("future-col");
+              headerNode.style.opacity="1";
+            }
+          });
         }
       }
 

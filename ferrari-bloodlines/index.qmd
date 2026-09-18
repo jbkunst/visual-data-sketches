@@ -10,15 +10,15 @@ body-classes: model-timeline-page
 format:
   html:
     css:
-      - ../assets/model-timeline.css
-      - ../assets/model-timeline-records.css
+      - model-timeline.css
+      - model-timeline-records.css
       - styles.css
     include-in-header:
       text: |
         <link rel="preconnect" href="https://cdn.ferrari.com">
-        <script defer src="../assets/model-timeline.js"></script>
+        <script defer src="model-timeline.js"></script>
 resources:
-  - ../assets/model-timeline.js
+  - model-timeline.js
 execute:
   echo: false
   warning: false
@@ -34,7 +34,7 @@ library(DT)
 library(highcharter)
 library(readr)
 
-source(here::here("R", "model-timeline.R"))
+source(here::here("ferrari-bloodlines", "model-timeline.R"))
 
 source_url <- paste0(
   "https://raw.githubusercontent.com/jbkunst/motorsport-legends/",

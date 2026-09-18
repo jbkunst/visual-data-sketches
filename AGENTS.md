@@ -47,6 +47,28 @@ story, dashboard, interactive chart, table, map, Quarto page, or gallery entry.
 - Do not change data, chart behavior, JavaScript, CSS, or the visual composition
   merely to satisfy SEO metadata requirements.
 
+### Typography in visual stories
+
+- Keep a deliberately small type system. Prefer one regular weight for body
+  copy and data, one semibold weight for headings and interface labels, a
+  distinct display face only when it has a clear editorial role, and the
+  established math renderer for notation.
+- Do not use bold as the primary way to distinguish data cells. Use color,
+  opacity, position, or a subtle background first; table-body values should
+  normally remain regular weight, while headers may be semibold.
+- Do not introduce isolated font weights, families, sizes, capitalization, or
+  letter-spacing treatments for one component. Reuse the closest established
+  style unless a distinct semantic level genuinely requires a new one.
+
+### Sketch containment
+
+- Keep each sketch folder self-contained: its runtime JavaScript, CSS, R
+  helpers, data, and sketch-specific assets belong in that folder.
+- Reserve root-level `assets/` and `R/` for gallery or repository
+  infrastructure only. Do not leave sketch-specific helpers there, even when
+  several sketches currently share them; local copies make every sketch
+  portable and independently maintainable.
+
 ### Validation before a pull request
 
 1. Do not run the repository build automatically. Ask the user to run

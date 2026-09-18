@@ -12,6 +12,8 @@ Future sketch ideas and implementation notes are tracked in [TODO.md](TODO.md).
 - `<sketch-folder>/DESCRIPTION`: gallery metadata and runtime configuration.
 - `<sketch-folder>/index.qmd`: source for HTML sketches.
 - `<sketch-folder>/styles.css`: optional sketch-specific style.
+- `<sketch-folder>/{*.js,*.R,data/,…}`: any runtime JavaScript, R helpers,
+  data, and assets specific to that sketch.
 - `<sketch-folder>/screenshot.png`: gallery preview.
 - `R/build_site.R`: builds metadata, screenshots, and the Quarto site.
 - `index.qmd`: Quarto source for the gallery.
@@ -75,7 +77,10 @@ Status: draft
 
 The build reuses an existing `screenshot.png`. If one is missing, it captures the rendered HTML sketch or `AppURL` with `webshot2` at 1440 x 900.
 
-Each sketch should remain self-contained. It does not need to share the visual style of the gallery or of any other sketch.
+Each sketch should remain self-contained. Its runtime JavaScript, CSS, R
+helpers, data, and sketch-specific assets belong in its own folder; root
+`assets/` and `R/` are reserved for gallery and repository infrastructure. It
+does not need to share the visual style of the gallery or of any other sketch.
 
 ## Publishing
 

@@ -7,6 +7,12 @@
 
 .story-step {
   min-height: 18px;
+  font-weight: 600;
+}
+
+#rd3m-story strong,
+#rd3m-story b {
+  font-weight: 600;
 }
 
 .story-copy h1 {
@@ -151,7 +157,7 @@
 .sheet-cell.identity-col {
   opacity: 1;
   color: #dbe8f2 !important;
-  font-weight: 650;
+  font-weight: 400;
   background: rgba(219, 232, 242, .05);
   border-left: 1px solid rgba(219, 232, 242, .22);
 }
@@ -233,7 +239,7 @@
 .period-risk-row span { padding: 0 9px; color: #c8d4dd; font-size: 12px; font-variant-numeric: tabular-nums; text-align: right; }
 .period-risk-row span:first-child { text-align: left; }
 .period-risk-header { opacity: 1; transform: none; background: #172530; }
-.period-risk-header span { color: #8fa2b1; font-size: 11px; font-weight: 700; }
+.period-risk-header span { color: #8fa2b1; font-size: 11px; font-weight: 600; }
 .period-risk-ellipsis { opacity: 1; transform: none; min-height: 25px; border-bottom-color: #1a2934; }
 .period-risk-ellipsis span { grid-column: 1 / -1; color: #708492; font-size: 18px; line-height: 1; text-align: center; }
 .period-risk-row .risk-risk_base { color: #b9cad5; }
@@ -276,7 +282,7 @@
 .reconstructed-line { stroke-linecap: round; stroke-linejoin: round; animation: fadeIn .65s ease both; }
 .reconstructed-line.reconstructed-final { opacity: 0; animation: fadeIn .9s ease 1.9s both; }
 .stack-legend-label { fill: #b4c0ca; font-size: 13px; font-weight: 600; }
-.facet-title { font-size: 12px; font-weight: 700; letter-spacing: .07em; }
+.facet-title { font-size: 12px; font-weight: 600; letter-spacing: .07em; }
 .facet-line { stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: drawFacet 1.45s ease forwards; }
 .facet-line.facet-static { stroke-dashoffset: 0; animation: none; }
 
@@ -325,7 +331,7 @@
 .ingredient-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
 .ingredient-field { display: grid; gap: 5px; padding: 13px 11px; border-left: 2px solid #56b4e9; background: #14212c; opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; }
 .ingredient-field.is-visible { opacity: 1; transform: none; }
-.ingredient-field span { color: #8fc8ff; font-weight: 700; }
+.ingredient-field span { color: #8fc8ff; font-weight: 600; }
 .ingredient-field strong { color: #e5edf3; font-size: 16px; font-variant-numeric: tabular-nums; }
 
 .risk-source {
@@ -367,7 +373,7 @@
 }
 
 .risk-step.active { opacity: 1; }
-.risk-step-label { color: #b5c3ce; font-size: 12px; font-weight: 650; }
+.risk-step-label { color: #b5c3ce; font-size: 12px; font-weight: 600; }
 .risk-step-track { height: 9px; background: #182631; border-radius: 8px; overflow: hidden; }
 .risk-step-track i { display: block; height: 100%; border-radius: inherit; background: var(--step-color); transition: width .7s ease; }
 .risk-step strong { color: #e4edf3; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
