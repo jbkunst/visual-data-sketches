@@ -60,6 +60,12 @@ AppURL: https://example.com/visualization/
 
 Every gallery card opens in a new tab, whether its destination is local, Shiny, or external.
 
+Cards are ordered by date by default. Use an optional `Position` field only when a sketch needs an explicit curated placement in the gallery:
+
+```text
+Position: 3
+```
+
 Draft sketches can remain in the repository without appearing in the gallery:
 
 ```text
