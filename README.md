@@ -4,9 +4,9 @@ Visual sketches, stories, maps, and experiments made with data.
 
 A small Quarto gallery for standalone visual pieces. Sketches may be static, interactive, or app-like; the only common rule is that the visual result comes first.
 
-## Why this exists
+## Motivation
 
-Visual Data Sketches is a personal portfolio for smaller, visual-first experiments and stories made with data. It gives ideas a home when they do not need to become a full application or a larger project: the visualization itself is the main artifact.
+Visual Data Sketches is a personal collection of small visual experiments made with data. I use it to explore ideas I find interesting, learn by building, and keep the visual result at the center.
 
 Future sketch ideas and implementation notes are tracked in [TODO.md](TODO.md).
 
