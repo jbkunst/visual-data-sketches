@@ -93,6 +93,19 @@ write_cards <- function(sketches) {
   card_order <- sketches |>
     arrange(desc(as.Date(.data$date)), .data$title) |>
     pull(.data$sketch)
+
+  pinned <- sketches |>
+    filter(!is.na(.data$position)) |>
+    arrange(.data$position, .data$title)
+
+  for (index in seq_len(nrow(pinned))) {
+    sketch <- pinned$sketch[[index]]
+    position <- pinned$position[[index]]
+    card_order <- card_order[card_order != sketch]
+    position <- min(position, length(card_order) + 1L)
+    card_order <- append(card_order, sketch, after = position - 1L)
+  }
+
   cards <- cards[card_order]
 
   write_yaml(unname(cards), "sketches.yml")
@@ -151,7 +164,11 @@ sketches <- map_dfr(sketch_dirs, function(sketch) {
     categories = list(as_csv(value(desc, "Categories"))),
     runtime = runtime_label(str_to_lower(value(desc, "Runtime", "html"))),
     app_url = value(desc, "AppURL"),
-    status = str_to_lower(value(desc, "Status"))
+    status = str_to_lower(value(desc, "Status")),
+    position = {
+      x <- value(desc, "Position")
+      if (nzchar(x)) suppressWarnings(as.integer(x)) else NA_integer_
+    }
   )
 })
 
