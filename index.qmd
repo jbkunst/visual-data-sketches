@@ -17,6 +17,9 @@ listing:
     filter-ui: true
     categories: true
     image-lazy-loading: true
+    fields: [image, title, description, date, categories]
+    field-types:
+      gallery_order: number
     field-required:
       - title
       - description

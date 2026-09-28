@@ -108,10 +108,9 @@ write_cards <- function(sketches) {
 
   cards <- cards[card_order]
 
-  cards <- imap(cards, function(card, index) {
-    card$gallery_order <- index
-    card
-  })
+  for (index in seq_along(cards)) {
+    cards[[index]]$gallery_order <- index
+  }
 
   write_yaml(unname(cards), "sketches.yml")
   cards
